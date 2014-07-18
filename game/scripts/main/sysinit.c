@@ -1,6 +1,7 @@
 #ifndef sysinit_c
 #define sysinit_c
 
+#include "engine.h"
 #include "sysinit.h"
 
 void doSysInit() {

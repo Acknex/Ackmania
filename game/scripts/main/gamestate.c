@@ -1,7 +1,9 @@
 #ifndef gamestate_c
 #define gamestate_c
 
+#include "engine.h"
 #include "gamestate.h"
+#include "loadrace.h"
 
 // gibt den aktuellen Spielstatus zurück
 int get_game_state() {
@@ -28,10 +30,7 @@ void invoke_game_state_prerace(int oldGameState) {
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
-
-         level_load("dummy_level.wmb");
-
-
+         load_race("dummy_level.wmb");
          break;
    }
 }
