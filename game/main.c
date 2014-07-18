@@ -12,6 +12,7 @@
 
 #include "sysdefines.h"
 #include "sysinit.h"
+#include "gamestate.h"
 
 int main() {
 
@@ -22,5 +23,5 @@ int main() {
    wait(1);
    level_load(null);
 
-   error("!");
+   invoke_game_state(GAME_STATE_PRERACE);
 }
