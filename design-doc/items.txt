@@ -4,3 +4,4 @@ Rakete - Projetil - grün/rot (vielleicht zielverfolgung)
 TUrbo - Jetpack
 Spikes - aus dem Boden
 Ultima - Lottighost / Flaschengeist
+Mushroom - Rainbowmode
