@@ -28,7 +28,10 @@ void invoke_game_state_prerace(int oldGameState) {
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
-         error("XXX");
+
+         level_load("dummy_level.wmb");
+
+
          break;
    }
 }
