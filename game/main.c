@@ -1,16 +1,12 @@
-#define PRAGMA_ZERO
-
-#include <acknex.h>
-#include <litec.h>
-#include <windows.h>
-#include <stdio.h>
+#define PRAGMA_PATH "scripts\\engine";
+#include "engine.h"
 
 #include <default.c>
 
 #define PRAGMA_PATH "scripts";
 #define PRAGMA_PATH "scripts\\main";
+#define PRAGMA_PATH "scripts\\race";
 
-#include "sysdefines.h"
 #include "sysinit.h"
 #include "gamestate.h"
 
