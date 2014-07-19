@@ -108,6 +108,7 @@ void loadPlayerCpuControlParams(ENTITY* ent)
 }
 
 BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
+BMAP* bmp_quad = "quad.tga";
 
 void p_drift_smoke_fade(PARTICLE* p)
 {
@@ -120,7 +121,7 @@ void p_drift_smoke_fade(PARTICLE* p)
 void p_drift_smoke(PARTICLE* p)
 {
 	vec_add(p.vel_x,vector(1-random(2),1-random(2),1-random(1)));
-	vec_fill(p.blue,80);
+	vec_fill(p.blue,90+random(20));
 	set(p,MOVE);
 	p.size = 9+random(5);
 	p.alpha = 30+random(10);
@@ -129,10 +130,28 @@ void p_drift_smoke(PARTICLE* p)
 	p.event = p_drift_smoke_fade;
 }
 
+void p_kart_grass(PARTICLE* p)
+{
+	vec_add(p.vel_x,vector(1-random(2)-p.vel_x*0.65,1-random(2),7+random(4)));
+	vec_set(p.blue,vector(100,130+random(20),109));
+	vec_scale(p.blue,0.8+random(0.2));
+	set(p,MOVE);
+	p.bmap = bmp_quad;
+	p.gravity = 3;
+	p.lifespan = 24;
+	p.size = 2+random(2);
+	p.event = NULL;
+}
+
 void updatePlayer(ENTITY* ent)
 {
    VECTOR temp,temp2;
    var up, down, left, right, hop, item, underground, old_contact, turn;
+
+if(ent->falling)
+{
+	
+}
 
    ent->old_speed = ent->speed;
    up = !!(ent->kart_input & INPUT_UP);
@@ -264,7 +283,7 @@ void updatePlayer(ENTITY* ent)
    ent->speed_z -= 9 * time_step;
    
    if(ent->speed < 15 || ent->underground < 0.9) ent->drifting = 0;
-   if(ent->ground_contact) {
+   if(ent->ground_contact && ent->speed >= g_raceplayerMaxSpeed*0.2) {
    	ent->particle_emit += time_step;
    	if(ent->particle_emit > 0.5)
    	{
@@ -277,13 +296,20 @@ void updatePlayer(ENTITY* ent)
 		if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
 		else
 		{
-      c_ignore(group_kart, 0);
-      c_trace(vector(temp->x, temp->y, temp->z + 64), vector(temp->x, temp->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      		c_ignore(group_kart, 0);
+      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
 		}
    		vec_set(temp,vector(-22,-22,-ent->kart_height*0.5));
    		vec_rotate(temp,ent->parent->pan);
    		vec_add(temp,ent->parent->x);
 		if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
+		else
+		{
+      		c_ignore(group_kart, 0);
+      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
+		}
 	}
    }
 }
