@@ -12,6 +12,8 @@
 #define PRAGMA_PATH "sprites";
 #define PRAGMA_PATH "scripts\\camera";
 #define PRAGMA_PATH "scripts\\circuits";
+#define PRAGMA_PATH "scripts\\engine";
+#define PRAGMA_PATH "scripts\\environment";
 #define PRAGMA_PATH "scripts\\globals";
 #define PRAGMA_PATH "scripts\\main";
 #define PRAGMA_PATH "scripts\\menu";
