@@ -11,7 +11,6 @@ var key_right = 0;
 var key_hop = 0;
 var key_hop_off = 0;
 var key_item = 0;
-var key_sex_porn = 69;
 
 var g_raceplayerTurnSpeed = 8;
 var g_raceplayerMaxSpeed = 16;
@@ -19,6 +18,7 @@ var g_raceplayerAccelSpeed = 5;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
 
+#define bump_ang skill81
 #define drift_dir skill82
 #define bounce_x skill83
 #define bounce_y skill84

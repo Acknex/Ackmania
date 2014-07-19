@@ -11,11 +11,12 @@ var key_right = 0;
 var key_hop = 0;
 var key_hop_off = 0;
 var key_item = 0;
-var key_sex_porn = 69;
 
 #define ACCEL_SPEED 3
 #define MAX_SPEED 50
+#define MAX_TURN 4
 
+#define bump_ang skill81
 #define drift_dir skill82
 #define bounce_x skill83
 #define bounce_y skill84
@@ -76,9 +77,12 @@ void gamepad_update()
 
 var get_xyangle(VECTOR* vec)
 {
-	var angle = 0;
+	var angle = 0, length;
 	
-	angle = asinv(vec.y);
+	length = vec_length(vector(vec.x,vec.y,0));
+	if(abs(length) < 0.015) return -1;
+	angle = acosv(vec.x/length);
+	if(vec.y < 0) angle *= -1;
 	
 	return angle;
 }
@@ -86,11 +90,19 @@ var get_xyangle(VECTOR* vec)
 
 void kart_event()
 {
+	var new_angle;
 	VECTOR temp;
 	
-	vec_to_angle(temp,bounce);
-	my.speed *= 0.75;
-	my.drive_pan = get_xyangle(bounce);
+	vec_diff(temp,my.x,target);
+	my.bounce_x = temp.x;
+	my.bounce_y = temp.y;
+	if(my.speed > MAX_SPEED*0.25 || 1)
+	{
+		my.speed *= 0.3;
+		new_angle = get_xyangle(bounce);
+		if(abs(ang(new_angle-my.drive_pan)) < 90) my.bump_ang = ang(new_angle-my.drive_pan);
+		//my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
+	}
 }
 
 void kart_init()
@@ -100,13 +112,12 @@ void kart_init()
 	c_setminmax(my);
 	my.event = kart_event;
 	my.emask |= ENABLE_BLOCK | ENABLE_ENTITY | ENABLE_ENTITY;
-	my.ambient = -50;
 	vec_for_min(temp,my);
 	my.kart_height = -temp.z;
 	my.kart_id = 0;
 	my.group = group_kart;
 	my.parent = ent_create(str_for_entfile(NULL,my),my.x,NULL);
-	set(my.parent,PASSABLE);
+	set(my.parent,PASSABLE | UNLIT);
 }
 
 void camera_focus(ENTITY* ent)
@@ -139,15 +150,17 @@ void kart_update(ENTITY* ent)
 	hop = !!(ent.kart_input & INPUT_HOP);
 	item = !!(ent.kart_input & INPUT_ITEM);
 	
-	if(!ent.drifting) turn = 4*(left-right);
+	if(!ent.drifting) turn = MAX_TURN*(left-right);
 	else turn = ent.drift_pan*0.2;
 	ent.turn_speed += (turn*(ent.speed/MAX_SPEED)-ent.turn_speed)*0.55*time_step;
 	ent.turn_speed2 += clamp((ent.turn_speed-ent.turn_speed2),-0.5,0.5)*time_step;
-	ent.drive_pan += ent.ground_contact*ent.turn_speed*time_step;
+	ent.drive_pan += (ent.bump_ang*0.35+ent.ground_contact*ent.turn_speed)*time_step;
+	ent.drive_pan = ang(ent.drive_pan);
+	ent.bump_ang += -ent.bump_ang*0.35*time_step;
 	ent.turn_speed %= 360;
-	if(up && !down) ent.speed = minv(ent.speed+0.5*ACCEL_SPEED*time_step,(MAX_SPEED-4*ent.turn_speed2*!ent.drifting)*ent.underground);
-	if(!(up || down)) ent.speed += clamp(-ent.speed*0.25, -ACCEL_SPEED, ACCEL_SPEED)*time_step;
-	if(!up && down) ent.speed = maxv(ent.speed-ACCEL_SPEED*time_step, -15);
+	if(up && !down) ent.speed = minv(ent.speed+minv((MAX_SPEED-ent.speed)*0.1,0.5*ACCEL_SPEED)*time_step,(MAX_SPEED-4*abs(ent.turn_speed2)*!ent.drifting)*ent.underground);
+	if(!(up || down)) ent.speed += clamp(-ent.speed*0.25, -ACCEL_SPEED, ACCEL_SPEED)*0.25*time_step;
+	if(!up && down) ent.speed = maxv(ent.speed-(0.5+0.5*(ent.speed > 0))*ACCEL_SPEED*time_step, -15*!ent.drifting);
 	DEBUG_VAR(ent.turn_speed, 60);
 	DEBUG_VAR(ent.speed, screen_size.y-40);
 	DEBUG_VAR(ent.turn_speed2, screen_size.y-60);
@@ -155,9 +168,12 @@ void kart_update(ENTITY* ent)
 	ent.pan = ent.drive_pan;
 	vec_set(temp,vector(ent.speed,0,0));
 	vec_rotate(temp,vector(ent.drive_pan,0,0));
+	vec_add(temp,vector(ent.bounce_x,ent.bounce_y,0));
 	vec_scale(temp,time_step);
-	
+	DEBUG_VAR(get_xyangle(temp),400);
 	c_move(ent,nullvector,temp,IGNORE_PASSABLE | GLIDE);
+	
+	vec_scale(ent.bounce_x,1-0.4*time_step);
 	
 	old_contact = ent.ground_contact;
 	ent.ground_contact = (ent.parent.z <= ent.kart_height);
@@ -171,7 +187,7 @@ void kart_update(ENTITY* ent)
 	{
 		c_ignore(group_kart,0);
 		c_trace(vector(ent.x,ent.y,ent.z+64),vector(ent.x,ent.y,-16),IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE);
-		if(tex_flag4 || tex_flag5 || tex_flag6 || tex_flag7 || tex_flag8) underground = 0.33;
+		if(tex_flag4 || tex_flag5 || tex_flag6 || tex_flag7 || tex_flag8) underground = 0.37;
 		else underground = 1;
 	}
 	else underground = ent.underground;
@@ -194,12 +210,15 @@ void kart_update(ENTITY* ent)
 	else
 	{
 		if(!ent.drift_dir && (left || right)) ent.drift_dir = left-right;
-		ent.drift_pan += clamp(ent.drift_dir*(10+10*abs(left-right)*(sign(left-right) == ent.drift_dir))-ent.drift_pan,-5,5)*time_step;
+		ent.drift_pan += clamp((ent.drift_dir*(10+10*abs(left-right)*(sign(left-right) == ent.drift_dir))-ent.drift_pan)*0.4,-3,3)*time_step;
 	}
 	
 	vec_set(ent.parent.x,ent.x);
 	vec_set(ent.parent.pan,ent.pan);
-	ent.parent.pan = ent.pan+ent.drift_pan;
+	//turn = pow(ent.turn_speed2/MAX_TURN,2)*sign(ent.turn_speed2)*5;
+	turn = maxv(abs(ent.turn_speed2)-MAX_TURN*0.5,0);
+	turn = pow(turn/MAX_TURN,2)*sign(ent.turn_speed2)*9;
+	ent.parent.pan = ent.pan+ent.drift_pan+turn;
 	ent.parent.skill1 += ent.speed_z*time_step;
 	ent.parent.skill1 = maxv(ent.parent.skill1,ent.kart_height);
 	ent.parent.z = ent.parent.skill1;
@@ -241,8 +260,18 @@ void init_karts()
 	}
 }
 
+void restart()
+{
+	int i;
+	for(i = 0; i < MAX_KARTS; i++) ent_karts[i] = NULL;
+	level_load("testlevel.wmb");
+	wait(1);
+	init_karts();
+}
+
 void main()
 {
+	on_r = restart;
 	fps_max = 60;
 	video_mode = 10;
 	level_load("testlevel.wmb");
