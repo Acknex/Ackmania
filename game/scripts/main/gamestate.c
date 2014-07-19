@@ -88,6 +88,8 @@ void invoke_game_state_menu(int oldGameState, int levelIndex) {
          break;
    }
 
+   snd_stopall(4);
+
    on_esc = escdummy;
    on_space = null;
    on_enter = null;

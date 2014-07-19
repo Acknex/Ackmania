@@ -29,10 +29,10 @@ TEXT* g_circuits = {
       );
 }
 
-double g_circuit_skyspeeds [2] = {1, 0.25, 1};
+double g_circuit_skyspeeds [2] = {1, 0.25, 0.5};
 
-float g_circuit_hdrthresholds [2] = {30, 30, 0};
-float g_circuit_hdrstrengths [2] = {20, 20, 0};
+float g_circuit_hdrthresholds [2] = {30, 30, 5};
+float g_circuit_hdrstrengths [2] = {20, 20, 5};
 float g_circuit_hdrexposures [2] = {0, 0, 0};
 
 #endif /* circuit_def_h */
