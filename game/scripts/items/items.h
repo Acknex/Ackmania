@@ -40,7 +40,9 @@ SOUND* sndRocketFly						= "spikes01.wav";
 SOUND* sndTurboStart						= "spikes01.wav";
 SOUND* sndRainbowStart					= "spikes01.wav";
 
-
+COLOR* colExplosionYellow	= { red=247; green=255; blue=5; }
+COLOR* colExplosionOrange	= { red=255; green=150; blue=0; }
+COLOR* colExplosionRed		= { red=255; green=43; blue=425; }
 
 // Rotiert, kann eingesammelt werden.
 // Bringt Punkte. Bei 10 Punkten -> Sofortiger Speedboost.
