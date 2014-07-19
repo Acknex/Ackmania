@@ -12,7 +12,7 @@
 TEXT* g_circuits = {
       string (
                // Dummy Level
-               "Dummy Level",
+               "Dummy Level (Test)",
                "dummy_level.ogg",
                "dummy_level.bmp",
                "dummy_level.wmb"
