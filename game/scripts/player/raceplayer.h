@@ -80,6 +80,7 @@ var get_kart_speed(ENTITY* ent, VECTOR* vdir);
 //var get_kart_lap(ENTITY* ent);
 var get_kart_lap_player();
 var get_kart_rank_player();
+var is_kart_player_wrong_way(); // 1 equals wrong way (-1 player not found)
 
 void postConstructPlayer (ENTITY* ent);
 
