@@ -25,6 +25,12 @@ var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
 var g_raceTrackWidth = 160;
 
+#define kart_progress_update skill68
+#define kart_progress skill69
+#define kart_maxspeed skill70
+#define kart_checkpoint skill71
+#define kart_rank skill72
+#define kart_lap skill73
 #define bot_path_offset skill74
 #define item_id skill75
 #define item_cooldown skill76
@@ -58,9 +64,8 @@ var g_raceTrackWidth = 160;
 #define kart_height skill98
 #define kart_id skill99
 #define _type skill100
-#define type_player_kart 1
-#define type_enemy_kart 2
-#define type_kart_spawn 3
+#define type_kart 1
+#define type_kart_spawn 2
 
 #define group_kart 1
 #define group_item 2
@@ -71,8 +76,10 @@ var is_kart_turning(ENTITY* ent); // left = 1, right = -1
 var is_kart_accelerating(ENTITY* ent);
 var get_kart_accel(ENTITY* ent);
 var get_kart_speed(ENTITY* ent, VECTOR* vdir);
-var get_kart_rank(ENTITY* ent);
-var get_kart_lap(ENTITY* ent);
+//var get_kart_rank(ENTITY* ent);
+//var get_kart_lap(ENTITY* ent);
+var get_kart_lap_player();
+var get_kart_rank_player();
 
 void postConstructPlayer (ENTITY* ent);
 
