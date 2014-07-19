@@ -100,10 +100,7 @@ void create_hud()
 	wait(1);
 	update_hud();
 	vHudCreated = 1;
-	show_hud();
-	
-	//temp
-	vItemId = 4;
+	show_hud();	
 }
 
 void remove_hud()
@@ -157,7 +154,8 @@ void update_hud()
 	//vTotalLaps = 5;   	
 
 	/* update item slot */
-	//vItemId = getItemByPlayer();
+	//vItemId = 4;
+	//vItemId = getItemId();
 	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
 	vItemY = 0;
 }
