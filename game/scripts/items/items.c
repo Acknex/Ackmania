@@ -220,18 +220,22 @@ void plant_grave(VECTOR* pos) {
 	place_on_floor(entGrave);
 }
 
+void p_rocket_explode() {
+	
+}
+
 // Rakete, die geradeaus fliegt
 action _rocket()
 {
-	int liveTime = 4000;
-	while(me && liveTime > 0)
+	int liveTime = 2000;
+	while(me && (liveTime > 0))
 	{
-		c_move(me, vector(10 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		c_move(me, vector(60 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
 	}
-	// effect(explode, 20, my->x, nullvector);
+	effect(p_rocket_explode, 20, my->x, nullvector);
 	ent_remove(me);
 }
 
@@ -239,9 +243,10 @@ action _rocket()
 void shoot_rocket()
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _rocket);
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
+	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
+	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;
 }
 
@@ -256,7 +261,7 @@ action _aiming_rocket()
 		vec_set(movement.x, vector(10 * time_step, 0, 0));
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
-		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		wait(1);
 	}
 	// effect(explode, 20, my->x, nullvector);
@@ -268,6 +273,8 @@ void shoot_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _aiming_rocket);
+	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
+	c_setminmax(rocket);
 	ent_playsound(me, sndAimingRocketFire, 1000);
 	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;	
@@ -337,7 +344,7 @@ action _ultra_badass_aiming_rocket()
 		vec_set(movement.x, vector(10 * time_step, 0, 0));
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
-		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		wait(1);
 	}
 	// effect(explode, 20, my->x, nullvector);
@@ -351,6 +358,8 @@ void shoot_ultra_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _ultra_badass_aiming_rocket);
+	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
+	c_setminmax(rocket);
 	ent_playsound(rocket, sindAimingBadassRocketFire, 1000);
 	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;		
