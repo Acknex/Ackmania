@@ -37,6 +37,15 @@ void p_kart_grass(PARTICLE* p)
 	p.event = NULL;
 }
 
+double dvec_dot(VECTOR* vec1, VECTOR* vec2)
+{
+	double d;
+	
+	d = (double)vec1->x*(double)vec2->x+(double)vec1->y*(double)vec2->y+(double)vec1->z*(double)vec2->z;
+	
+	return d;
+}
+
 var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTOR* vresult, var* t)
 {
     var res,i;
@@ -44,7 +53,7 @@ var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTO
 
     vec_diff(&dir1,vec2,vec1);
     vec_diff(&dir2,point,vec1);
-    i = vec_dot(&dir2,&dir1)/vec_dot(&dir1,&dir1);
+    i = dvec_dot(&dir2,&dir1)/dvec_dot(&dir1,&dir1);
 
     if(i >= 0 && i <= 1)
     {
@@ -59,9 +68,9 @@ var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTO
     return res;
 }
 
-var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
+void path_get_closest_position(VECTOR* vpos, VECTOR* vresult, VECTOR* vdata)
 {
-	var dist,max_dist = 99999;
+	var dist,max_dist = 99999,t;
 	int i, j, max_nodes;
 	VECTOR temp,temp2,temp3;
 	ENTITY* ent;
@@ -74,17 +83,51 @@ var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
 		if(i == max_nodes) j = 1;
 		else j = i+1;
 		path_getnode(ent,j,temp2,NULL);
-		dist = get_line_segment_point_dist(temp,temp2,vpos,temp3,NULL);
-		if(dist < max_dist)
+		dist = get_line_segment_point_dist(temp,temp2,vpos,temp3,t);
+		if(dist > 0 && dist < max_dist)
 		{
 			max_dist = dist;
 			vec_set(vresult,temp3);
+			vec_set(vdata,vector(i,j,t));
 		}
-	}
-
+ 	}
+	
 	ptr_remove(ent);
 }
 
+void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
+{
+	var length,t;
+	int i, j, k, max_nodes;
+	VECTOR temp,temp2,temp3;
+	ENTITY* ent;
+	
+	ent = ent_create(NULL,nullvector,NULL);
+	max_nodes = path_next(ent);
+	path_getnode(ent,vdata.x,temp,NULL);
+	path_getnode(ent,vdata.y,temp2,NULL);
+	length = vec_dist(temp,temp2);
+	if(length < 0.1) return;
+	t = offset/length;
+	k = floor(t+vdata.z);
+	if(k <= 0) k = max_nodes;
+	if(k > max_nodes) k = 1;
+	if(offset > 0 && k != vdata.y)
+	{
+		t = 
+	path_getnode(ent,k,temp,NULL);
+		
+	}
+	else
+	{
+		if(offset < 0 && k != vdata.x)
+		{
+		
+		}		
+	}
+	
+	ptr_remove(ent);
+}
 
 action ac_track()
 {
@@ -213,7 +256,7 @@ void updatePlayer(ENTITY* ent)
 
    vec_scale(ent->bounce_x,1-0.4*time_step);*/
 
-ent->speed_z = maxv(ent->speed_z-6*time_step,-90);
+ent->speed_z = maxv(ent->speed_z-5*time_step,-90);
 ent->falling += (maxv(0,50+ent->speed_z)-ent->falling)*0.15*time_step;
      vec_set(temp, vector(ent->falling, 0, 0));
    vec_rotate(temp, vector(ent->drive_pan+180*(ent->falling_dir == 1)+90*(ent->falling_dir == 2)-90*(ent->falling_dir == 3), 0, 0));
@@ -223,7 +266,20 @@ ent->falling += (maxv(0,50+ent->speed_z)-ent->falling)*0.15*time_step;
 ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir == 1))*15*time_step,(-(ent->falling_dir == 2)+(ent->falling_dir == 3))*15*time_step));
   vec_set(ent->parent->x, ent->x);
   ent->parent->z += ent->parent->skill1;
- DEBUG_VAR(ent->falling_dir,400);
+ 
+	if(ent->z < -512)
+	{
+   	path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
+  	vec_set(ent->x,temp);
+  vec_set(ent->parent->x, ent->x);
+    ent->parent->z += ent->parent->skill1;
+ vec_set(ent->parent->pan, ent->pan);
+   	vec_set(ent->speed_x,nullvector);
+   	vec_set(ent->bounce_x,nullvector);
+   	ent->speed = 0;
+   	ent->falling = 0;
+   	ent->drifting = 0;
+ }
       return;
    }
    reset(ent,PASSABLE);
@@ -271,7 +327,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    vec_scale(temp, time_step);
 
    c_ignore(group_track,0);
-   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON);
+   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES);
 
    vec_scale(ent->bounce_x,1-0.4*time_step);
 
@@ -287,7 +343,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    }
 
      c_ignore(group_kart, 0);
-      c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
       //if(!trace_hit) ent->falling = 1;
    if (ent->ground_contact) {
 
@@ -372,7 +428,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 		else
 		{
       		c_ignore(group_kart, 0);
-      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
       		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
 		}
    		vec_set(temp,vector(-22,-22,-ent->kart_height*0.5));
@@ -382,7 +438,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 		else
 		{
       		c_ignore(group_kart, 0);
-      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+      		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
       		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
 		}
 	}
@@ -390,46 +446,44 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    	vec_set(temp,vector(20,0,0));
    	vec_rotate(temp,ent->pan);
    	vec_add(temp,ent->x);
-    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
    	if(!trace_hit)
    	{
    		ent->falling = ent->speed;
    		ent->falling_dir = 0;
-   		ent->speed_z = maxv(ent->speed_z,0)+3;
+   		ent->speed_z = maxv(ent->speed_z,0);
    	}
    	vec_set(temp,vector(-20,0,0));
    	vec_rotate(temp,ent->pan);
    	vec_add(temp,ent->x);
-    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
    	if(!trace_hit)
    	{
    		ent->falling = ent->speed;
    		ent->falling_dir = 1;
-   		ent->speed_z = maxv(ent->speed_z,0)+3;
+   		ent->speed_z = maxv(ent->speed_z,0);
    	}
    	vec_set(temp,vector(0,20,0));
    	vec_rotate(temp,ent->pan);
    	vec_add(temp,ent->x);
-    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
    	if(!trace_hit)
    	{
    		ent->falling = ent->speed;
    		ent->falling_dir = 2;
-   		ent->speed_z = maxv(ent->speed_z,0)+3;
+   		ent->speed_z = maxv(ent->speed_z,0);
    	}
    	vec_set(temp,vector(0,-20,0));
    	vec_rotate(temp,ent->pan);
    	vec_add(temp,ent->x);
-    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
    	if(!trace_hit)
    	{
    		ent->falling = ent->speed;
    		ent->falling_dir = 3;
-   		ent->speed_z = maxv(ent->speed_z,0)+3;
+   		ent->speed_z = maxv(ent->speed_z,0);
    	}
 
-   	path_get_closest_position(ent.x,temp2);
-   	draw_point3d(temp2,COLOR_RED,100,10);
 }
 
 #endif /* raceplayer_c */
