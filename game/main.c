@@ -6,6 +6,7 @@
 #define PRAGMA_PATH "scripts";
 #define PRAGMA_PATH "scripts\\globals";
 #define PRAGMA_PATH "scripts\\main";
+#define PRAGMA_PATH "scripts\\player";
 #define PRAGMA_PATH "scripts\\race";
 
 #include "sysinit.h"
