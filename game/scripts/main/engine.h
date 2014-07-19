@@ -8,6 +8,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <mtlView.c>
+#include <mtlfx.c>
 
 typedef BOOL bool;
 #define NULL 0
