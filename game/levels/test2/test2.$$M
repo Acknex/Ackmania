@@ -14,18 +14,15 @@ version 711
 	60
 }
 { //model
-	7
+	3
 	1464 -1744 -488
 	0 0 0
 	213.724686 213.724686 213.724686
 	leveltest.mdl
 	leveltest_mdl_005
-	ac_track
-	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+	ndef
+	0 0 0 0 0 0 0 0
 	00000100000000000000000000000000
-	0
-	50
-	0
 	0
 }
 { //model
@@ -182,7 +179,7 @@ version 711
 }
 { //model
 	3
-	768 -144 40
+	768 -144 44
 	0 0 0
 	25 25 25
 	gate01.mdl
@@ -326,7 +323,7 @@ version 711
 }
 { //model
 	3
-	472 -2536 48
+	416 -2532 100
 	20.001032 0 0
 	25 25 25
 	tree01.mdl
@@ -338,7 +335,7 @@ version 711
 }
 { //model
 	3
-	568 -2840 48
+	604 -2916 48
 	290.001038 0 0
 	25 25 25
 	tree01.mdl
@@ -403,6 +400,714 @@ version 711
 	25 25 25
 	tree03.mdl
 	tree03_mdl_060
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	936 72 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_066
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1040 8 32
+	234.998016 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_072
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1148 -56 32
+	239.999954 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_074
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1220 -132 32
+	224.996902 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_077
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1340 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_079
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1464 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_084
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1588 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_085
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1712 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_086
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1836 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_087
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	1960 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_088
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2084 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_089
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2208 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_090
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2332 -140 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_091
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2408 -52 32
+	324.996704 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_092
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2480 48 32
+	324.996704 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_096
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2552 148 32
+	324.996521 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_097
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2620 244 32
+	324.996521 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_098
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	16 -756 32
+	200.001251 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_099
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-48 -852 32
+	145.001755 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_105
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-8 -964 32
+	204.999329 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_108
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-20 -1080 32
+	169.996643 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_112
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-40 -1200 32
+	169.996643 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_116
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-60 -1320 32
+	169.996643 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_119
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-36 -1440 32
+	194.998215 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_120
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	28 -1540 32
+	215.001968 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_122
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-44 -2816 32
+	180 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_124
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-44 -2692 32
+	180 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_126
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-44 -2568 32
+	180 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_127
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-36 -2452 32
+	129.995972 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_128
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	60 -2376 32
+	115.002617 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_131
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	172 -2328 32
+	90 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_137
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	296 -2328 32
+	90 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_139
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	416 -2340 32
+	29.999929 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_140
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	480 -2444 32
+	50.003693 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_143
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	564 -2528 32
+	0 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_145
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	560 -2648 32
+	335.000641 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_149
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	508 -2760 32
+	335.000641 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_152
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	448 -2860 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_155
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	324 -2860 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_158
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	200 -2860 32
+	270 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_159
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	72 -2856 32
+	254.997131 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_160
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2340 -2920 32
+	290.001038 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_163
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2632 -2700 32
+	309.998993 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_166
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2204 -3572 32
+	129.998993 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_168
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2300 -3492 32
+	129.998993 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_172
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2392 -3412 32
+	145.002258 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_173
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2468 -3312 32
+	95.000641 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_175
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2592 -3304 32
+	90 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_178
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2716 -3304 32
+	90 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_180
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2840 -3296 32
+	145.002258 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_181
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2900 -3196 32
+	185.000641 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_186
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2896 -3076 32
+	145.002258 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_188
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	2976 -2984 32
+	120.001686 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_190
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	3072 -2916 32
+	189.995819 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_192
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	3056 -2796 32
+	170.004181 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_195
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	3076 -2680 32
+	170.004181 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_197
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	3112 -2568 32
+	120.001686 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_198
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-24 -640 32
+	204.999359 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_200
+	ndef
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-56 -532 32
+	129.999557 0 0
+	2 2 2
+	planke.mdl
+	planke_mdl_203
 	ndef
 	0 0 0 0 0 0 0 0
 	0000
