@@ -4,17 +4,35 @@
 #include "engine.h"
 #include "raceplayer.h"
 
-var get_xyangle(VECTOR* vec) {
-   var angle = 0;
-   angle = asinv(vec.y);
-   return angle;
+
+var get_xyangle(VECTOR* vec)
+{
+	var angle = 0, length;
+	
+	length = vec_length(vector(vec->x,vec->y,0));
+	if(abs(length) < 0.015) return -1;
+	angle = acosv(vec->x/length);
+	if(vec->y < 0) angle *= -1;
+	
+	return angle;
 }
 
-void kart_event() {
-   VECTOR temp;
-   vec_to_angle(temp, bounce);
-   my.speed *= 0.75;
-   my.drive_pan = get_xyangle(bounce);
+
+void kart_event()
+{
+	var new_angle;
+	VECTOR temp;
+	
+	vec_diff(temp,my->x,target);
+	my->bounce_x = temp.x;
+	my->bounce_y = temp.y;
+	if(my->speed > g_raceplayerMaxSpeed*0.25 || 1)
+	{
+		my->speed *= 0.3;
+		new_angle = get_xyangle(bounce);
+		if(abs(ang(new_angle-my->drive_pan)) < 90) my->bump_ang = ang(new_angle-my->drive_pan);
+		//my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
+	}
 }
 
 void postConstructPlayer(ENTITY* ent)
@@ -86,10 +104,12 @@ void updatePlayer(ENTITY* ent)
    ent->turn_speed += (turn * (ent->speed / g_raceplayerMaxSpeed) - ent->turn_speed) * 0.55 * time_step;
    ent->turn_speed2 += clamp((ent->turn_speed - ent->turn_speed2), -0.5, 0.5) * time_step;
    ent->drive_pan += ent->ground_contact * ent->turn_speed * time_step;
-   ent->turn_speed %= 360;
-
-   if (up && !down) {
-      ent->speed = minv(ent->speed + 0.5 * g_raceplayerAccelSpeed * time_step,
+	ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed)*time_step;
+	ent->drive_pan = ang(ent->drive_pan);
+	ent->bump_ang += -ent->bump_ang*0.35*time_step;
+	
+  if (up && !down) {
+      ent->speed = minv(ent->speed + minv((g_raceplayerMaxSpeed-ent->speed)*0.1,0.5 * g_raceplayerAccelSpeed) * time_step,
             (g_raceplayerMaxSpeed - 4 * ent->turn_speed2 * !ent->drifting) * ent->underground);
    }
 
@@ -98,26 +118,27 @@ void updatePlayer(ENTITY* ent)
    }
 
    if (!up && down) {
-      ent->speed = maxv(ent->speed - g_raceplayerAccelSpeed * time_step, -g_raceplayerBreakForce);
+      ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed * time_step, -g_raceplayerBreakForce*!ent.drifting);
    }
 
 #ifdef DEBUG
-   DEBUG_VAR(ent->turn_speed, 60);
    DEBUG_VAR(ent->speed, screen_size.y - 40);
-   DEBUG_VAR(ent->turn_speed2, screen_size.y - 60);
 #endif
 
    ent->pan = ent->drive_pan;
    vec_set(temp, vector(ent->speed, 0, 0));
    vec_rotate(temp, vector(ent->drive_pan, 0, 0));
+	vec_add(temp,vector(ent.bounce_x,ent.bounce_y,0));
    vec_scale(temp, time_step);
 
    c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE);
 
+	vec_scale(ent->bounce_x,1-0.4*time_step);
+
    old_contact = ent->ground_contact;
    ent->ground_contact = (ent->parent->z <= ent->kart_height);
 
-   if (!old_contact && ent->ground_contact && hop) {
+   if (!old_contact && ent->ground_contact && hop && ent->speed > 10) {
       ent->drifting = 1;
    }
 
@@ -172,7 +193,7 @@ void updatePlayer(ENTITY* ent)
          ent->drift_dir = left - right;
       }
 
-      ent->drift_pan += clamp(ent->drift_dir * (10 + 10 * abs(left - right) * (sign(left - right) == ent->drift_dir)) - ent->drift_pan, -5, 5)
+      ent->drift_pan += clamp((ent->drift_dir * (10 + 10 * abs(left - right) * (sign(left - right) == ent->drift_dir)) - ent->drift_pan)*0.4, -3.5, 3.5)
             * time_step;
    }
 
