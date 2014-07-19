@@ -42,7 +42,8 @@ SOUND* sndMushroomStart					= "spikes01.wav";
 SOUND* sndFlashStart						= "spikes01.wav";
 
 // Bitmaps für Effekte
-BMAP* bmapRocketSmoke = "smoke.tga";
+BMAP* bmapRocketSmoke					= "smoke.tga";
+BMAP* bmapStar								= "star.tga";
 
 // Bitmaps der Items
 /*BMAP* bmapRocketItem			= "rocketItem.tga";
