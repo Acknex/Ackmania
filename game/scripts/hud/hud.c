@@ -74,7 +74,6 @@ void create_hud()
 	pan_setdigits(panTime, 0, 0, 0, "%2.0f", "*", 1, &vTimeSeconds);
 	pan_setdigits(panTime, 0, 0, 0, "%2.0f", "*", 1, &vTimeHundreds);
 	pan_setdigits(panTime, 0, 0, 0, "  '  ''  ", "*", 1, &vTimeHundreds);
-	vec_set(panTime->blue, vector(255, 255, 255));
 	panTime->alpha = 85;
 	panTime->flags |= TRANSLUCENT;
 	
