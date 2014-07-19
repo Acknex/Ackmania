@@ -120,16 +120,18 @@ void updatePlayer(ENTITY* ent)
 	ent->bump_ang += -ent->bump_ang*0.35*time_step;
 	
   if (up && !down) {
-      ent->speed = minv(ent->speed + minv((g_raceplayerMaxSpeed-ent->speed)*0.1,0.5 * g_raceplayerAccelSpeed) * time_step,
-            (g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
+      ent->speed += minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
+      //ent->speed = minv(ent->speed + minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step,
+      //      (g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
    }
+            ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
 
    if (!(up || down)) {
       ent->speed += clamp(-ent->speed * 0.25, -g_raceplayerAccelSpeed, g_raceplayerAccelSpeed) * time_step;
    }
 
    if (!up && down) {
-      ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed * time_step, -g_raceplayerBreakForce*!ent.drifting);
+      ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
    }
 
 #ifdef DEBUG_FELIX
