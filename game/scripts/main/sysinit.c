@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "sysinit.h"
+#include "postprocessing.h"
 
 void doSysInit() {
 

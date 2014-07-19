@@ -4,7 +4,7 @@
 #include "engine.h"
 
 #ifdef DEBUG
-   #include <default.c>
+#include <default.c>
 #endif
 
 #define PRAGMA_PATH "levels";
@@ -20,17 +20,27 @@
 #define PRAGMA_PATH "scripts\\menu";
 #define PRAGMA_PATH "scripts\\player";
 #define PRAGMA_PATH "scripts\\race";
+#define PRAGMA_PATH "scripts\\shaders";
 
 #include "sysinit.h"
 #include "skilldefines.h"
 #include "gamestate.h"
 #include "raceactions.h"
 #include "circuitinfo.h"
+#include "camera.h"
+
+#define ENABLE_TAUNT_HOTKEY
+#include "taunts.h"
 
 #define TARGET_GAME_STATE GAME_STATE_MENU
 //#define TARGET_GAME_STATE GAME_STATE_PRERACE
 
 int main() {
+
    doSysInit();
+
+   create_camera();
+   initPostprocessing(cam);
+
    invoke_game_state(TARGET_GAME_STATE, 0);
 }

@@ -44,10 +44,6 @@ void ac_race_kart_ent()
 
       updatePlayer(my);
 
-      if (id == 1) {
-         camera_focus(my);
-      }
-
       wait(1);
    }
 }
