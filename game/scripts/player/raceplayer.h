@@ -28,6 +28,7 @@ var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.4;
 var g_raceTrackWidth = 160;
 
+#define kart_drift_buffer skill67
 #define kart_progress_update skill68
 #define kart_progress skill69
 #define kart_maxspeed skill70
