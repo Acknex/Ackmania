@@ -7,12 +7,6 @@
 #include "credits.h"
 #include "gamestate.h"
 
-void onCreditsEnd_ev() {
-   if (g_creditsStopEnforced == false) {
-      invoke_game_state(GAME_STATE_MENU, 0);
-   }
-}
-
 void doSysInit() {
 
    // rendering
@@ -33,10 +27,6 @@ void doSysInit() {
    video_window(NULL, NULL, 0, "Ackmania (Operation Deadnex)");
 
    random_seed((sys_seconds % sys_month) * sys_hours - 42);
-
-   // credits
-   credits_init();
-   credits.onCreditsEnd = onCreditsEnd_ev;
 }
 
 #endif /* sysinit_c */

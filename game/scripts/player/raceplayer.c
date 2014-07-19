@@ -450,6 +450,9 @@
 
 				ent->isfallingsndplayed = false;
 			}
+
+			synplayermodel(ent);
+
 			return;
 		}
 		reset(ent,PASSABLE);
@@ -728,7 +731,23 @@
 				}
 			}
 		}
+
+		synplayermodel(ent);
 	}
 
+	void synplayermodel(ENTITY* ent)
+	{
+	   if ((ent->parent != null) && (ent->playermodel != 0)) {
+
+	      ENTITY* epa = ent->parent;
+	      ENTITY* epl = (ENTITY*) ent->playermodel;
+
+	      if (epa != null && epl != null) {
+	         vec_set(epl->x, epa->x);
+	         vec_set(epl->pan, epa->pan);
+	         vec_set(epl->scale_x, epa->scale_x);
+	      }
+	   }
+	}
 
 #endif /* raceplayer_c */

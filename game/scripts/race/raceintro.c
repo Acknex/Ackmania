@@ -3,14 +3,14 @@
 
 #include "raceintro.h"
 
-void raceintro_trigger(ENTITY* ent, void *callback)
+void raceintro_trigger(ENTITY* ent, SOUND* snd, void *callback)
 {
 	var i;
 	ent.flags2 |= SHOW;
 	
 	ent->pan = -100;
 
-	snd_play(g_sndIntroBeep, 100, 0);
+	snd_play(snd, 100, 0);
 
 	ent->material = mtl_unlit;
 	ent->ambient = 200;
