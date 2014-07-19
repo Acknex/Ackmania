@@ -4,6 +4,15 @@
 #include "helper.h"
 #include <particles.c>
 
+// Gib das aktuelle Item des Spielers zurück
+var get_current_item_id()
+{
+	if (player != NULL)
+	{
+		return player.item_id;
+	}
+	return NULL;
+}
 
 // Initialisiert jedes Item, mit dem der Spieler interagieren kann.
 void _item_setup()
@@ -130,7 +139,7 @@ void _give_random_item(ENTITY* driver)
 			switch(driver.CURRENT_ITEM) {
 				case 1: ent_create(ITEM_GRAVE_MODEL, my->x, _item_fade); break;
 				case 2: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
-				case 3: ent_create(ITEM_AIM_ROCKET_MODEL, my->x, _item_fade); break;
+				case 3: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
 				case 4: ent_create(ITEM_TURBO_MODEL, my->x, _item_fade); break;
 				case 5: ent_create(ITEM_BADASS_ROCKET_MODEL, my->x, _item_fade); break;
 				case 6: ent_create(ITEM_MUSHROOM_MODEL, my->x, _item_fade); break;
@@ -363,7 +372,7 @@ action _aiming_rocket()
 void shoot_aiming_rocket()
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
+	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
@@ -426,43 +435,15 @@ action spikes()
 // Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
 action _badass_aiming_rocket()
 {
-	int liveTime = 300 + integer(random(100));
-	var flyHeight = 0;
-	int reachedTop = 0;
-	var initHeight = 0;
-	var zSpeed = 0;
-	var xSpeed = 0;
+	int liveTime = 3000 + integer(random(500));
 	var animPercentage = 0;
 	set(me, PASSABLE);
 	while(me && (liveTime > 0))
 	{
-		// Lass die Rakete nach Abschuss hüpfen
-		if (reachedTop == 0) {
-			flyHeight +=20 * time_step;
-			zSpeed = 20 * time_step;
-			xSpeed = 20 * time_step;
-			if (flyHeight >= 60) reachedTop = 1;
-		} else {
-			if (flyHeight >= initHeight) {
-				flyHeight -=20 * time_step;
-				zSpeed = -20 * time_step;
-				xSpeed +=2 * time_step;
-			} else {
-				zSpeed = 0;
-			}
-		}
+		// effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
-		if (animPercentage + 20 * time_step < 80) {
-			animPercentage +=20 * time_step;
-		} else {
-			animPercentage = 80;
-			reset(me, PASSABLE);
-		}
-		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		c_move(me, vector(20 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		
-		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
-		
-		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
@@ -478,7 +459,7 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
+	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _badass_aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
