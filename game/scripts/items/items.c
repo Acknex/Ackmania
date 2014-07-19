@@ -433,6 +433,20 @@ action spikes()
 	}
 }
 
+void p_bomb(PARTICLE *p) {
+	VECTOR vecTemp;
+	vec_randomize(vecTemp, -1);
+	vec_add(p.vel_x, vecTemp);
+	vec_set(p.blue, vector(random(255), random(255), 255));
+	set(p, MOVE | BRIGHT | TRANSLUCENT);
+	p.alpha = 100;
+	p.size = 3;
+	p.gravity = 1;
+	p.skill_a = 3;
+	p.bmap = bmapStar;
+	p.event = p_fade;
+}
+
 // Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
 action _badass_aiming_rocket()
 {
@@ -441,7 +455,7 @@ action _badass_aiming_rocket()
 	set(me, PASSABLE);
 	while(me && (liveTime > 0))
 	{
-		// effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
+		 effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 		
 		c_move(me, vector(20 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		
