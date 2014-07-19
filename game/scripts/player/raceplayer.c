@@ -299,29 +299,23 @@ void updatePlayer(ENTITY* ent)
    if(ent->falling)
    {
    	set(ent,PASSABLE);
-   	/*ent->speed += -ent->speed*0.1*time_step;
-     vec_set(temp, vector(ent->speed, 0, 0));
-   vec_rotate(temp, vector(ent->drive_pan, 0, 0));
-   vec_add(temp,vector(ent->bounce_x,ent->bounce_y,0));
-   ent->speed_x = temp.x;
-   ent->speed_y = temp.y;
-   vec_scale(temp, time_step);
-
-   c_ignore(group_track,0);
-   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON);
-
-   vec_scale(ent->bounce_x,1-0.4*time_step);*/
-
+ 
 ent->speed_z = maxv(ent->speed_z-5*time_step,-90);
-ent->falling += (maxv(0,50+ent->speed_z)-ent->falling)*0.15*time_step;
+up = maxv(0,40+ent->speed_z);
+if(up > ent->falling) ent->falling += (up-ent->falling)*0.2*time_step;
+else ent->falling += (up-ent->falling)*0.15*time_step;
      vec_set(temp, vector(ent->falling, 0, 0));
    vec_rotate(temp, vector(ent->drive_pan+180*(ent->falling_dir == 1)+90*(ent->falling_dir == 2)-90*(ent->falling_dir == 3), 0, 0));
+   //DEBUG_VAR(up,300);
+   //DEBUG_VAR(ent->falling,360);
+   //DEBUG_VAR(ent->speed,420);
+   //vec_add(temp,ent->speed_z);
    temp.z += ent->speed_z;
    vec_scale(temp, time_step);
  c_move(ent, nullvector, temp, IGNORE_MODELS | IGNORE_WORLD | IGNORE_SPRITES);
 ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir == 1))*15*time_step,(-(ent->falling_dir == 2)+(ent->falling_dir == 3))*15*time_step));
   vec_set(ent->parent->x, ent->x);
-  ent->parent->z += ent->parent->skill1;
+  //ent->parent->z += ent->parent->skill1;
  
 	if(ent->z < -512)
 	{
