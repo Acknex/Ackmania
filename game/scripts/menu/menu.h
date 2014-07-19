@@ -19,6 +19,11 @@
 #define MENU_DEF_ACTION (key_space | key_enter | joy_1 | joy2_1)
 
 /**
+ * Back "click" check
+ */
+#define MENU_DEF_BACK (key_esc| key_bksp | joy_2 | joy2_2)
+
+/**
  * Globales Menü-Struct für Callbacks und Einstellungen.
  */
 typedef struct { 

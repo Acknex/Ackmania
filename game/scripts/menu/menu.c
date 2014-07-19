@@ -1,13 +1,17 @@
 #ifndef _MENU_C_
 #define _MENU_C_
 
-#define TEST_DEBUG
+//#define TEST_DEBUG
 
 #ifdef TEST_DEBUG
 
 	#define PRAGMA_PATH "../../panels/menu/"
 	#define PRAGMA_PATH "../../shaders/menu/"
 	#define PRAGMA_PATH "../../sounds/menu/"
+	#define PRAGMA_PATH "../circuits/"
+	#define PRAGMA_PATH "../engine/"
+	#define PRAGMA_PATH "../../levels/"
+	#define PRAGMA_PATH "../../levels/test/"
 
 	#include <acknex.h>
 	#include <windows.h>
@@ -17,8 +21,10 @@
 #endif // TEST_DEBUG
 
 #include "menu.h"
+#include "circuitinfo.h"
 
 BOOL _menu_visible = false;
+BOOL _menu_trackSelectionActive = false;
 int _menu_selection = 0;
 int _menu_level_count = 0;
 LevelChoice *_menu_levels = NULL;
@@ -27,6 +33,8 @@ STRING *_menu_currentChoice = "< Select Level >";
 SOUND *_menu_switchSound = "menu_click.wav";
 SOUND *_menu_triggerSound = "menu_action.wav";
 BMAP *_menu_baseflag = "menu_flag.png";
+
+BMAP *_menu_trackIcons[1024];
 
 PANEL *_menu_background = {
 	bmap = "menu_background.png";
@@ -38,6 +46,11 @@ PANEL *_menu_bigheader = {
 
 PANEL *_menu_flag = {
 	bmap = "menu_flag.png";
+}
+
+PANEL *_menu_course = {
+	size_x = 256;
+	size_y = 256;
 }
 
 #ifdef DEBUG
@@ -57,6 +70,7 @@ TEXT *_menu_selection_txt = {
 	flags = CENTER_X | CENTER_Y;
 }
 
+
 /**
  * Initialisiert das Menü.
  */
@@ -68,6 +82,7 @@ void menu_init(int baseLayer)
 	layer_sort(_menu_flag,           baseLayer + 1);
 	layer_sort(_menu_bigheader,      baseLayer + 2);
 	layer_sort(_menu_selection_txt,  baseLayer + 3);
+	layer_sort(_menu_course,         baseLayer + 4);
 	
 	proc_mode = PROC_LATE;
 	
@@ -76,11 +91,19 @@ void menu_init(int baseLayer)
 	int lastKeyLeft = 0;
 	int lastKeyRight = 0;
 	int lastKeyAction = 0;
+	int lastKeyBack = 0;
+	
+	int num = getNumCircuits();
+	int i;
+	for(i = 0; i < num; i++) {
+		_menu_trackIcons[i] = bmap_create(getCircuitPicFilenameStr(i));
+	}
 	
 	while(1) {
 		lastKeyLeft = MENU_DEF_LEFT;
 		lastKeyRight = MENU_DEF_RIGHT;
 		lastKeyAction = MENU_DEF_ACTION;
+		lastKeyBack = MENU_DEF_BACK;
 		
 		wait(1);
 		
@@ -100,10 +123,6 @@ void menu_init(int baseLayer)
 			_menu_flagshader.skill1 = floatv(total_ticks);
 			bmap_process(_menu_flag.bmap, _menu_baseflag, _menu_flagshader);
 			
-			_menu_selection_txt.flags |= SHOW;
-			_menu_selection_txt.pos_x = 0.5 * screen_size.x;
-			_menu_selection_txt.pos_y = 0.5 * screen_size.y;
-			
 			// Left
 			if(MENU_DEF_LEFT && MENU_DEF_LEFT != lastKeyLeft) {
 				_menu_selection -= 1;
@@ -116,72 +135,121 @@ void menu_init(int baseLayer)
 				snd_play(_menu_switchSound, 100, 0);
 			}
 			
-			// Action
-			if(MENU_DEF_ACTION && MENU_DEF_ACTION != lastKeyAction ) {
-				snd_play(_menu_triggerSound, 100, 0);
+			if(_menu_trackSelectionActive) {
+				// Cycle over levels
+				if(_menu_selection >= getNumCircuits()) {
+					_menu_selection = 0;
+				} else if(_menu_selection < 0) {
+					_menu_selection = getNumCircuits() - 1;
+				}
 				
-				BOOL hadCallback = false;
+				_menu_course.flags |= VISIBLE;
+				_menu_course.pos_x = 0.5 * screen_size.x - 128;
+				_menu_course.pos_y = 0.5 * screen_size.y - 128;
+				_menu_course.bmap = _menu_trackIcons[_menu_selection];
+			
+				_menu_selection_txt.flags |= SHOW;
+				_menu_selection_txt.pos_x = 0.5 * screen_size.x;
+				_menu_selection_txt.pos_y = _menu_course.pos_y + 256 + 32;
+				
+				str_cpy(_menu_currentChoice, "< ");
+				str_cat(_menu_currentChoice, getCircuitTitleStr(_menu_selection));
+				str_cat(_menu_currentChoice, " >");
+				
+				
+				// Back
+				if(MENU_DEF_BACK && MENU_DEF_BACK != lastKeyBack) {
+					_menu_selection = 0;
+					_menu_trackSelectionActive = false;
+					snd_play(_menu_switchSound, 100, 0);
+				}
+				
+				if(MENU_DEF_ACTION && MENU_DEF_ACTION != lastKeyAction ) {
+					snd_play(_menu_triggerSound, 100, 0);
+					
+					if(menu.onLevelStart != NULL) {
+						void tmp(int i);
+						tmp = menu.onLevelStart;
+						tmp(_menu_selection);
+						
+						if(menu.closeOnCallback) {
+							menu_close();
+						}
+						continue; // Refine the menu
+					}
+				}
+			} else {
+				_menu_course.flags &= ~SHOW;
+			
+				// Cycle over main menu
+				if(_menu_selection > 2) {
+					_menu_selection = 0;
+				} else if(_menu_selection < 0) {
+					_menu_selection = 2;
+				}
+				
+				_menu_selection_txt.flags |= SHOW;
+				_menu_selection_txt.pos_x = 0.5 * screen_size.x;
+				_menu_selection_txt.pos_y = 0.5 * screen_size.y;
+				
+				// Action
+				if(MENU_DEF_ACTION && MENU_DEF_ACTION != lastKeyAction ) {
+					snd_play(_menu_triggerSound, 100, 0);
+					
+					BOOL hadCallback = false;
+					switch(_menu_selection) {
+						case 0:
+							_menu_trackSelectionActive = true;
+							_menu_selection = 0;
+							break;
+						case 1:
+							if(menu.onCredits != NULL) {
+								void tmp();
+								tmp = menu.onCredits;
+								tmp();
+								hadCallback = true;
+							}
+							break;
+						case 2:
+							if(menu.onExit != NULL) {
+								void tmp();
+								tmp = menu.onExit;
+								tmp();
+								hadCallback = true;
+							}
+							break;
+					}
+					if(hadCallback) {
+						if(menu.closeOnCallback) {
+							menu_close();
+						}
+						continue; // Refine the menu
+					}
+				}
+				
+				
 				switch(_menu_selection) {
 					case 0:
-						if(menu.onLevelStart != NULL) {
-							void tmp(int i);
-							tmp = menu.onLevelStart;
-							tmp(0);
-							hadCallback = true;
-						}
+						str_cpy(_menu_currentChoice, "< Select Level >");
 						break;
 					case 1:
-						if(menu.onCredits != NULL) {
-							void tmp();
-							tmp = menu.onCredits;
-							tmp();
-							hadCallback = true;
-						}
+						str_cpy(_menu_currentChoice, "< Credits >");
 						break;
 					case 2:
-						if(menu.onExit != NULL) {
-							void tmp();
-							tmp = menu.onExit;
-							tmp();
-							hadCallback = true;
-						}
+						str_cpy(_menu_currentChoice, "< Exit >");
+						break;
+					default:
+						_menu_selection = 0;
+						str_cpy(_menu_currentChoice, "< Select Level >");
 						break;
 				}
-				if(hadCallback) {
-					if(menu.closeOnCallback) {
-						menu_close();
-					}
-					continue; // Refine the menu
-				}
-			}
-			
-			if(_menu_selection > 2) {
-				_menu_selection = 0;
-			} else if(_menu_selection < 0) {
-				_menu_selection = 2;
-			}
-			
-			switch(_menu_selection) {
-				case 0:
-					str_cpy(_menu_currentChoice, "< Select Level >");
-					break;
-				case 1:
-					str_cpy(_menu_currentChoice, "< Credits >");
-					break;
-				case 2:
-					str_cpy(_menu_currentChoice, "< Exit >");
-					break;
-				default:
-					_menu_selection = 0;
-					str_cpy(_menu_currentChoice, "< Select Level >");
-					break;
 			}
 		} else {
 			_menu_background.flags &= ~SHOW;
 			_menu_bigheader.flags &= ~SHOW;
 			_menu_flag.flags &= ~SHOW;
 			_menu_selection_txt.flags &= ~SHOW;
-		
+			_menu_course.flags &= ~SHOW;
 		}
 	}
 }
@@ -235,6 +303,7 @@ void selectLevelCallback(int id) {
 
 function main()
 {
+	on_esc = NULL;
 	menu_init(15);
 	
 	//menu.closeOnCallback = true;
