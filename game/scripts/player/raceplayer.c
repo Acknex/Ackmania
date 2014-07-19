@@ -131,7 +131,7 @@ void updatePlayer(ENTITY* ent)
 	vec_add(temp,vector(ent.bounce_x,ent.bounce_y,0));
    vec_scale(temp, time_step);
 
-   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE);
+   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON);
 
 	vec_scale(ent->bounce_x,1-0.4*time_step);
 

@@ -21,6 +21,8 @@ void doSysInit() {
 
    video_set(resX, resY, 0, 2);
    video_window(NULL, NULL, 0, "deadnex");
+
+   random_seed((sys_seconds % sys_month) * sys_hours - 42);
 }
 
 #endif /* sysinit_c */
