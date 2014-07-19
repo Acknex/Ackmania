@@ -182,6 +182,7 @@ void _grave_evt()
 		ent_playsound(me, sndGraveCollision, 1000);
 		
 		// Drehe Spieler
+		// trap_player();
 		
 		wait(1);
 		ent_remove(me);
@@ -191,6 +192,8 @@ void _grave_evt()
 // Aktion eines Grabsteins (Falle)
 action grave() {
 	_item_setup();
+	wait(-1);
+	my->emask |=ENABLE_TRIGGER;
 	my->event = _grave_evt;
 }
 
@@ -272,9 +275,20 @@ action _rocket()
 		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		
+		c_scan(my->x, my->pan, vector(360, 0, 100), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
+		if (you != NULL)
+		{
+			if (you._type == type_kart)
+			{
+				liveTime = 0;
+			}
+		}
+		
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
+		
 	}
 	effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
 	// Play sound boom
@@ -332,6 +346,16 @@ action _aiming_rocket()
 		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		
+		c_scan(my->x, my->pan, vector(360, 0, 100), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
+		if (you != NULL)
+		{
+			if (you._type == type_kart)
+			{
+				liveTime = 0;
+			}
+		}
+		
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
@@ -433,6 +457,15 @@ action _badass_aiming_rocket()
 		
 		c_move(me, vector(30 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		
+		c_scan(my->x, my->pan, vector(360, 0, 200), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
+		if (you != NULL)
+		{
+			if (you._type == type_kart)
+			{
+				liveTime = 0;
+			}
+		}
+				
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
