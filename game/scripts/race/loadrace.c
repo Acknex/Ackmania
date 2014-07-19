@@ -10,6 +10,7 @@
 #include "postprocessing.h"
 #include "gamestate.h"
 #include "hud.h"
+#include "raceintro.h"
 
 void quit_race() {
 
@@ -25,7 +26,7 @@ void load_race(int index)
 
    g_doNotDrive = true;
 
-   on_esc = quit_race;
+   on_esc = null;
    on_space = null;
    on_enter = null;
 
@@ -64,14 +65,27 @@ void load_race(int index)
 
    create_kart_drivers();
 
-   g_race_pretimer = 3 * 16;
+   g_race_pretimer = 0.5 * 16;
 
    while (g_preraceActive) {
       update_race_pre();
       wait(1);
    }
 
+   raceintro_trigger(raceintroNumber3, null);
+   wait_for(raceintro_trigger);
+
+   raceintro_trigger(raceintroNumber2, null);
+   wait_for(raceintro_trigger);
+
+   raceintro_trigger(raceintroNumber1, null);
+   wait_for(raceintro_trigger);
+
    invoke_game_state(GAME_STATE_RACE, index);
+   on_esc = quit_race;
+
+   raceintro_trigger(raceintroNumber4, null);
+   wait_for(raceintro_trigger);
 }
 
 void update_race_pre()
