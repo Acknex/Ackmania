@@ -142,7 +142,11 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	path_getnode(ent,k,temp,NULL);
 		offset = offset-(length-vdata.z*length);
 	length = vec_dist(temp,temp2);
-	if(length < 0.1) return;
+	if(length < 0.1)
+	{
+	ptr_remove(ent);
+		return;
+	}
 		t = offset/length;
 		vec_lerp(vresult,temp2,temp,t);
 	}
@@ -153,7 +157,11 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	path_getnode(ent,k,temp2,NULL);
 		offset = offset+vdata.z*length;
 	length = vec_dist(temp,temp2);
-	if(length < 0.1) return;
+	if(length < 0.1)
+	{
+	ptr_remove(ent);
+		return;
+	}
 		t = 1+offset/length;
 		vec_lerp(vresult,temp,temp2,t);
 		}
