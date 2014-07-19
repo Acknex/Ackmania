@@ -27,21 +27,21 @@
 #define SPIKE_SPEED					20
 
 // Sounds für Interaktion mit Items
-SOUND* sndCollectItem					= "spikes01.wav";
-SOUND* sndCollectA4Cube					= "spikes01.wav";
-SOUND* sndGotNewItem						= "spikes01.wav";
+SOUND* sndCollectA4Cube					= "collect.wav";
+SOUND* sndGotNewItem						= "newitem.wav";
 
 // Sounds für Items
 SOUND* sndSpikesDown						= "spikes01.wav";
 SOUND* sndSpikesUp						= "spikes02.wav";
-SOUND* sndGraveCollision				= "spikes01.wav";
-SOUND* sndRocketFire						= "spikes01.wav";
-SOUND* sndAimingRocketFire				= "spikes01.wav";
-SOUND* sindAimingBadassRocketFire	= "spikes01.wav";
+SOUND* sndGraveCollision				= "graveCollision.ogg";
+SOUND* sndRocketFire						= "rocketShoot1.ogg";
+SOUND* sndAimingRocketFire				= "rocketShoot2.ogg";
+SOUND* sndAimingBadassRocketFire		= "spikes01.wav";
+SOUND* sndRocketHit						= "rocketExplode.ogg";
 SOUND* sndRocketFly						= "spikes01.wav";
-SOUND* sndTurboStart						= "spikes01.wav";
-SOUND* sndMushroomStart					= "spikes01.wav";
-SOUND* sndFlashStart						= "spikes01.wav";
+SOUND* sndTurboStart						= "jetpackloop.wav";
+SOUND* sndMushroomStart					= "mushroom.wav";
+SOUND* sndFlashStart						= "flash.ogg";
 
 // Bitmaps für Effekte
 BMAP* bmapRocketSmoke					= "smoke.tga";

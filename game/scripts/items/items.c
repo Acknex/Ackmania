@@ -66,6 +66,7 @@ void _item_a4_cube_evt()
 			vec_add(my.scale_x, vector(time_step / 20, time_step / 20, time_step / 20));
 			wait(1);
 		}
+		vec_set(my.scale_x, vector(1,1,1));
 		my->event = _item_a4_cube_evt;
 	}
 }
@@ -125,7 +126,6 @@ void _item_evt()
 	if (event_type == EVENT_TRIGGER)
 	{
 		my->event = NULL;
-		ent_playsound(me, sndCollectItem, 1000);
 		
 		// Gib dem berührenden Fahrer ein neues Item
 		_give_random_item(you);
@@ -139,6 +139,7 @@ void _item_evt()
 			vec_add(my.scale_x, vector(time_step / 20, time_step / 20, time_step / 20));
 			wait(1);
 		}
+		vec_set(my->scale_x, vector(1,1,1));
 		my->event = _item_evt;
 	}
 }
@@ -258,7 +259,7 @@ action _rocket()
 			if (flyHeight >= initHeight) {
 				flyHeight -=20 * time_step;
 				zSpeed = -20 * time_step;
-				xSpeed +=4 * time_step;
+				xSpeed +=8 * time_step;
 			} else {
 				zSpeed = 0;
 			}
@@ -329,7 +330,7 @@ action _aiming_rocket()
 			if (flyHeight >= initHeight) {
 				flyHeight -=20 * time_step;
 				zSpeed = -20 * time_step;
-				xSpeed +=4 * time_step;
+				xSpeed +=8 * time_step;
 			} else {
 				zSpeed = 0;
 			}
@@ -455,7 +456,7 @@ action _badass_aiming_rocket()
 	{
 		 effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 		
-		c_move(me, vector(30 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		c_move(me, vector(50 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		
 		c_scan(my->x, my->pan, vector(360, 0, 200), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
 		if (you != NULL)
@@ -481,7 +482,7 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _badass_aiming_rocket);
+	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(driver->x+50, driver->y, driver->z), _badass_aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
@@ -494,10 +495,10 @@ void start_mushroom(ENTITY* driver)
 {
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
 	ent_playsound(driver, sndMushroomStart, 1000);
+	driver->item_id = ITEM_NONE;
 	vec_set(driver.scale_x, vector(2,2,2));
 	wait(-5);
 	vec_set(driver.scale_x, vector(1,1,1));
-	driver->item_id = ITEM_NONE;
 }
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
