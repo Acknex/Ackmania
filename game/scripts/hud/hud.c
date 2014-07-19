@@ -38,6 +38,8 @@ var vTimeMinutes;
 var vTimeSeconds;
 var vTimeHundreds;
 var vRank;
+var vCurrentLap;
+var vTotalLaps;
 var vHudScale = 0;
 var vHudCreated = 0;
 STRING** strRank[5];
@@ -55,6 +57,11 @@ void create_hud()
 	
 	/* laps panel */
 	panLaps = pan_create(NULL, HUD_LAYER);
+	pan_setdigits(panLaps, 0, 0, 0, "%1.0f", "*", 1, &vCurrentLap);
+	pan_setdigits(panLaps, 0, 0, 0, "%1.0f", "*", 1, &vTotalLaps);
+	pan_setdigits(panLaps, 0, 0, 0, "/", "*", 1, &vCurrentLap);
+	panLaps->alpha = 85;
+	panLaps->flags |= TRANSLUCENT;
 	
 	/* timer panel */
 	panTime = pan_create(NULL, HUD_LAYER);
@@ -64,24 +71,20 @@ void create_hud()
 	pan_setdigits(panTime, 0, 0, 0, "  '  ''  ", "*", 1, &vTimeHundreds);
 	vec_set(panTime->blue, vector(255, 255, 255));
 	panTime->alpha = 85;
+	panTime->flags |= TRANSLUCENT;
 	
 	/* rank panel */
 	panRank = pan_create(NULL, HUD_LAYER);
 	pan_setdigits(panRank, 0, 0, 0, "%1.0f", "*", 1, &vRank);
 	pan_setdigits(panRank, 0, 0, 0, "st", "*", 1, &vRank);
 	panRank->alpha = 85;	
+	panRank->flags |= TRANSLUCENT;
 	strRank[0] = str_create("");
 	strRank[1] = str_create("st");
 	strRank[2] = str_create("nd");
 	strRank[3] = str_create("rd");
 	strRank[4] = str_create("th");
 	
-
-
-	panLaps->flags |= TRANSLUCENT;
-	panTime->flags |= TRANSLUCENT;
-	panRank->flags |= TRANSLUCENT;
-
 	wait(1);
 	update_hud();
 	vHudCreated = 1;
@@ -90,13 +93,19 @@ void create_hud()
 
 void remove_hud()
 {
+	var i;
 	vHudCreated = 0;
-	RemoveFontResource("media//anudaw.ttf");
 	//SendMessage(HWND_BROADCAST, WM_FONTCHANGE, (WPARAM)0, (LPARAM)0);
 	
 	ptr_remove(panLaps);
 	ptr_remove(panTime);
 	ptr_remove(panRank);
+	
+	for (i = 0; i < 5; i++)
+	{
+		ptr_remove(strRank[i]);
+	}
+	RemoveFontResource("media//anudaw.ttf");
 }
 
 void update_hud()
@@ -119,13 +128,16 @@ void update_hud()
 
 	/* update rank */
 	vRankOld = vRank + 1; //TEMP
-	//vRank = get_kart_rank (0);
+	//vRank = clamp(get_kart_rank (0), 1, 4);
 	vRank = 3; //TEMP
 	if (vRank != vRankOld)
 	{
 		update_hudrank();
 	}
-   	
+	
+	/* update laps */
+	//vCurrentLap = 2;
+	//vTotalLaps = 5;   	
 }
 
 void show_hud()
@@ -154,9 +166,25 @@ void scale_hud()
 	var vPosX;
 	var vPosY;
 	
+	/* fonts */
 	str_printf(strTemp, "anudaw#%ii", (int)(HUD_FNTTIME_SIZE * vHudScale));
 	ptr_remove(fntTime);
 	fntTime = font_create(strTemp);
+	str_printf(strTemp, "anudaw#%ii", (int)(HUD_FNTRANK_SIZE * vHudScale));
+	ptr_remove(fntRank);
+	fntRank = font_create(strTemp);
+	
+	/* laps panel */
+	vPosX = HUD_PANLAPS_POSX * vHudScale;
+	vPosY = HUD_PANLAPS_POSY * vHudScale;
+	pan_setdigits(panLaps, 1, vPosX, vPosY, "%1.0f", fntTime, 1, &vCurrentLap);
+	vPosY += HUD_PANLAPS_OFFSY_DIV * vHudScale;	
+	pan_setdigits(panLaps, 3, vPosX, vPosY, "/", fntRank, 1, &vCurrentLap);
+	vPosX = (HUD_PANLAPS_OFFSX + HUD_PANLAPS_POSX) * vHudScale;
+	vPosY = (HUD_PANLAPS_OFFSY + HUD_PANLAPS_POSY) * vHudScale;
+	pan_setdigits(panLaps, 2, vPosX, vPosY, "%1.0f", fntTime, 1, &vTotalLaps);
+	
+	/* timer panel */
 	vPosY = HUD_PANTIME_POSY * vHudScale;
 	vPosX = screen_size.x - (HUD_PANTIME_POSX * vHudScale);
 	pan_setdigits(panTime, 4, vPosX, vPosY, "  '  ''  ", fntTime, 1, &vTimeHundreds);
@@ -166,20 +194,20 @@ void scale_hud()
 	vPosX += HUD_PANTIME_OFFSX_HUN * vHudScale;
 	pan_setdigits(panTime, 3, vPosX, vPosY, "%02.0f", fntTime, 1, &vTimeHundreds);	
 
-	str_printf(strTemp, "anudaw#%ii", (int)(HUD_FNTRANK_SIZE * vHudScale));
-	ptr_remove(fntRank);
-	fntRank = font_create(strTemp);
+	/* rank panel */
 	vPosY = screen_size.y - (HUD_PANRANK_POSY * vHudScale);
 	vPosX = HUD_PANRANK_POSX * vHudScale;
 	pan_setdigits(panRank, 1, vPosX, vPosY, "%1.0f", fntRank, 1, &vRank);
-	update_hudrank();
 
+	update_hudrank();
 }
 
 void update_hudrank()
 {
 	var vPosX;
 	var vPosY;
+
+	/* rank panel - special fix on rank change */
 	vPosY = screen_size.y - (HUD_PANRANK_POSY * vHudScale);
 	vPosX = (HUD_PANRANK_POSX + HUD_PANRANK_OFFSX) * vHudScale;
 	pan_setdigits(panRank, 2, vPosX, vPosY, (strRank[vRank]), fntTime, 1, &vRank);
