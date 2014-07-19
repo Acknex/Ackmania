@@ -6,6 +6,7 @@
 #include "startgrid.h"
 #include "camera.h"
 #include "circuitinfo.h"
+#include "environment.h"
 
 void load_race(int index)
 {
@@ -27,7 +28,7 @@ void load_race(int index)
    str_remove(str);
 
    g_numGridConfigUploaded = 0;
-   level_load(strLevelFilename);
+   environment_load(strLevelFilename, 0.5);
 
    create_camera();
 
