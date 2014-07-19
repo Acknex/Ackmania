@@ -26,10 +26,15 @@ ENTITY *raceintroNumber4 = {
 
 SOUND *raceintroBeep = "beep.ogg";
 
+SOUND* g_sndStartRace1 = "start_race_1.wav";
+SOUND* g_sndStartRace2 = "start_race_2.wav";
+SOUND* g_sndStartRace3 = "start_race_3.wav";
+SOUND* g_sndStartRaceGo = "start_race_go.wav";
+
 /*
  * Starts the raceintro
  */
-void raceintro_trigger(ENTITY* ent, void *callback);
+void raceintro_trigger(ENTITY* ent, SOUND* snd, void *callback);
 
 #include "raceintro.c"
 

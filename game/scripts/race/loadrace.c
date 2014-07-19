@@ -54,6 +54,8 @@ void load_race(int index)
    double skyspeed = g_circuit_skyspeeds[index];
    environment_load(strLevelFilename, skyspeed);
 
+   create_camera();
+
    float hdrstrength = g_circuit_hdrstrengths[index];
    float hdrthreshold = g_circuit_hdrthresholds[index];
    float hdrexposure = g_circuit_hdrexposures[index];
@@ -65,6 +67,8 @@ void load_race(int index)
 
    create_kart_drivers();
 
+   focus_camera();
+
    g_race_pretimer = 0.5 * 16;
 
    while (g_preraceActive) {
@@ -72,19 +76,20 @@ void load_race(int index)
       wait(1);
    }
 
-   raceintro_trigger(raceintroNumber3, null);
+
+   raceintro_trigger(raceintroNumber3, g_sndStartRace3, null);
    wait_for(raceintro_trigger);
 
-   raceintro_trigger(raceintroNumber2, null);
+   raceintro_trigger(raceintroNumber2, g_sndStartRace2, null);
    wait_for(raceintro_trigger);
 
-   raceintro_trigger(raceintroNumber1, null);
+   raceintro_trigger(raceintroNumber1, g_sndStartRace1, null);
    wait_for(raceintro_trigger);
 
    invoke_game_state(GAME_STATE_RACE, index);
    on_esc = quit_race;
 
-   raceintro_trigger(raceintroNumber4, null);
+   raceintro_trigger(raceintroNumber4, g_sndStartRaceGo, null);
    wait_for(raceintro_trigger);
 }
 

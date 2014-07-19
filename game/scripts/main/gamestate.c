@@ -7,6 +7,12 @@
 #include "playrace.h"
 #include "menu.h"
 
+void onCreditsEnd_ev() {
+   if (g_creditsStopEnforced == false) {
+      invoke_game_state(GAME_STATE_MENU, 0);
+   }
+}
+
 void quitGame()
 {
    sys_exit("bye bye Lotti...");
@@ -31,9 +37,15 @@ void invoke_game_state_credits(int oldGameState, int levelIndex)
          break;
    }
 
+   level_load(null);
+
    hide_hud();
 
    g_creditsStopEnforced = false;
+
+   // credits
+   credits_init();
+   credits.onCreditsEnd = onCreditsEnd_ev;
 
    credits_start();
 
@@ -100,6 +112,10 @@ void invoke_game_state_menu(int oldGameState, int levelIndex) {
    menu.onLevelStart = invoke_game_state_menu_level_ev;
 
    hide_camera();
+   hide_hud();
+
+   level_load(null);
+
    menu_open();
 }
 
