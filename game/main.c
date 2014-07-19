@@ -9,6 +9,7 @@
 #define PRAGMA_PATH "scripts\\environment";
 #define PRAGMA_PATH "scripts\\helper";
 #define PRAGMA_PATH "scripts\\hud";
+#define PRAGMA_PATH "scripts\\items";
 #define PRAGMA_PATH "scripts\\main";
 #define PRAGMA_PATH "scripts\\menu";
 #define PRAGMA_PATH "scripts\\player";
