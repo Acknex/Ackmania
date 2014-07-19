@@ -27,6 +27,10 @@ void doSysInit() {
    video_window(NULL, NULL, 0, "Ackmania (Operation Deadnex)");
 
    random_seed((sys_seconds % sys_month) * sys_hours - 42);
+
+   // credits
+   credits_init();
+   credits.onCreditsEnd = onCreditsEnd_ev;
 }
 
 #endif /* sysinit_c */

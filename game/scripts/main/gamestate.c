@@ -43,10 +43,6 @@ void invoke_game_state_credits(int oldGameState, int levelIndex)
 
    g_creditsStopEnforced = false;
 
-   // credits
-   credits_init();
-   credits.onCreditsEnd = onCreditsEnd_ev;
-
    credits_start();
 
    while (key_esc || key_space || key_enter) {
