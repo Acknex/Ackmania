@@ -161,7 +161,7 @@ void postConstructPlayer(ENTITY* ent)
 
    ent->group = group_kart;
 
-   ent->parent = ent_create(str_for_entfile(null, ent), ent->x, null);
+   ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
    set(ent->parent, PASSABLE);
 }
 

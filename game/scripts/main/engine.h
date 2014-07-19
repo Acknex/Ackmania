@@ -1,5 +1,5 @@
-#ifndef engine_h
-#define engine_h
+#ifndef engine_h1
+#define engine_h1
 
 #define PRAGMA_ZERO
 
@@ -16,4 +16,4 @@ typedef BOOL bool;
 #define true 1
 #define false 0
 
-#endif /* engine_h */
+#endif /* engine_h1 */

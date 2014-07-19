@@ -12,7 +12,7 @@ void initPostprocessing (VIEW* viewStart)
 	
 	//pp_viewFxaa->stage = pp_viewSwirl;
 	//pp_viewSwirl->stage = pp_viewRedness;
-	//pp_set(pp_viewRedness, mtl_hdr);
+	pp_set(pp_viewFxaa, mtl_hdr);
 
 	while (1)
 	{

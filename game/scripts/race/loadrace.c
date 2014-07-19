@@ -11,7 +11,7 @@
 #include "gamestate.h"
 #include "hud.h"
 
-void quit_race () {
+void quit_race() {
    invoke_game_state(GAME_STATE_MENU, 0);
 }
 

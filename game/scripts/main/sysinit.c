@@ -19,6 +19,7 @@ void doSysInit() {
    fps_max = 60;
    mip_flat = 2;
    d3d_antialias = 0;
+   shadow_stencil = 0; // activate external shadows
 
    // window + system
    preload_mode = 7;
