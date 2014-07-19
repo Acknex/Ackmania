@@ -249,6 +249,9 @@ action _rocket()
 	var xSpeed = 0;
 	var animPercentage = 0;
 	set(me, PASSABLE);
+	vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
+	c_setminmax(me);
+	snd_play(sndRocketFire, 50, 0);
 	while(me && (liveTime > 0))
 	{
 		// Lass die Rakete nach Abschuss hüpfen
@@ -303,10 +306,11 @@ action _rocket()
 void shoot_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _rocket);
-	vec_set(rocket.scale_x, vector(0.1, 0.1, 0.1));
-	c_setminmax(rocket);
-	snd_play(sndRocketFire, 50, 0);
+	VECTOR* rocketStart = vector(200,0,0);
+	vec_rotate(rocketStart, driver->pan);
+	vec_add(rocketStart, driver->x);
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, rocketStart->x, _rocket);
+	rocket->pan = driver->pan;
 	driver->item_id = ITEM_NONE;
 }
 
@@ -321,6 +325,9 @@ action _aiming_rocket()
 	var xSpeed = 0;
 	var animPercentage = 0;
 	set(me, PASSABLE);
+	vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
+	c_setminmax(me);
+	snd_play(sndRocketFire, 50, 0);
 	while(me && (liveTime > 0))
 	{
 		// Lass die Rakete nach Abschuss hüpfen
@@ -374,10 +381,11 @@ action _aiming_rocket()
 void shoot_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _aiming_rocket);
-	vec_set(rocket.scale_x, vector(0.1, 0.1, 0.1));
-	c_setminmax(rocket);
-	snd_play(sndRocketFire, 50, 0);
+	VECTOR* rocketStart = vector(200,0,0);
+	vec_rotate(rocketStart, driver->pan);
+	vec_add(rocketStart, driver->x);
+	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, rocketStart->x, _aiming_rocket);
+	rocket->pan = driver->pan;
 	driver->item_id = ITEM_NONE;
 }
 
@@ -484,10 +492,12 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	VECTOR* rocketStart = vector(driver->x + 50, 0, 0);
+	VECTOR* rocketStart = vector(200,0,0);
 	vec_rotate(rocketStart, driver->pan);
+	vec_add(rocketStart, driver->x);
 	driver->item_id = ITEM_NONE;
 	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, rocketStart.x, _badass_aiming_rocket);	
+	rocket->pan = driver->pan;
 }
 
 // Macht den Spieler größer und er kann andere überfahren,
