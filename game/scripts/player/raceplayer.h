@@ -37,6 +37,8 @@ var g_raceTrackWidth = 160;
 
 void synplayermodel (ENTITY* ent);
 
+#define kart_turbo_ent skill60
+#define kart_hit skill61
 #define kart_turbo skill62
 #define kart_small skill63
 #define kart_big skill64
@@ -102,8 +104,8 @@ var is_kart_player_wrong_way(); // 1 equals wrong way (-1 player not found)
 void trap_driver(ENTITY* ent, var blackOutTime);
 void driver_hit(ENTITY* ent, var blackOutTime);
 void start_turbo(ENTITY* ent, var time);
-void enlarge_driver(ENTITY* ent);
-void minimize_driver(ENTITY* ent);
+void enlarge_driver(ENTITY* ent, var time);
+void minimize_driver(ENTITY* ent, var time);
 
 void postConstructPlayer (ENTITY* ent);
 

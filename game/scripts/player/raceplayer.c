@@ -339,9 +339,34 @@
 
 	}
 
-void trap_driver(ENTITY* ent)
+void trap_driver(ENTITY* ent, var blackOutTime)
 {
-	ent->kart_trapped = 32;
+	ent->kart_trapped = 16*blackOutTime;
+	ent->kart_hit = 0;
+	ent->kart_turbo = 0;
+}
+
+void driver_hit(ENTITY* ent, var blackOutTime)
+{
+	ent->kart_hit = 16*blackOutTime;
+	ent->kart_turbo = 0;
+}
+
+void start_turbo(ENTITY* ent, var time)
+{
+	ent->kart_turbo = 16*time;
+}
+
+void enlarge_driver(ENTITY* ent, var time)
+{
+	ent->kart_big = 16*time;
+	ent->kart_small = 0;	
+}
+
+void minimize_driver(ENTITY* ent, var time)
+{
+	ent->kart_small = 16*time;
+	ent->kart_big = 0;
 }
 
 	void postConstructPlayer(ENTITY* ent)
@@ -414,6 +439,12 @@ void trap_driver(ENTITY* ent)
 		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length, d;
 		VECTOR temp,temp2;
 		
+		if(key_1) trap_driver(ent, 1.5);
+		if(key_2) driver_hit(ent, 1.5);
+		if(key_3) start_turbo(ent, 3.5);
+		if(key_4) enlarge_driver(ent, 5);
+		if(key_5) minimize_driver(ent, 5);
+
 		if(ent->falling)
 		{
 			set(ent,PASSABLE);
@@ -486,7 +517,6 @@ void trap_driver(ENTITY* ent)
 		ent->drive_pan = ang(ent->drive_pan);
 		ent->bump_ang += -ent->bump_ang*0.35*time_step;
 
-		ent->kart_trapped = maxv(ent->kart_trapped-time_step,0);
 		if(ent->kart_trapped)
 		{
 			ent->speed += clamp(-ent->speed * 0.5, -g_raceplayerAccelSpeed*3, g_raceplayerAccelSpeed*3) * time_step;
@@ -494,9 +524,9 @@ void trap_driver(ENTITY* ent)
 		else
 		{
 			if (up && !down) {
-				ent->speed += minv((ent->kart_maxspeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
+				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
 			}
-			ent->speed = minv(ent->speed,(ent->kart_maxspeed - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
+			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
 			if (!(up || down)) {
 				ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
@@ -533,7 +563,7 @@ void trap_driver(ENTITY* ent)
 		c_ignore(group_kart, 0);
 		c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 		
-		PARTICLE* p = ent_decal(you,bmp_shadow,70,ent->parent->pan);
+		PARTICLE* p = ent_decal(you,bmp_shadow,70*ent->parent->scale_x,ent->parent->pan);
 		set(p,TRANSLUCENT);
 		p.alpha = 50;
 		p.lifespan = 0.01;
@@ -568,7 +598,7 @@ void trap_driver(ENTITY* ent)
 				ent->ground_contact = 0;
 			}
 		}
-
+if(ent->kart_turbo) underground = 1;
 		ent->underground += (underground - ent->underground) * 0.5 * time_step;
 
 		if (!ent->drifting) {
@@ -740,6 +770,14 @@ void trap_driver(ENTITY* ent)
 				}
 			}
 		}
+		ent->kart_trapped = maxv(ent->kart_trapped-time_step,0);
+		ent->kart_hit = maxv(ent->kart_hit-time_step,0);
+		ent->kart_turbo = maxv(ent->kart_turbo-time_step,0);
+		ent->kart_big = maxv(ent->kart_big-time_step,0);
+		ent->kart_small = maxv(ent->kart_small-time_step,0);
+
+ent->parent->scale_x += (1.0+0.5*!!ent->kart_big-0.35*!!ent->kart_small-ent->parent->scale_x)*0.9*time_step;
+vec_fill(ent->parent->scale_x,ent->parent->scale_x);
 
 		synplayermodel(ent);
 	}
