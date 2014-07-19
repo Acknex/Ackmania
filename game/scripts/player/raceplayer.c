@@ -3,6 +3,7 @@
 
 #include "engine.h"
 #include "raceplayer.h"
+#include "items.h"
 
 void p_drift_smoke_fade(PARTICLE* p)
 {
@@ -98,7 +99,7 @@ void path_get_closest_position(VECTOR* vpos, VECTOR* vresult, VECTOR* vdata)
 void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 {
 	var length,t;
-	int i, j, k, max_nodes;
+	int k, max_nodes;
 	VECTOR temp,temp2;
 	ENTITY* ent;
 	
@@ -144,13 +145,6 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	ptr_remove(ent);
 }
 
-action ac_track()
-{
-	my.group = group_track;
-	set(my,POLYGON);
-	c_setminmax(my);
-}
-
 var get_xyangle(VECTOR* vec)
 {
 	var angle = 0, length;
@@ -162,6 +156,33 @@ var get_xyangle(VECTOR* vec)
 
 	return angle;
 }
+
+void path_get_normal_position(VECTOR* vpos, var path_offset, var offset, VECTOR* vresult)
+{
+	var ang1,ang2;
+	VECTOR temp,temp2,temp3,vnormal;
+	
+	path_get_closest_position(vpos,temp,temp2);
+	if(path_offset) path_get_offset_position(temp2,path_offset,temp);
+	path_get_offset_position(temp2,32,temp3);
+ 	vec_diff(temp2,temp3,temp);
+	vec_set(vnormal,vector(-temp2.y,temp2.x,0));
+	vec_normalize(vnormal,g_raceTrackWidth*abs(offset));
+	ang1 = get_xyangle(temp2)+360;
+	ang2 = get_xyangle(vnormal)+360;
+	if(ang1 > 360 && ang1 > ang2) ang1 -= 360; // dirty fix
+	if((ang1 > ang2 && offset < 0) || (ang1 < ang2 && offset > 0)) vec_inverse(vnormal);
+	vec_set(vresult,temp);
+	vec_add(vresult,vnormal);
+}
+	
+action ac_track()
+{
+	my.group = group_track;
+	set(my,POLYGON);
+	c_setminmax(my);
+}
+
 
 var is_kart_turning(ENTITY* ent)
 {
@@ -216,13 +237,12 @@ void postConstructPlayer(ENTITY* ent)
    ent->event = kart_event;
    ent->emask |= ENABLE_BLOCK | ENABLE_ENTITY | ENABLE_ENTITY;
 
-   ent->ambient = -50;
-
    VECTOR vecMin;
    vec_for_min(&vecMin, ent);
    ent->kart_height = -vecMin.z;
 
    ent->group = group_kart;
+   ent->bot_path_offset = random(2)-1;
 
    ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
    set(ent->parent, PASSABLE);
@@ -256,7 +276,19 @@ void loadPlayerHumanControlParams(ENTITY* ent)
 
 void loadPlayerCpuControlParams(ENTITY* ent)
 {
-   // TODO
+	var angle,angle_diff;
+	VECTOR temp,temp2;
+	
+   ent->kart_input = INPUT_UP;
+ path_get_normal_position(ent->x,256,sinv(total_ticks*4+ent->bot_path_offset),temp);
+ vec_diff(temp2,temp,ent->x);
+ angle = get_xyangle(temp2);
+ angle_diff = ang(angle-ent->pan);
+ 	if(abs(angle_diff) > 0)
+ 	{
+ 		if(angle_diff > 0) ent->kart_input |= INPUT_LEFT;
+ 		if(angle_diff < 0) ent->kart_input |= INPUT_RIGHT;
+ 	}
 }
 
 void updatePlayer(ENTITY* ent)
@@ -507,16 +539,28 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0);
    	}
-   	if(ent.kart_input)
+   	/*if(ent.kart_input)
    	{
- 	path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
- 	int i;
- 	for(i = 0; i < 1; i++)
- 	{
-  path_get_offset_position(temp2,-(i-7)*16,temp);
-  draw_point3d(temp,COLOR_RED,50,4);
-  }
-  }
+  path_get_normal_position(ent->x,1+0*sinv(total_ticks*4),temp);
+  path_get_normal_position(ent->x,-1,temp2);
+  draw_point3d(temp,COLOR_GREEN,50,4);
+  draw_point3d(temp2,COLOR_GREEN,50,4);
+  draw_line3d(temp,NULL,50);
+  draw_line3d(temp,COLOR_GREEN,50);
+  draw_line3d(temp2,COLOR_GREEN,50);
+     }
+       // Item-Verwendung
+  if (item) {
+  switch(ent->item_id) {
+      case ITEM_GRAVE: plant_grave(ent); break;
+      case ITEM_ROCKET: shoot_rocket(ent); break;
+      case ITEM_AIM_ROCKET: shoot_aiming_rocket(ent); break;
+      case ITEM_TURBO: start_turbo(ent); break;
+      case ITEM_BADASS_ROCKET: shoot_badass_aiming_rocket(ent); break;
+      case ITEM_MUSHROOM: start_mushroom(ent); break;
+      case ITEM_FLASH: start_flash(ent); break;
+      }
+  }*/
 }
 
 #endif /* raceplayer_c */

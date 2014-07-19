@@ -23,7 +23,9 @@ var g_raceplayerMaxSpeed = 55;
 var g_raceplayerAccelSpeed = 1.75;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
+var g_raceTrackWidth = 160;
 
+#define bot_path_offset skill74
 #define item_id skill75
 #define item_cooldown skill76
 #define falling skill77
