@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "loadrace.h"
 #include "startgrid.h"
+#include "camera.h"
 
 void load_race (char* filename)
 {
@@ -12,9 +13,18 @@ void load_race (char* filename)
    g_numGridConfigUploaded = 0;
    level_load(filename);
 
+   create_camera();
+
    wait(1);
 
    create_kart_drivers();
+   show_camera();
+
+   // TODO lifecycle
+   while (1) {
+      update_camera();
+      wait(1);
+   }
 }
 
 #endif /* loadrace_c */
