@@ -31,7 +31,7 @@ void load_race(int index)
 
    create_camera();
 
-   wait(1);
+   wait(2);
 
    create_kart_drivers();
    show_camera();

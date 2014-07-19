@@ -18,12 +18,18 @@ int g_gameState = GAME_STATE_VIRGIN;
 int get_game_state ();
 
 // wechselt vom aktuellen Spielstand in den angegebenen - gibt den letzten zurück; -1 wenn nicht erlaubt
-int invoke_game_state (int gameState);
+int invoke_game_state (int gameState, int index);
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void invoke_game_state_menu(int oldGameState);
-void invoke_game_state_prerace(int oldGameState);
+void invoke_game_state_menu(int oldGameState, int levelIndex);
+void invoke_game_state_prerace(int oldGameState, int index);
+
+void invoke_game_state_menu_exit_ev();
+void invoke_game_state_menu_credits();
+void invoke_game_state_menu_level_ev(int i);
+
+void invoke_game_state_prerace(int oldGameState, int index);
 
 #include "gamestate.c"
 

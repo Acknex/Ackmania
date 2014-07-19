@@ -12,18 +12,18 @@ int get_game_state() {
 }
 
 // wechselt vom aktuellen Spielstand in den angegebenen - gibt den letzten zurück; -1 wenn nicht erlaubt
-int invoke_game_state(int gameState) {
+int invoke_game_state(int gameState, int levelIndex) {
 
    int oldGameState = g_gameState;
 
    switch (gameState) {
 
       case GAME_STATE_MENU:
-         invoke_game_state_menu(oldGameState);
+         invoke_game_state_menu(oldGameState, levelIndex);
          break;
 
       case GAME_STATE_PRERACE:
-         invoke_game_state_prerace(oldGameState);
+         invoke_game_state_prerace(oldGameState, levelIndex);
          break;
    }
 
@@ -31,19 +31,7 @@ int invoke_game_state(int gameState) {
    return oldGameState;
 }
 
-void exitCallback() {
-   error("exitCallback");
-}
-
-void creditsCallback() {
-   error("creditsCallback");
-}
-
-void selectLevelCallback(int i) {
-   error(str_printf(null, "selectLevelCallback i=%d", i));
-}
-
-void invoke_game_state_menu(int oldGameState) {
+void invoke_game_state_menu(int oldGameState, int levelIndex) {
 
    switch (oldGameState) {
 
@@ -51,9 +39,9 @@ void invoke_game_state_menu(int oldGameState) {
 
          menu_init(15);
 
-         menu.onExit = exitCallback;
-         menu.onCredits = creditsCallback;
-         menu.onLevelStart = selectLevelCallback;
+         menu.onExit = invoke_game_state_menu_exit_ev;
+         menu.onCredits = invoke_game_state_menu_credits;
+         menu.onLevelStart = invoke_game_state_menu_level_ev;
 
          menu_open();
 
@@ -61,12 +49,34 @@ void invoke_game_state_menu(int oldGameState) {
    }
 }
 
-void invoke_game_state_prerace(int oldGameState) {
+void invoke_game_state_menu_exit_ev() {
+   sys_exit("Bye bye Lotti!");
+}
+
+void invoke_game_state_menu_credits() {
+   error("TODO: start credits");
+}
+
+void invoke_game_state_menu_level_ev(int i) {
+
+   menu_close();
+
+   //invoke_game_state(GAME_STATE_INTRO);
+   invoke_game_state(GAME_STATE_PRERACE, i);
+
+   //load_race(i);
+}
+
+void invoke_game_state_prerace(int oldGameState, int levelIndex) {
 
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
-         load_race(0);
+         load_race(levelIndex);
+         break;
+
+      case GAME_STATE_MENU:
+         load_race(levelIndex);
          break;
    }
 }

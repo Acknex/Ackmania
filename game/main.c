@@ -19,17 +19,10 @@
 #include "raceactions.h"
 #include "circuitinfo.h"
 
-//#define TARGET_GAME_STATE GAME_STATE_MENU
-#define TARGET_GAME_STATE GAME_STATE_PRERACE
+#define TARGET_GAME_STATE GAME_STATE_MENU
+//#define TARGET_GAME_STATE GAME_STATE_PRERACE
 
 int main() {
-
-   wait(3);
-
    doSysInit();
-
-   wait(1);
-   level_load(null);
-
-   invoke_game_state(TARGET_GAME_STATE);
+   invoke_game_state(TARGET_GAME_STATE, 0);
 }
