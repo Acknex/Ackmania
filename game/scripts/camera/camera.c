@@ -67,7 +67,7 @@ void update_camera()
 	{
 		vec_set(vecPos, vector(-CAMERA_DIST, 0, 0));
 		vec_rotate(vecPos, cam->pan);
-		vec_add(vecPos, camera_focus_ent->x);
+		vec_add(vecPos, vector(camera_focus_ent->x, camera_focus_ent->y, 0));
 		vec_set(cam->x, vecPos);
 
 		/* interpolate ARC based on y resolution

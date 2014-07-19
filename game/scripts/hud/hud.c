@@ -25,6 +25,7 @@
 #include "hud_cfg.h"
 #include "startgrid.h"
 #include "timer.h"
+#include "items.h"
 
 
 PANEL* panLaps;
@@ -138,6 +139,9 @@ void update_hud()
 	/* update laps */
 	//vCurrentLap = 2;
 	//vTotalLaps = 5;   	
+
+	/* update item slot */
+	//bmap = getItemByPlayer();
 }
 
 void show_hud()
