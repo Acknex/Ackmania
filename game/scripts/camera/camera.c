@@ -28,6 +28,7 @@
 
 ENTITY* camera_focus_ent = NULL;
 VIEW* cam;
+var vDistanceFactor;
 
 void create_camera()
 {
@@ -59,7 +60,7 @@ void remove_camera()
 
 void update_camera()
 {
-	var vDistanceFactor;
+	//var vDistanceFactorNew;
 	var vFac;
 	VECTOR vecPos;
 	
@@ -75,10 +76,15 @@ void update_camera()
 		1920x1200 --> ARC 60
 		zoom via ARC based on kart speed
 		*/
-		vDistanceFactor = clamp(abs(get_kart_speed(camera_focus_ent, NULL) * CAMERA_SPEEDFAC), 0.25, 1);	
+
+		vDistanceFactor += ((is_kart_accelerating(camera_focus_ent) > 0) * 0.05 - 0.02) * time_step;
+		vDistanceFactor = clamp(abs(vDistanceFactor), 0.25, 0.75);
 		vFac = (CAMERA_REFSCRSIZEY - screen_size.y) / CAMERA_REFSCRSIZEY;
 		cam->arc = (CAMERA_REFARCBIG * (1 - vFac) + CAMERA_REFARCSMALL * vFac) * vDistanceFactor;
+
+//	DEBUG_VAR(vDistanceFactor, 200);
 	}
+	
 }
 
 void show_camera()

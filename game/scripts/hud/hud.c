@@ -155,7 +155,7 @@ void update_hud()
 
 	/* update item slot */
 	//vItemId = 4;
-	//vItemId = getItemId();
+	//vItemId = getCurrentItemId();
 	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
 	vItemY = 0;
 }
