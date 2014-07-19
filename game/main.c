@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 
 #define PRAGMA_PATH "levels";
 #define PRAGMA_PATH "scripts";
