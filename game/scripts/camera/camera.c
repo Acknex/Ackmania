@@ -21,10 +21,11 @@
  *******************************************************************************
  */
  
-#include "movement.h"
+//#include "movement.h"
+#include "camera_cfg.h"
 
 
-ENTITY* camera_focus_ent;
+ENTITY* camera_focus_ent = NULL;
 VIEW* cam;
 
 void create_camera()
@@ -34,7 +35,7 @@ void create_camera()
 
 void create_camera(int layer)
 {
-	cam = view_create(int layer);
+	cam = view_create(layer);
 	cam->pan = CAMERA_PAN;
 	cam->tilt = CAMERA_TILT; 
 	cam->flags |= ISOMETRIC;
@@ -61,29 +62,35 @@ void update_camera()
 	
 	if (camera_focus_ent != NULL)
 	{
-		vDistanceFactor = 1 + get_kart_speed(camera_focus_ent, NULL);
-	}
-	else
-	{
+//		vDistanceFactor = 1 + get_kart_speed(camera_focus_ent, NULL);
 		vDistanceFactor = 1;
-	}
 	
-	vecPos = vec_add(camera_focus_ent->x, vector(0, vDistanceFactor * CAMERA_DIST, 0));
-	vec_sub(vecPos, cam->x);
-	vec_scale(vecPos, CAMERA_DELAY);
-	vec_add(cam->x, vecPos);
+		vec_set(vecPos, vector(-vDistanceFactor * CAMERA_DIST, 0, 0));
+		vec_rotate(vecPos, cam->pan);
+		vec_add(vecPos, camera_focus_ent->x);
+		vec_sub(vecPos, cam->x);
+		vec_scale(vecPos, CAMERA_DELAY);
+		vec_add(cam->x, vecPos);
+	}
 }
 
 void show_camera()
 {
-	camera->flags &= ~SHOW;
-	cam->flags |= SHOW;
+	if (cam != NULL)
+	{
+		camera->flags &= ~SHOW;
+		wait(0); //WTF!?
+		cam->flags |= SHOW;
+	}
 }
 
 void hide_camera()
 {
-	cam->flags &= ~SHOW;
-	camera->flags |= SHOW;
+	if (cam != NULL)
+	{
+		cam->flags &= ~SHOW;
+		camera->flags |= SHOW;
+	}
 }
 
  
