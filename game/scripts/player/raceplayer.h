@@ -18,7 +18,8 @@ var g_raceplayerAccelSpeed = 1.75;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
 
-#define falling skill78
+#define falling skill77
+#define falling_dir skill78
 #define particle_emit skill79
 #define old_speed skill80
 #define bump_ang skill81

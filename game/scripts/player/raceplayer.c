@@ -148,10 +148,11 @@ void updatePlayer(ENTITY* ent)
    VECTOR temp,temp2;
    var up, down, left, right, hop, item, underground, old_contact, turn;
 
-if(ent->falling)
-{
-	
-}
+   if(ent->falling)
+   {
+      
+      return;
+   }
 
    ent->old_speed = ent->speed;
    up = !!(ent->kart_input & INPUT_UP);
@@ -211,11 +212,11 @@ if(ent->falling)
       ent->drifting = 0;
    }
 
-   if (ent->ground_contact) {
-
-      c_ignore(group_kart, 0);
+     c_ignore(group_kart, 0);
       c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
-
+      //if(!trace_hit) ent->falling = 1;
+   if (ent->ground_contact) {
+ 
       if (tex_flag4 || hit.green > 100) {
          underground = g_raceplayerBadGroundFac;
       } else {
@@ -312,6 +313,42 @@ if(ent->falling)
 		}
 	}
    }
+   	vec_set(temp,vector(20,0,0));
+   	vec_rotate(temp,ent->pan);
+   	vec_add(temp,ent->x);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+   	if(!trace_hit)
+   	{
+   		ent->falling = 1;
+   		ent->falling_dir = 0;
+   	}
+   	vec_set(temp,vector(-20,0,0));
+   	vec_rotate(temp,ent->pan);
+   	vec_add(temp,ent->x);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+   	if(!trace_hit)
+   	{
+   		ent->falling = 1;
+   		ent->falling_dir = 1;
+   	}
+   	vec_set(temp,vector(0,20,0));
+   	vec_rotate(temp,ent->pan);
+   	vec_add(temp,ent->x);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+   	if(!trace_hit)
+   	{
+   		ent->falling = 1;
+   		ent->falling_dir = 2;
+   	}
+   	vec_set(temp,vector(0,-20,0));
+   	vec_rotate(temp,ent->pan);
+   	vec_add(temp,ent->x);
+    c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+   	if(!trace_hit)
+   	{
+   		ent->falling = 1;
+   		ent->falling_dir = 3;
+   	}
 }
 
 #endif /* raceplayer_c */
