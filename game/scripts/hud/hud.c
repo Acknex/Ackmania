@@ -26,6 +26,7 @@
 #include "startgrid.h"
 #include "timer.h"
 #include "items.h"
+#include "map.h"
 
 
 PANEL* panLaps;
@@ -99,6 +100,7 @@ void create_hud()
 	wait(1);
 	update_hud();
 	vHudCreated = 1;
+	create_map();
 	show_hud();	
 }
 
@@ -156,6 +158,8 @@ void update_hud()
 	vItemId = get_current_item_id();
 	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
 	vItemY = 0;
+	
+	update_map();
 }
 
 void show_hud()
@@ -163,9 +167,10 @@ void show_hud()
 	if (vHudCreated != 0)
 	{
 		panLaps->flags |= SHOW;
-		//panTime->flags |= SHOW;
+		panTime->flags |= SHOW;
 		panRank->flags |= SHOW;
 		panItem->flags |= SHOW;
+		show_map();
 	}
 }
 
@@ -177,6 +182,7 @@ void hide_hud()
 		panTime->flags &= ~SHOW;
 		panRank->flags &= ~SHOW;
 		panItem->flags &= ~SHOW;
+		hide_map();
 	}
 }
 
