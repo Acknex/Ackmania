@@ -18,6 +18,7 @@ var g_raceplayerAccelSpeed = 2;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
 
+#define old_speed skill80
 #define bump_ang skill81
 #define drift_dir skill82
 #define bounce_x skill83

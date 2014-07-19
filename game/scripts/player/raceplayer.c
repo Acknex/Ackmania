@@ -4,11 +4,11 @@
 #include "engine.h"
 #include "raceplayer.h"
 
-#define DEBUG_FELIX
-
 action ac_track()
 {
 	my.group = group_track;
+	set(my,POLYGON);
+	c_setminmax(my);
 }
 
 var get_xyangle(VECTOR* vec)
@@ -21,6 +21,19 @@ var get_xyangle(VECTOR* vec)
 	if(vec->y < 0) angle *= -1;
 	
 	return angle;
+}
+
+var is_kart_turning(ENTITY* ent)
+{
+	var left, right;
+	left = !!(ent->kart_input & INPUT_LEFT);
+	right = !!(ent->kart_input & INPUT_RIGHT);
+	return left-right;
+}
+
+var get_kart_accel(ENTITY* ent)
+{
+	return ent->speed-ent->old_speed;
 }
 
 var get_kart_speed(ENTITY* ent, VECTOR* vdir)
@@ -99,6 +112,7 @@ void updatePlayer(ENTITY* ent)
    VECTOR temp;
    var up, down, left, right, hop, item, underground, old_contact, turn;
 
+   ent->old_speed = ent->speed;
    up = !!(ent->kart_input & INPUT_UP);
    down = !!(ent->kart_input & INPUT_DOWN);
    left = !!(ent->kart_input & INPUT_LEFT);
@@ -121,8 +135,6 @@ void updatePlayer(ENTITY* ent)
 	
   if (up && !down) {
       ent->speed += minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
-      //ent->speed = minv(ent->speed + minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step,
-      //      (g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
    }
             ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
 
@@ -133,10 +145,6 @@ void updatePlayer(ENTITY* ent)
    if (!up && down) {
       ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
    }
-
-#ifdef DEBUG_FELIX
-   if(!ent->kart_id) DEBUG_VAR(get_kart_speed(ent,NULL), screen_size.y - 180);
-#endif
 
    ent->pan = ent->drive_pan;
    vec_set(temp, vector(ent->speed, 0, 0));
@@ -162,16 +170,12 @@ void updatePlayer(ENTITY* ent)
       ent->drifting = 0;
    }
 
-#ifdef DEBUG_FELIX
-   DEBUG_VAR(ent->drifting, screen_size.y - 80);
-#endif
-
    if (ent->ground_contact) {
 
       c_ignore(group_kart, 0);
-      c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -16), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE);
+      c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
 
-      if (tex_flag4 || tex_flag5 || tex_flag6 || tex_flag7 || tex_flag8) {
+      if (tex_flag4 || hit.green > 100) {
          underground = g_raceplayerBadGroundFac;
       } else {
          underground = 1;
@@ -180,6 +184,22 @@ void updatePlayer(ENTITY* ent)
    else {
       underground = ent->underground;
    }
+   #define DEBUG_FELI
+#ifdef DEBUG_FELIX
+   vec_set(temp,ent.x);
+   if(vec_to_screen(temp,camera))
+   {
+      draw_text(str_for_num(NULL,get_kart_speed(ent,NULL)),temp.x-40,temp.y-20,COLOR_RED);
+      draw_text(str_for_num(NULL,ent->drifting),temp.x-40,temp.y,COLOR_RED);
+      draw_text(str_for_num(NULL,hit.blue),temp.x-40,temp.y+20,COLOR_RED);
+      draw_text(str_for_num(NULL,hit.green),temp.x-40,temp.y+40,COLOR_RED);
+      draw_text(str_for_num(NULL,hit.red),temp.x-40,temp.y+60,COLOR_RED);
+      draw_text(str_for_num(NULL,underground),temp.x-40,temp.y+80,COLOR_RED);
+      draw_text(str_for_num(NULL,is_kart_turning(ent)),temp.x-40,temp.y+100,COLOR_RED);
+      draw_text(str_for_num(NULL,get_kart_accel(ent)),temp.x-40,temp.y+120,COLOR_RED);
+   }
+#endif
+
 
    if (ent->ground_contact) {
 
