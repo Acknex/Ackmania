@@ -70,6 +70,7 @@ TEXT *_menu_selection_txt = {
 }
 
 ENTITY *_menu_flag = {
+	pan = 80;
 	type = "flag.mdl";
 	material = _menu_flagshader;
 }
@@ -110,7 +111,7 @@ void menu_init(int baseLayer)
 		
 		wait(1);
 		
-		ent_animate(_menu_flag, "Wave", total_ticks, ANM_CYCLE);
+		ent_animate(_menu_flag, "Wave", 0.8 * total_ticks, ANM_CYCLE);
 		
 		if(_menu_visible) {
 			_menu_background.flags |= SHOW;
@@ -123,7 +124,7 @@ void menu_init(int baseLayer)
 			
 			_menu_flag.flags2 |= SHOW;
 			VECTOR pos;
-			pos.x = 0.6 * screen_size.x;
+			pos.x = 0.5 * screen_size.x;
 			pos.y = 0.75 * screen_size.y;
 			pos.z = 1000;
 			
