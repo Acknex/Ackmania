@@ -54,8 +54,6 @@ void load_race(int index)
    double skyspeed = g_circuit_skyspeeds[index];
    environment_load(strLevelFilename, skyspeed);
 
-   create_camera();
-
    float hdrstrength = g_circuit_hdrstrengths[index];
    float hdrthreshold = g_circuit_hdrthresholds[index];
    float hdrexposure = g_circuit_hdrexposures[index];
