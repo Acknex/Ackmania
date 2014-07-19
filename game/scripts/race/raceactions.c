@@ -27,6 +27,7 @@ void initKartSnd(ENTITY* ent)
    ent->kartsnd_over = false;
    ent->kartsnd_loop_hndl = snd_loop(g_sndKartLoop, 5, 0);
    ent->kartsnd_out = 100;
+   ent->kartsnd_badground_loop_hndl = snd_loop(g_sndKartBadground, 5, 0);
 }
 
 void updateKartSnd(ENTITY* ent)
@@ -46,6 +47,12 @@ void updateKartSnd(ENTITY* ent)
    }
 
    if (s > 1) {
+
+      if (ent->underground < 0.9 && inScreen) {
+         snd_tune(ent->kartsnd_badground_loop_hndl, maxv(5, (1 - ent->underground) * 100), 0, 0);
+      } else {
+         snd_tune(ent->kartsnd_badground_loop_hndl, 5, 0, 0);
+      }
 
       if (s > g_breakdownthreshold+5) {
          ent->kartsnd_over = true;
@@ -79,6 +86,7 @@ void updateKartSnd(ENTITY* ent)
    } else {
       ent->kartsnd_off = true;
       snd_tune(ent->kartsnd_loop_hndl, 5, 20, 0);
+      snd_tune(ent->kartsnd_badground_loop_hndl, 5, 0, 0);
       ent->kartsnd_over = false;
    }
 }

@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "raceplayer.h"
 #include "items.h"
+#include "camera.h"
 
 void p_drift_smoke_fade(PARTICLE* p)
 {
@@ -300,21 +301,41 @@ var is_kart_player_wrong_way()
 
 void kart_event()
 {
-	var new_angle,factor;
-	VECTOR temp;
+   var new_angle, factor;
+   VECTOR temp;
 
-factor = 0.9;
-if(you)
-{
-	if(your._type == type_kart) factor = 0.5;
-}
-	vec_diff(temp,my->x,target);
-	my->bounce_x = temp.x*factor;
-	my->bounce_y = temp.y*factor;
-	my->speed *= 0.25;
-	new_angle = get_xyangle(bounce);
-	if(abs(ang(new_angle-my->drive_pan)) < 90) my->bump_ang = ang(new_angle-my->drive_pan);
-	//my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
+   factor = 0.9;
+
+   if (you != null) {
+      if (your._type == type_kart) {
+         factor = 0.5;
+      }
+   }
+
+   vec_diff(temp, my->x, target);
+
+   my->bounce_x = temp.x * factor;
+   my->bounce_y = temp.y * factor;
+
+   my->speed *= 0.25;
+
+   new_angle = get_xyangle(bounce);
+
+   if (abs(ang(new_angle - my->drive_pan)) < 90) {
+      my->bump_ang = ang(new_angle - my->drive_pan);
+   }
+
+   VECTOR vs;
+   vec_set(&vs, my->x);
+   VECTOR* vscreen = vec_to_screen(&vs, cam);
+   bool inScreen = vscreen != null;
+
+   if (inScreen) {
+      var h = snd_play(g_sndKartHit, g_kartsnd_hit, 0);
+      snd_tune (h, g_kartsnd_hit, 90+random(20), 0);
+   }
+
+   //my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
 }
 
 void postConstructPlayer(ENTITY* ent)
@@ -389,6 +410,11 @@ void updatePlayer(ENTITY* ent)
    if(ent->falling)
    {
    	set(ent,PASSABLE);
+
+   	if (!ent->isfallingsndplayed) {
+         snd_play(g_sndAiaiaiai, g_kartsnd_aiaiai, 0);
+         ent->isfallingsndplayed = true;
+   	}
  
 ent->speed_z = maxv(ent->speed_z-5*time_step,-90);
 up = maxv(0,40+ent->speed_z);
@@ -423,6 +449,8 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    	ent->speed = 0;
    	ent->falling = 0;
    	ent->drifting = 0;
+
+   	ent->isfallingsndplayed = false;
  }
       return;
    }
