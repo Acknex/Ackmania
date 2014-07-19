@@ -13,3 +13,4 @@ path "shaders\\menu";
 path "sounds\\menu";
 path "sprites";
 path "sounds\\taunts";
+path "textures";

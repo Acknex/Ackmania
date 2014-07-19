@@ -2,11 +2,12 @@
 #define playrace_c
 
 #include "playrace.h"
+#include "timer.h"
 
 void play_race(int index)
 {
    reset_timer();
-   //TODO: show hud
+   show_hud();
 }
 
 
