@@ -11,9 +11,17 @@
 #include "gamestate.h"
 #include "hud.h"
 
+void quit_race () {
+   invoke_game_state(GAME_STATE_MENU, 0);
+}
+
 void load_race(int index)
 {
    level_load(null);
+
+   on_esc = quit_race;
+   on_space = null;
+   on_enter = null;
 
    g_preraceActive = true;
 

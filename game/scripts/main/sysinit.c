@@ -5,10 +5,12 @@
 #include "sysinit.h"
 #include "postprocessing.h"
 #include "credits.h"
+#include "gamestate.h"
 
-void onCreditsEnd_ev()
-{
-   error("onCreditsEnd_ev");
+void onCreditsEnd_ev() {
+   if (g_creditsStopEnforced == false) {
+      invoke_game_state(GAME_STATE_MENU, 0);
+   }
 }
 
 void doSysInit() {

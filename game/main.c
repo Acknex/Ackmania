@@ -41,6 +41,8 @@ int main() {
 
    create_camera();
    create_hud();
+
+   menu_init(15);
    initPostprocessing(cam);
 
    invoke_game_state(TARGET_GAME_STATE, 0);
