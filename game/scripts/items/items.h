@@ -12,10 +12,10 @@
 
 // Modellnamen der Items
 #define ITEM_GRAVE_MODEL			"item_grave.mdl"
-#define ITEM_ROCKET_MODEL			"item_rocket.mdl"
-#define ITEM_AIM_ROCKET_MODEL		"item_aim_rocket.mdl"
+#define ITEM_ROCKET_MODEL			"item_rocket_red.mdl"
+#define ITEM_AIMING_ROCKET_MODEL	"item_rocket_green.mdl"
 #define ITEM_TURBO_MODEL			"item_turbo.mdl"
-#define ITEM_BADASS_ROCKET_MODEL	"item_badass_rocket.mdl"
+#define ITEM_BADASS_ROCKET_MODEL	"item_bomb.mdl"
 #define ITEM_MUSHROOM_MODEL		"item_mushroom.mdl"
 
 // Flage für die Items
@@ -41,11 +41,19 @@ SOUND* sndTurboStart						= "spikes01.wav";
 SOUND* sndMushroomStart					= "spikes01.wav";
 SOUND* sndFlashStart						= "spikes01.wav";
 
+// Bitmaps für Effekte
 BMAP* bmapRocketSmoke = "smoke.tga";
 
-/*COLOR* colExplosionYellow	= { red=247; green=255; blue=5; }
-COLOR* colExplosionOrange	= { red=255; green=150; blue=0; }
-COLOR* colExplosionRed		= { red=255; green=43; blue=425; }*/
+// Bitmaps der Items
+/*BMAP* bmapRocketItem			= "rocketItem.tga";
+BMAP* bmapGraveItem			= "graveItem.tga";
+BMAP* bmapAimrocketItem		= "aimrocketItem.tga";
+BMAP* bmapTurboItem			= "turboItem.tga";
+BMAP* bmapBadassRocketItem	= "badassRocketItem.tga";
+BMAP* bmapMushroomItem		= "mushroomItem.tga";*/
+
+// Gib das aktuelle Item des Spielers zurück
+var get_current_item_id();
 
 // Rotiert, kann eingesammelt werden.
 // Bringt Punkte. Bei 10 Punkten -> Sofortiger Speedboost.
