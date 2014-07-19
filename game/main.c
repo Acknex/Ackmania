@@ -13,6 +13,7 @@
 #define PRAGMA_PATH "music";
 #define PRAGMA_PATH "scripts\\camera";
 #define PRAGMA_PATH "scripts\\circuits";
+#define PRAGMA_PATH "scripts\\credits";
 #define PRAGMA_PATH "scripts\\engine";
 #define PRAGMA_PATH "scripts\\environment";
 #define PRAGMA_PATH "scripts\\globals";

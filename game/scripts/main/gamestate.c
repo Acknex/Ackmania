@@ -11,6 +11,17 @@ int get_game_state() {
    return g_gameState;
 }
 
+void invoke_game_state_credits(int oldGameState, int levelIndex)
+{
+   switch (oldGameState) {
+
+      case GAME_STATE_MENU:
+         credits_start();
+         menu_close();
+         break;
+   }
+}
+
 // wechselt vom aktuellen Spielstand in den angegebenen - gibt den letzten zurück; -1 wenn nicht erlaubt
 int invoke_game_state(int gameState, int levelIndex) {
 
@@ -24,6 +35,14 @@ int invoke_game_state(int gameState, int levelIndex) {
 
       case GAME_STATE_PRERACE:
          invoke_game_state_prerace(oldGameState, levelIndex);
+         break;
+
+      case GAME_STATE_RACE:
+         invoke_game_state_race(oldGameState, levelIndex);
+         break;
+
+      case GAME_STATE_CREDITS:
+         invoke_game_state_credits(oldGameState, levelIndex);
          break;
    }
 
@@ -54,7 +73,7 @@ void invoke_game_state_menu_exit_ev() {
 }
 
 void invoke_game_state_menu_credits() {
-   error("TODO: start credits");
+   invoke_game_state(GAME_STATE_CREDITS, 0);
 }
 
 void invoke_game_state_menu_level_ev(int i) {
@@ -77,6 +96,16 @@ void invoke_game_state_prerace(int oldGameState, int levelIndex) {
 
       case GAME_STATE_MENU:
          load_race(levelIndex);
+         break;
+   }
+}
+
+void invoke_game_state_race(int oldGameState, int levelIndex) {
+
+   switch (oldGameState) {
+
+      case GAME_STATE_PRERACE:
+         error("XXX");
          break;
    }
 }
