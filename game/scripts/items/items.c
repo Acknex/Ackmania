@@ -1,6 +1,10 @@
 #ifndef items_c
 #define items_c
 
+#include "helper.h"
+#include <particles.c>
+
+
 // Initialisiert jedes Item, mit dem der Spieler interagieren kann.
 void _item_setup()
 {
@@ -119,6 +123,10 @@ void _give_random_item(ENTITY* driver)
 		if (driver.CURRENT_ITEM == ITEM_NONE) {
 			driver.CURRENT_ITEM = 1 + integer(random(5));
 			
+			// Zeige im Item-Panel wahllos ein paar Items in schneller
+			// Rotation an.
+			
+			ent_playsound(me, sndGotNewItem, 1000);
 			switch(driver.CURRENT_ITEM) {
 				case 1: ent_create(ITEM_GRAVE_MODEL, my->x, _item_fade); break;
 				case 2: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
@@ -219,6 +227,7 @@ action _rocket()
 	while(me && liveTime > 0)
 	{
 		c_move(me, vector(10 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
 	}
@@ -231,6 +240,7 @@ void shoot_rocket()
 {
 	// Erzeuge Rakete
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _rocket);
+	ent_playsound(rocket, sndRocketFire, 1000);
 	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;
 }
@@ -244,6 +254,7 @@ action _aiming_rocket()
 	{
 		// Rotiere in Richtung des nächsten Spielers
 		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
 		wait(1);
@@ -257,6 +268,7 @@ void shoot_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _aiming_rocket);
+	ent_playsound(me, sndAimingRocketFire, 1000);
 	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;	
 }
@@ -266,6 +278,7 @@ void shoot_badass_aiming_rocket()
 void use_turbo() {
 	my->CURRENT_ITEM = ITEM_NONE;
 	my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
+	ent_playsound(me, sndTurboStart, 1000);
 	// Beschleunige
 	wait(-3);
 	// Bremse ab
@@ -322,6 +335,7 @@ action _ultra_badass_aiming_rocket()
 	{
 		// Rotiere in Richtung des ersten Spielers
 		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
 		wait(1);
@@ -337,6 +351,7 @@ void shoot_ultra_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _ultra_badass_aiming_rocket);
+	ent_playsound(rocket, sindAimingBadassRocketFire, 1000);
 	rocket.pan = my.pan;
 	my->CURRENT_ITEM = ITEM_NONE;		
 }
@@ -344,6 +359,7 @@ void shoot_ultra_badass_aiming_rocket()
 // Aktiviert den Lotteriatypischen Rainbowmode für 8 Sekunden
 void start_rainbow_mode() {
 	// Tue verückte Dinge mit Farben.
+	ent_playsound(me, sndRainbowStart, 1000);
 }
 
 #endif /*items_c*/

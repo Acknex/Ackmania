@@ -1,14 +1,16 @@
 #ifndef items_h
 #define items_h
 
-#define ITEM_NONE 0
-#define ITEM_GRAVE 1
+// Typen von Items
+#define ITEM_NONE						0
+#define ITEM_GRAVE					1
 #define ITEM_ROCKET					2
 #define ITEM_AIM_ROCKET				3
 #define ITEM_TURBO					4
 #define ITEM_BADASS_ROCKET			5
 #define ITEM_MUSHROOM				6
 
+// Modellnamen der Items
 #define ITEM_GRAVE_MODEL			"item_grave.mdl"
 #define ITEM_ROCKET_MODEL			"item_rocket.mdl"
 #define ITEM_AIM_ROCKET_MODEL		"item_aim_rocket.mdl"
@@ -16,21 +18,27 @@
 #define ITEM_BADASS_ROCKET_MODEL	"item_badass_rocket.mdl"
 #define ITEM_MUSHROOM_MODEL		"item_mushroom.mdl"
 
+// Flage für die Items
 #define IS_TRAP						FLAG3
- 
 #define SPIKE_TIMER_UP				3
 #define SPIKE_TIMER_DOWN			1
 #define SPIKE_SPEED					20
 
-SOUND* sndCollectItem = "";
-SOUND* sndCollectA4Cube = "";
-SOUND* sndGraveCollision = "";
+// Sounds für Interaktion mit Items
+SOUND* sndCollectItem					= "spikes01.wav";
+SOUND* sndCollectA4Cube					= "spikes01.wav";
+SOUND* sndGotNewItem						= "spikes01.wav";
 
-SOUND* sndSpikesDown = "spikes01.wav";
-SOUND* sndSpikesUp   = "spikes02.wav";
-SOUND* sndStalactite = "squish_loud.wav";
-SOUND* sndStoneFall  = "stone_fall.wav";
-SOUND* sndStoneImpact= "stone_impact.wav";
+// Sounds für Items
+SOUND* sndSpikesDown						= "spikes01.wav";
+SOUND* sndSpikesUp						= "spikes02.wav";
+SOUND* sndGraveCollision				= "spikes01.wav";
+SOUND* sndRocketFire						= "spikes01.wav";
+SOUND* sndAimingRocketFire				= "spikes01.wav";
+SOUND* sindAimingBadassRocketFire	= "spikes01.wav";
+SOUND* sndRocketFly						= "spikes01.wav";
+SOUND* sndTurboStart						= "spikes01.wav";
+SOUND* sndRainbowStart					= "spikes01.wav";
 
 
 
