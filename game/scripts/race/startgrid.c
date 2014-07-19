@@ -27,7 +27,7 @@ ENTITY** create_kart_drivers()
       VECTOR* pos = &(g_vecStartgridPos[i]);
       var ang = g_vecStartgridAng[i];
 
-      ENTITY* ent = ent_create(CUBE_MDL, pos, create_kart_drivers_ev);
+      ENTITY* ent = ent_create("testkart.mdl", pos, create_kart_drivers_ev);
       g_kartEnts[i] = ent;
 
       if (ent != null) {

@@ -10,6 +10,8 @@
 
 void ac_race_kart_pos()
 {
+   set(my, INVISIBLE | PASSABLE | UNLIT);
+
    if (my != null) {
 
       int rank = my->sk_kart_id;

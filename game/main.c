@@ -1,7 +1,11 @@
+#define DEBUG
+
 #define PRAGMA_PATH "scripts\\engine";
 #include "engine.h"
 
-#include <default.c>
+#ifdef DEBUG
+   #include <default.c>
+#endif
 
 #define PRAGMA_PATH "levels";
 #define PRAGMA_PATH "scripts";
