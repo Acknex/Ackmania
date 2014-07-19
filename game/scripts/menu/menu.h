@@ -1,6 +1,23 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
+#define MENU_DEF_THRESHOLD 50
+
+/**
+ * Left "click" check
+ */
+#define MENU_DEF_LEFT (key_cur | (joy_raw.x < -(MENU_DEF_THRESHOLD)) | (joy2_raw.x < -(MENU_DEF_THRESHOLD)))
+
+/**
+ * Right "click" check
+ */
+#define MENU_DEF_RIGHT (key_cul | (joy_raw.x > (MENU_DEF_THRESHOLD)) | (joy2_raw.x > (MENU_DEF_THRESHOLD)))
+
+/**
+ * Action "click" check
+ */
+#define MENU_DEF_ACTION (key_space | key_enter | joy_1 | joy2_1)
+
 /**
  * Globales Menü-Struct für Callbacks und Einstellungen.
  */

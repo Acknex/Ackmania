@@ -1,7 +1,7 @@
 #ifndef _MENU_C_
 #define _MENU_C_
 
-//#define TEST_DEBUG
+#define TEST_DEBUG
 
 #ifdef TEST_DEBUG
 
@@ -64,9 +64,9 @@ void menu_init(int baseLayer)
 {
 	memset(&menu, 0, sizeof(Menu));
 	
-	layer_sort(_menu_background, baseLayer + 0);
-	layer_sort(_menu_flag,       baseLayer + 1);
-	layer_sort(_menu_bigheader,  baseLayer + 2);
+	layer_sort(_menu_background,     baseLayer + 0);
+	layer_sort(_menu_flag,           baseLayer + 1);
+	layer_sort(_menu_bigheader,      baseLayer + 2);
 	layer_sort(_menu_selection_txt,  baseLayer + 3);
 	
 	proc_mode = PROC_LATE;
@@ -78,9 +78,9 @@ void menu_init(int baseLayer)
 	int lastKeyAction = 0;
 	
 	while(1) {
-		lastKeyLeft = key_cul;
-		lastKeyRight = key_cur;
-		lastKeyAction = key_space;
+		lastKeyLeft = MENU_DEF_LEFT;
+		lastKeyRight = MENU_DEF_RIGHT;
+		lastKeyAction = MENU_DEF_ACTION;
 		
 		wait(1);
 		
@@ -105,19 +105,19 @@ void menu_init(int baseLayer)
 			_menu_selection_txt.pos_y = 0.5 * screen_size.y;
 			
 			// Left
-			if(key_cul && key_cul != lastKeyLeft) {
+			if(MENU_DEF_LEFT && MENU_DEF_LEFT != lastKeyLeft) {
 				_menu_selection -= 1;
 				snd_play(_menu_switchSound, 100, 0);
 			}
 			
 			// Right
-			if(key_cur && key_cur != lastKeyRight) {
+			if(MENU_DEF_RIGHT && MENU_DEF_RIGHT != lastKeyRight) {
 				_menu_selection += 1;
 				snd_play(_menu_switchSound, 100, 0);
 			}
 			
 			// Action
-			if(key_space && key_space != lastKeyAction ) {
+			if(MENU_DEF_ACTION && MENU_DEF_ACTION != lastKeyAction ) {
 				snd_play(_menu_triggerSound, 100, 0);
 				
 				BOOL hadCallback = false;
