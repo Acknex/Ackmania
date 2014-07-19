@@ -16,6 +16,8 @@
 #define PRAGMA_PATH "scripts\\engine";
 #define PRAGMA_PATH "scripts\\environment";
 #define PRAGMA_PATH "scripts\\globals";
+#define PRAGMA_PATH "scripts\\helper";
+#define PRAGMA_PATH "scripts\\hud";
 #define PRAGMA_PATH "scripts\\main";
 #define PRAGMA_PATH "scripts\\menu";
 #define PRAGMA_PATH "scripts\\player";
@@ -28,6 +30,7 @@
 #include "raceactions.h"
 #include "circuitinfo.h"
 #include "camera.h"
+#include "hud.h"
 
 #define ENABLE_TAUNT_HOTKEY
 #include "taunts.h"
@@ -40,7 +43,13 @@ int main() {
    doSysInit();
 
    create_camera();
+   create_hud();
    initPostprocessing(cam);
 
    invoke_game_state(TARGET_GAME_STATE, 0);
+
+   while (1) {
+      update_hud();
+      wait(1);
+   }
 }
