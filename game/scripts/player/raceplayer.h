@@ -13,7 +13,7 @@ var key_hop_off = 0;
 var key_item = 0;
 
 var g_raceplayerTurnSpeed = 4;
-var g_raceplayerMaxSpeed = 50;
+var g_raceplayerMaxSpeed = 55;
 var g_raceplayerAccelSpeed = 1.75;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;

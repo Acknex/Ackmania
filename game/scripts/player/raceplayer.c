@@ -150,9 +150,34 @@ void updatePlayer(ENTITY* ent)
 
    if(ent->falling)
    {
-      
+   	set(ent,PASSABLE);
+   	/*ent->speed += -ent->speed*0.1*time_step;
+     vec_set(temp, vector(ent->speed, 0, 0));
+   vec_rotate(temp, vector(ent->drive_pan, 0, 0));
+   vec_add(temp,vector(ent->bounce_x,ent->bounce_y,0));
+   ent->speed_x = temp.x;
+   ent->speed_y = temp.y;
+   vec_scale(temp, time_step);
+
+   c_ignore(group_track,0);
+   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON);
+
+   vec_scale(ent->bounce_x,1-0.4*time_step);*/
+
+ent->speed_z = maxv(ent->speed_z-6*time_step,-90);
+ent->falling += (maxv(0,50+ent->speed_z)-ent->falling)*0.15*time_step;
+     vec_set(temp, vector(ent->falling, 0, 0));
+   vec_rotate(temp, vector(ent->drive_pan+180*(ent->falling_dir == 1)+90*(ent->falling_dir == 2)-90*(ent->falling_dir == 3), 0, 0));
+   temp.z += ent->speed_z;
+   vec_scale(temp, time_step);
+ c_move(ent, nullvector, temp, IGNORE_MODELS | IGNORE_WORLD | IGNORE_SPRITES);
+ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir == 1))*15*time_step,(-(ent->falling_dir == 2)+(ent->falling_dir == 3))*15*time_step));
+  vec_set(ent->parent->x, ent->x);
+  ent->parent->z += ent->parent->skill1;
+ DEBUG_VAR(ent->falling_dir,400);
       return;
    }
+   reset(ent,PASSABLE);
 
    ent->old_speed = ent->speed;
    up = !!(ent->kart_input & INPUT_UP);
@@ -181,7 +206,7 @@ void updatePlayer(ENTITY* ent)
             ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - g_raceplayerMaxSpeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
    if (!(up || down)) {
-      ent->speed += clamp(-ent->speed * 0.25, -g_raceplayerAccelSpeed, g_raceplayerAccelSpeed) * time_step;
+      ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
    }
 
    if (!up && down) {
@@ -319,8 +344,9 @@ void updatePlayer(ENTITY* ent)
     c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
    	if(!trace_hit)
    	{
-   		ent->falling = 1;
+   		ent->falling = ent->speed;
    		ent->falling_dir = 0;
+   		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
    	vec_set(temp,vector(-20,0,0));
    	vec_rotate(temp,ent->pan);
@@ -328,8 +354,9 @@ void updatePlayer(ENTITY* ent)
     c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
    	if(!trace_hit)
    	{
-   		ent->falling = 1;
+   		ent->falling = ent->speed;
    		ent->falling_dir = 1;
+   		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
    	vec_set(temp,vector(0,20,0));
    	vec_rotate(temp,ent->pan);
@@ -337,8 +364,9 @@ void updatePlayer(ENTITY* ent)
     c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
    	if(!trace_hit)
    	{
-   		ent->falling = 1;
+   		ent->falling = ent->speed;
    		ent->falling_dir = 2;
+   		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
    	vec_set(temp,vector(0,-20,0));
    	vec_rotate(temp,ent->pan);
@@ -346,8 +374,9 @@ void updatePlayer(ENTITY* ent)
     c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
    	if(!trace_hit)
    	{
-   		ent->falling = 1;
+   		ent->falling = ent->speed;
    		ent->falling_dir = 3;
+   		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
 }
 
