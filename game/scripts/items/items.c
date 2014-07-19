@@ -19,7 +19,7 @@ var get_current_item_id()
 void _item_setup()
 {
 	my->emask |= ENABLE_TRIGGER; 
-	my->trigger_range = 70;
+	my->trigger_range = 90;
 	set (me, PASSABLE);
 	c_setminmax(me);
 }
@@ -62,11 +62,11 @@ void _item_a4_cube_evt()
 		wait(-3);
 		vec_set(my.scale_x, vector(0,0,0));
 		reset(me,INVISIBLE);
-		while(my.scale_x < 1.0) {
+		while(my.scale_x < 0.5) {
 			vec_add(my.scale_x, vector(time_step / 20, time_step / 20, time_step / 20));
 			wait(1);
 		}
-		vec_set(my.scale_x, vector(1,1,1));
+		vec_set(my.scale_x, vector(0.5,0.5,0.5));
 		my->event = _item_a4_cube_evt;
 	}
 }
@@ -78,7 +78,7 @@ action a4_cube()
 	_item_setup();
 	//my->trigger_range = 200;
 	place_on_floor(me);
-	my->z +=5;
+	my->z -=3;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_a4_cube_evt;
 	var vZ = my->z;
@@ -136,11 +136,11 @@ void _item_evt()
 		wait(-3);
 		vec_set(my.scale_x, vector(0,0,0));
 		reset(me,INVISIBLE);
-		while(my.scale_x < 1.0) {
+		while(my.scale_x < 0.5) {
 			vec_add(my.scale_x, vector(time_step / 20, time_step / 20, time_step / 20));
 			wait(1);
 		}
-		vec_set(my->scale_x, vector(1,1,1));
+		vec_set(my->scale_x, vector(0.5,0.5,0.5));
 		my->event = _item_evt;
 	}
 }
@@ -151,6 +151,7 @@ action item()
 {
 	_item_setup();	
 	place_on_floor(me);
+	my->z -=3;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_evt;
 	var vZ = my->z;
@@ -184,7 +185,7 @@ void _grave_evt()
 		snd_play(sndGraveCollision, 50, 0);
 		
 		// Drehe Spieler
-		// trap_player();
+		trap_driver(you, 64);
 		
 		wait(1);
 		ent_remove(me);
@@ -284,6 +285,7 @@ action _rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
+				driver_hit(you, 64);
 			}
 		}
 		
@@ -355,6 +357,7 @@ action _aiming_rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
+				driver_hit(you, 64);
 			}
 		}
 		
@@ -381,14 +384,9 @@ void shoot_aiming_rocket(ENTITY* driver)
 // Beschleunigt den Spieler für 3 Sekunden
 // auf 1,4(?)-fache Geschwindigkeit
 void use_turbo(ENTITY* driver) {
-	beep();
 	driver->item_id = ITEM_NONE;
-	//my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
 	snd_play(sndTurboStart, 50, 0);
-	// Beschleunige
-	wait(-3);
-	// Bremse ab
-	//my->DRIVER_MAX_SPEED = MAX_SPEED;
+	start_turbo(driver, 64);
 }
 
 // Spikes, die aus dem Boden fahren und den Spieler
@@ -449,7 +447,9 @@ void p_bomb(PARTICLE *p) {
 // Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
 action _badass_aiming_rocket()
 {
-	beep();
+	vec_set(my.scale_x, vector(0.2, 0.2, 0.2));
+	c_setminmax(me);
+	snd_play(sndRocketFire, 50, 0);
 	int liveTime = 3000 + integer(random(500));
 	var animPercentage = 0;
 	set(me, PASSABLE);
@@ -465,6 +465,7 @@ action _badass_aiming_rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
+				driver_hit(you, 92);
 			}
 		}
 			
@@ -485,11 +486,8 @@ void shoot_badass_aiming_rocket(ENTITY* driver)
 	// Erzeuge Rakete
 	VECTOR* rocketStart = vector(driver->x + 50, 0, 0);
 	vec_rotate(rocketStart, driver->pan);
-	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, rocketStart.x, _badass_aiming_rocket);
-	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
-	c_setminmax(rocket);
-	snd_play(sndRocketFire, 50, 0);
-	driver->item_id = ITEM_NONE;	
+	driver->item_id = ITEM_NONE;
+	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, rocketStart.x, _badass_aiming_rocket);	
 }
 
 // Macht den Spieler größer und er kann andere überfahren,
@@ -499,9 +497,7 @@ void start_mushroom(ENTITY* driver)
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
 	snd_play(sndMushroomStart, 50, 0);
 	driver->item_id = ITEM_NONE;
-	vec_set(driver.scale_x, vector(2,2,2));
-	wait(-5);
-	vec_set(driver.scale_x, vector(1,1,1));
+	enlarge_driver(driver);
 }
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
@@ -510,6 +506,27 @@ void start_flash(ENTITY* driver)
 {
 	snd_play(sndFlashStart, 50, 0);
 	driver->item_id = ITEM_NONE;
+	ENTITY* ki1 = get_kart_driver(1);
+	ENTITY* ki2 = get_kart_driver(2);
+	ENTITY* ki3 = get_kart_driver(3);
+	if (ki1 != NULL)
+	{
+		if (ki1.scale_x <= 1.0) {
+			minimize_driver(get_kart_driver(1));
+		}
+	}
+	if (ki2 != NULL)
+	{
+		if (ki2.scale_x <= 1.0) {
+			minimize_driver(get_kart_driver(2));
+		}
+	}
+	if (ki3 != NULL)
+	{
+		if (ki3.scale_x <= 1.0) {
+			minimize_driver(get_kart_driver(3));
+		}
+	}
 }
 
 #endif /*items_c*/
