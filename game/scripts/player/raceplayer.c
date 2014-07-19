@@ -456,6 +456,7 @@
 			return;
 		}
 		reset(ent,PASSABLE);
+		ent.z = 16;
 
 		ent->old_speed = ent->speed;
 		up = !!(ent->kart_input & INPUT_UP);
@@ -480,17 +481,25 @@
 		ent->drive_pan = ang(ent->drive_pan);
 		ent->bump_ang += -ent->bump_ang*0.35*time_step;
 
-		if (up && !down) {
-			ent->speed += minv((ent->kart_maxspeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
+		ent->kart_trapped = maxv(ent->kart_trapped-time_step,0);
+		if(ent->kart_trapped)
+		{
+			ent->speed += clamp(-ent->speed * 0.5, -g_raceplayerAccelSpeed*2, g_raceplayerAccelSpeed*2) * time_step;
 		}
-		ent->speed = minv(ent->speed,(ent->kart_maxspeed - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
+		else
+		{
+			if (up && !down) {
+				ent->speed += minv((ent->kart_maxspeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
+			}
+			ent->speed = minv(ent->speed,(ent->kart_maxspeed - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
-		if (!(up || down)) {
-			ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
-		}
+			if (!(up || down)) {
+				ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
+			}
 
-		if (!up && down) {
-			ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
+			if (!up && down) {
+				ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
+			}
 		}
 
 		ent->pan = ent->drive_pan;
@@ -695,8 +704,8 @@
 				if(progress+up > ent->kart_progress+up) ent->kart_progress = progress+up;
 				else
 				{
-				if(progress+up < ent->kart_progress+up-512) ent->kart_checkpoint = -1;
-			}
+					//if(progress+up < ent->kart_progress+up-512) ent->kart_checkpoint = -1;
+				}
 			}
 		}
 		if(ent->sk_kart_id == 1)
