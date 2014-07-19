@@ -9,6 +9,7 @@
 #include "environment.h"
 #include "postprocessing.h"
 #include "gamestate.h"
+#include "hud.h"
 
 void load_race(int index)
 {
@@ -16,7 +17,7 @@ void load_race(int index)
 
    g_preraceActive = true;
 
-   // TODO: hide hud
+   hide_hud();
 
    STRING* strMusicFilename = getCircuitMusicFilenameStr(index);
    STRING* strLevelFilename = getCircuitLevelFilenameStr(index);

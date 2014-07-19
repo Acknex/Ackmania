@@ -85,6 +85,9 @@ void menu_close();
  */
 void menu_set_levels(int count, LevelChoice *choices);
 
+SOUND* g_sndMenuOpen1st = "menu_open_1st.ogg";
+SOUND* g_sndMenuOpenNext = "menu_open_next.ogg";
+
 #include "menu.c"
 
 #endif // #ifndef _MENU_H_

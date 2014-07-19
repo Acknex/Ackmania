@@ -4,6 +4,7 @@
 #include "engine.h"
 #include "gamestate.h"
 #include "loadrace.h"
+#include "playrace.h"
 #include "menu.h"
 
 // gibt den aktuellen Spielstatus zurück
@@ -11,15 +12,24 @@ int get_game_state() {
    return g_gameState;
 }
 
+void enforce_game_state_credits_stop () {
+   invoke_game_state(GAME_STATE_MENU, 0);
+}
+
 void invoke_game_state_credits(int oldGameState, int levelIndex)
 {
    switch (oldGameState) {
 
       case GAME_STATE_MENU:
-         credits_start();
          menu_close();
          break;
    }
+
+   on_esc = enforce_game_state_credits_stop;
+   on_space = enforce_game_state_credits_stop;
+   on_enter = enforce_game_state_credits_stop;
+
+   credits_start();
 }
 
 // wechselt vom aktuellen Spielstand in den angegebenen - gibt den letzten zurück; -1 wenn nicht erlaubt
@@ -55,17 +65,20 @@ void invoke_game_state_menu(int oldGameState, int levelIndex) {
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
+         break;
 
-         menu_init(15);
-
-         menu.onExit = invoke_game_state_menu_exit_ev;
-         menu.onCredits = invoke_game_state_menu_credits;
-         menu.onLevelStart = invoke_game_state_menu_level_ev;
-
-         menu_open();
-
+      case GAME_STATE_CREDITS:
+         credits_stop();
          break;
    }
+
+   menu_init(15);
+
+   menu.onExit = invoke_game_state_menu_exit_ev;
+   menu.onCredits = invoke_game_state_menu_credits;
+   menu.onLevelStart = invoke_game_state_menu_level_ev;
+
+   menu_open();
 }
 
 void invoke_game_state_menu_exit_ev() {
@@ -105,7 +118,7 @@ void invoke_game_state_race(int oldGameState, int levelIndex) {
    switch (oldGameState) {
 
       case GAME_STATE_PRERACE:
-         error("XXX");
+         play_race(levelIndex);
          break;
    }
 }
