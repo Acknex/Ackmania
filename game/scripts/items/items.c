@@ -214,9 +214,10 @@ action grave() {
 }
 
 // Legt ein A9-Grab ab, das Fahrer ausbremst, wenn sie drüberfahren
-void plant_grave(VECTOR* pos) {
+void plant_grave() {
 	me->CURRENT_ITEM = ITEM_NONE;
-	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, pos, grave);
+	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, my->x, grave);
+	vec_set(entGrave.scale_x, vector(0.5,0.5,0.5));
 	place_on_floor(entGrave);
 }
 
@@ -295,31 +296,59 @@ void shoot_rocket()
 // Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
 action _aiming_rocket()
 {
-	int liveTime = 4000;
-	VECTOR movement;
-	while(me && liveTime > 0)
+	int liveTime = 300 + integer(random(100));
+	var flyHeight = 0;
+	int reachedTop = 0;
+	var initHeight = 0;
+	var zSpeed = 0;
+	var xSpeed = 0;
+	var animPercentage = 0;
+	set(me, PASSABLE);
+	while(me && (liveTime > 0))
 	{
-		// Rotiere in Richtung des nächsten Spielers
-		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		// Lass die Rakete nach Abschuss hüpfen
+		if (reachedTop == 0) {
+			flyHeight +=20 * time_step;
+			zSpeed = 20 * time_step;
+			xSpeed = 20 * time_step;
+			if (flyHeight >= 60) reachedTop = 1;
+		} else {
+			if (flyHeight >= initHeight) {
+				flyHeight -=20 * time_step;
+				zSpeed = -20 * time_step;
+				xSpeed +=2 * time_step;
+			} else {
+				zSpeed = 0;
+			}
+		}
+		
+		if (animPercentage + 20 * time_step < 80) {
+			animPercentage +=20 * time_step;
+		} else {
+			animPercentage = 80;
+			reset(me, PASSABLE);
+		}
+		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
-		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		wait(1);
 	}
-	// effect(explode, 20, my->x, nullvector);
+	effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
+	// Play sound boom
 	ent_remove(me);
 }
 
 // OPTIONAL: Schießt eine leicht zielgelenkte Rakete ab
-void shoot_badass_aiming_rocket()
+void shoot_aiming_rocket()
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _aiming_rocket);
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
-	ent_playsound(me, sndAimingRocketFire, 1000);
-	rocket.pan = my.pan;
-	my->CURRENT_ITEM = ITEM_NONE;	
+	ent_playsound(rocket, sndRocketFire, 1000);
+	my->CURRENT_ITEM = ITEM_NONE;
 }
 
 // Beschleunigt den Spieler für 3 Sekunden
@@ -376,41 +405,81 @@ action spikes()
 }
 
 // Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
-action _ultra_badass_aiming_rocket()
+action _badass_aiming_rocket()
 {
-	int liveTime = 4000;
-	VECTOR movement;
-	while(me && liveTime > 0)
+	int liveTime = 300 + integer(random(100));
+	var flyHeight = 0;
+	int reachedTop = 0;
+	var initHeight = 0;
+	var zSpeed = 0;
+	var xSpeed = 0;
+	var animPercentage = 0;
+	set(me, PASSABLE);
+	while(me && (liveTime > 0))
 	{
-		// Rotiere in Richtung des ersten Spielers
-		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		// Lass die Rakete nach Abschuss hüpfen
+		if (reachedTop == 0) {
+			flyHeight +=20 * time_step;
+			zSpeed = 20 * time_step;
+			xSpeed = 20 * time_step;
+			if (flyHeight >= 60) reachedTop = 1;
+		} else {
+			if (flyHeight >= initHeight) {
+				flyHeight -=20 * time_step;
+				zSpeed = -20 * time_step;
+				xSpeed +=2 * time_step;
+			} else {
+				zSpeed = 0;
+			}
+		}
+		
+		if (animPercentage + 20 * time_step < 80) {
+			animPercentage +=20 * time_step;
+		} else {
+			animPercentage = 80;
+			reset(me, PASSABLE);
+		}
+		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
-		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		wait(1);
 	}
-	// effect(explode, 20, my->x, nullvector);
+	effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
+	// Play sound boom
 	ent_remove(me);
 }
 
 // OPTIONAL: Schießt einen (Lotti-)Ghost auf den 1. Spieler
 // (wenn man es nicht selber ist, sonst auf den letzten).
 // Slashed den Getroffenen mit einem LOTTI-Schrei für 3 Sekunden
-void shoot_ultra_badass_aiming_rocket()
+void shoot_badass_aiming_rocket()
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _ultra_badass_aiming_rocket);
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
-	ent_playsound(rocket, sindAimingBadassRocketFire, 1000);
-	rocket.pan = my.pan;
-	my->CURRENT_ITEM = ITEM_NONE;		
+	ent_playsound(rocket, sndRocketFire, 1000);
+	my->CURRENT_ITEM = ITEM_NONE;	
 }
 
-// Aktiviert den Lotteriatypischen Rainbowmode für 8 Sekunden
-void start_rainbow_mode() {
-	// Tue verückte Dinge mit Farben.
-	ent_playsound(me, sndRainbowStart, 1000);
+// Macht den Spieler größer und er kann andere überfahren,
+// die nicht auch groß sind
+void start_mushroom()
+{
+	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
+	ent_playsound(me, sndMushroomStart, 1000);
+	vec_set(my.scale_x, vector(1.33,1.33,1.33));
+	wait(-5);
+	vec_set(my.scale_x, vector(1,1,1));
+}
+
+// Macht alle Spieler klein und langsamer (5 Sekunden)
+// bis auf den Schützen
+void start_flash()
+{
+	ent_playsound(me, sndFlashStart, 1000);
 }
 
 #endif /*items_c*/

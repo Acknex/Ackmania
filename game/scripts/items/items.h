@@ -38,11 +38,12 @@ SOUND* sndAimingRocketFire				= "spikes01.wav";
 SOUND* sindAimingBadassRocketFire	= "spikes01.wav";
 SOUND* sndRocketFly						= "spikes01.wav";
 SOUND* sndTurboStart						= "spikes01.wav";
-SOUND* sndRainbowStart					= "spikes01.wav";
+SOUND* sndMushroomStart					= "spikes01.wav";
+SOUND* sndFlashStart						= "spikes01.wav";
 
-COLOR* colExplosionYellow	= { red=247; green=255; blue=5; }
+/*COLOR* colExplosionYellow	= { red=247; green=255; blue=5; }
 COLOR* colExplosionOrange	= { red=255; green=150; blue=0; }
-COLOR* colExplosionRed		= { red=255; green=43; blue=425; }
+COLOR* colExplosionRed		= { red=255; green=43; blue=425; }*/
 
 // Rotiert, kann eingesammelt werden.
 // Bringt Punkte. Bei 10 Punkten -> Sofortiger Speedboost.
@@ -62,7 +63,7 @@ void plant_grave();
 void shoot_rocket();
 
 // OPTIONAL: Schießt eine leicht zielgelenkte Rakete ab
-void shoot_badass_aiming_rocket();
+void shoot_aiming_rocket();
 
 // Beschleunigt den Spieler für 3 Sekunden
 // auf 1,4(?)-fache Geschwindigkeit
@@ -75,10 +76,15 @@ void spikes();
 // OPTIONAL: Schießt einen (Lotti-)Ghost auf den 1. Spieler
 // (wenn man es nicht selber ist, sonst auf den letzten).
 // Slashed den Getroffenen mit einem LOTTI-Schrei für 3 Sekunden
-void shoot_ultra_badass_aiming_rocket();
+void shoot_badass_aiming_rocket();
 
-// Aktiviert den Lotteriatypischen Rainbowmode für 8 Sekunden
-void start_rainbow_mode();
+// Macht den Spieler größer und er kann andere überfahren,
+// die nicht auch groß sind
+void start_mushroom();
+
+// Macht alle Spieler klein und langsamer (5 Sekunden)
+// bis auf den Schützen
+void start_flash();
 
 
 #include "items.c"
