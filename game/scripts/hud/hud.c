@@ -25,7 +25,7 @@
 #include "hud_cfg.h"
 #include "startgrid.h"
 #include "timer.h"
-//#include "items.h"
+#include "items.h"
 
 
 PANEL* panLaps;
@@ -154,8 +154,7 @@ void update_hud()
 	//vTotalLaps = 5;   	
 
 	/* update item slot */
-	//vItemId = 4;
-	//vItemId = getCurrentItemId();
+	vItemId = get_current_item_id();
 	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
 	vItemY = 0;
 }

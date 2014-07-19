@@ -129,14 +129,14 @@ void _give_random_item(ENTITY* driver)
 {
 	if (driver != NULL)
 	{
-		if (driver.CURRENT_ITEM == ITEM_NONE) {
-			driver.CURRENT_ITEM = 1 + integer(random(5));
+		if (driver.item_id == ITEM_NONE) {
+			driver.item_id = 1 + integer(random(5));
 			
 			// Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
 			
 			ent_playsound(me, sndGotNewItem, 1000);
-			switch(driver.CURRENT_ITEM) {
+			switch(driver.item_id) {
 				case 1: ent_create(ITEM_GRAVE_MODEL, my->x, _item_fade); break;
 				case 2: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
 				case 3: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
@@ -224,7 +224,7 @@ action grave() {
 
 // Legt ein A9-Grab ab, das Fahrer ausbremst, wenn sie drüberfahren
 void plant_grave() {
-	me->CURRENT_ITEM = ITEM_NONE;
+	me->item_id = ITEM_NONE;
 	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, my->x, grave);
 	vec_set(entGrave.scale_x, vector(0.5,0.5,0.5));
 	place_on_floor(entGrave);
@@ -316,7 +316,7 @@ void shoot_rocket()
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->CURRENT_ITEM = ITEM_NONE;
+	my->item_id = ITEM_NONE;
 }
 
 // Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
@@ -376,19 +376,19 @@ void shoot_aiming_rocket()
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->CURRENT_ITEM = ITEM_NONE;
+	my->item_id = ITEM_NONE;
 }
 
 // Beschleunigt den Spieler für 3 Sekunden
 // auf 1,4(?)-fache Geschwindigkeit
 void use_turbo() {
-	my->CURRENT_ITEM = ITEM_NONE;
-	my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
+	my->item_id = ITEM_NONE;
+	//my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
 	ent_playsound(me, sndTurboStart, 1000);
 	// Beschleunige
 	wait(-3);
 	// Bremse ab
-	my->DRIVER_MAX_SPEED = MAX_SPEED;
+	//my->DRIVER_MAX_SPEED = MAX_SPEED;
 }
 
 // Spikes, die aus dem Boden fahren und den Spieler
@@ -463,7 +463,7 @@ void shoot_badass_aiming_rocket()
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->CURRENT_ITEM = ITEM_NONE;	
+	my->item_id = ITEM_NONE;	
 }
 
 // Macht den Spieler größer und er kann andere überfahren,
