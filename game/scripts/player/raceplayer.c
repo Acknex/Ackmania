@@ -4,6 +4,12 @@
 #include "engine.h"
 #include "raceplayer.h"
 
+#define DEBUG_FELIX
+
+action ac_track()
+{
+	my.group = group_track;
+}
 
 var get_xyangle(VECTOR* vec)
 {
@@ -121,7 +127,7 @@ void updatePlayer(ENTITY* ent)
       ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed * time_step, -g_raceplayerBreakForce*!ent.drifting);
    }
 
-#ifdef DEBUG
+#ifdef DEBUG_FELIX
    DEBUG_VAR(ent->speed, screen_size.y - 40);
 #endif
 
@@ -131,7 +137,8 @@ void updatePlayer(ENTITY* ent)
 	vec_add(temp,vector(ent.bounce_x,ent.bounce_y,0));
    vec_scale(temp, time_step);
 
-   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON);
+c_ignore(group_track,0);
+   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON);
 
 	vec_scale(ent->bounce_x,1-0.4*time_step);
 
@@ -146,7 +153,7 @@ void updatePlayer(ENTITY* ent)
       ent->drifting = 0;
    }
 
-#ifdef DEBUG
+#ifdef DEBUG_FELIX
    DEBUG_VAR(ent->drifting, screen_size.y - 80);
 #endif
 
