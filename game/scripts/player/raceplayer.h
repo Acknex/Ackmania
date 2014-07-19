@@ -66,6 +66,7 @@ var g_raceplayerBadGroundFac = 0.333;
 #define group_track 4
 
 var is_kart_turning(ENTITY* ent); // left = 1, right = -1
+var is_kart_accelerating(ENTITY* ent);
 var get_kart_accel(ENTITY* ent);
 var get_kart_speed(ENTITY* ent, VECTOR* vdir);
 var get_kart_rank(ENTITY* ent);
