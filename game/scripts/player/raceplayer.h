@@ -6,6 +6,9 @@
 
 var g_doNotDrive = false;
 
+SOUND* g_sndKartJump = "kart_jump.wav";
+var g_kartsnd_jump = 75;
+
 BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
 BMAP* bmp_quad = "quad.tga";
 
@@ -18,11 +21,11 @@ var key_hop = 0;
 var key_hop_off = 0;
 var key_item = 0;
 
-var g_raceplayerTurnSpeed = 4;
+var g_raceplayerTurnSpeed = 5;
 var g_raceplayerMaxSpeed = 55;
 var g_raceplayerAccelSpeed = 1.75;
 var g_raceplayerBreakForce = 15;
-var g_raceplayerBadGroundFac = 0.333;
+var g_raceplayerBadGroundFac = 0.4;
 var g_raceTrackWidth = 160;
 
 #define kart_progress_update skill68

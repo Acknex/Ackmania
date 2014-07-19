@@ -26,12 +26,24 @@ void initKartSnd(ENTITY* ent)
    ent->kartsnd_off = true;
    ent->kartsnd_over = false;
    ent->kartsnd_loop_hndl = snd_loop(g_sndKartLoop, 5, 0);
+   ent->kartsnd_out = 100;
 }
 
 void updateKartSnd(ENTITY* ent)
 {
    VECTOR vdir;
    var s = get_kart_speed(ent, &vdir);
+
+   VECTOR vs;
+   vec_set(&vs, ent->x);
+   VECTOR* vscreen = vec_to_screen (&vs, cam);
+   bool inScreen = vscreen != null;
+
+   if (inScreen) {
+      ent->kartsnd_out = minv(ent->kartsnd_out + 10 * time_step, 100);
+   } else {
+      ent->kartsnd_out = maxv(5, ent->kartsnd_out - 10 * time_step);
+   }
 
    if (s > 1) {
 
@@ -40,17 +52,26 @@ void updateKartSnd(ENTITY* ent)
       } else {
          if (s < g_breakdownthreshold-5 && ent->kartsnd_over) {
             ent->kartsnd_over = false;
-            snd_play(g_sndKartBremsen, 100, 0);
+
+            if (inScreen) {
+               snd_play(g_sndKartBremsen, g_racesnd_motor, 0);
+            }
          }
       }
 
       double f = s / g_raceplayerMaxSpeed;
+
       var freq = 20 + f * 100;
-      var vol = 5 + f * 95;
+
+      var vol = minv(g_racesnd_motor, 5 + f * g_racesnd_motor);
+      vol *= (ent->kartsnd_out / 100);
 
       if (ent->kartsnd_off && s > g_exployothreshold) {
          ent->kartsnd_off = false;
-         snd_play(g_sndKartStart, 100, 0);
+
+         if (inScreen) {
+            snd_play(g_sndKartStart, g_racesnd_motor, 0);
+         }
       }
 
       snd_tune(ent->kartsnd_loop_hndl, vol, freq, 0);
