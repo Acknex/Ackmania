@@ -22,13 +22,17 @@
  */
 
 var vTimeTicks;
+var vTimerPaused;
 
 void timer_startup()
 {
 	reset_timer();
 	while(1)
 	{
-		vTimeTicks += time_step;
+		if (vTimerPaused == 0)
+		{
+			vTimeTicks += time_step;
+		}
 		wait(1);
 	}
 }
@@ -36,6 +40,16 @@ void timer_startup()
 void reset_timer()
 {
 	vTimeTicks = 0;
+}
+
+void pause_timer()
+{
+	vTimerPaused = 1;	
+}
+
+void unpause_timer()
+{
+	vTimerPaused = 0;	
 }
 
 var timer_getHundreds()
