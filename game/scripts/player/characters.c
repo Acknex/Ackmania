@@ -11,4 +11,9 @@ STRING* get_kartfilename (int id) {
    return (g_characterKartFilenames->pstring)[id];
 }
 
+STRING* get_kartplayerfilename (int id) {
+   return (g_characterPlayerFilenames->pstring)[id];
+}
+
+
 #endif /* characters_c */

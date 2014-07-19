@@ -46,7 +46,7 @@ PANEL *_menu_bigheader = {
 }
 
 PANEL *_menu_course = {
-	size_x = 256;
+	//size_x = 256;
 	size_y = 256;
 }
 
@@ -159,9 +159,10 @@ void menu_init(int baseLayer)
 				}
 				
 				_menu_course.flags |= VISIBLE;
-				_menu_course.pos_x = 0.5 * screen_size.x - 128;
-				_menu_course.pos_y = 0.5 * screen_size.y - 128;
 				_menu_course.bmap = _menu_trackIcons[_menu_selection];
+				_menu_course.pos_x = 0.5 * screen_size.x - _menu_course->bmap->width / 2;
+				_menu_course.pos_y = 0.5 * screen_size.y - 128;
+
 			
 				_menu_selection_txt.flags |= SHOW;
 				_menu_selection_txt.pos_x = 0.5 * screen_size.x;

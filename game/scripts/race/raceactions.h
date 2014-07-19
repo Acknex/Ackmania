@@ -21,6 +21,7 @@ SOUND* g_sndKartBadground = "kart_badground.wav";
 #define kartsnd_over skill28
 #define kartsnd_badground_loop_hndl skill27
 #define isfallingsndplayed skill26
+#define playermodel skill25
 
 #include "raceactions.c"
 
