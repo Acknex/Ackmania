@@ -21,7 +21,7 @@
  *******************************************************************************
  */
  
-//#include "movement.h"
+#include "raceplayer.h"
 #include "camera_cfg.h"
 
 
@@ -62,8 +62,9 @@ void update_camera()
 	
 	if (camera_focus_ent != NULL)
 	{
-		//vDistanceFactor = get_kart_speed(camera_focus_ent, NULL);
-		vDistanceFactor = 1;//0.25;
+		vDistanceFactor = clamp(abs(get_kart_speed(camera_focus_ent, NULL) * 0.01), 0.25, 1);
+		DEBUG_VAR(vDistanceFactor, 300);
+		//vDistanceFactor = 1;//0.25;
 	
 		vec_set(vecPos, vector(-CAMERA_DIST, 0, 0));
 		vec_rotate(vecPos, cam->pan);
@@ -76,8 +77,8 @@ void update_camera()
 		640x400 --> ARC 110
 		1920x1200 --> ARC 60
 		*/
-		var vFac = (1200 - screen_size.y) / 1200;
-		cam->arc = (60 * (1-vFac) + 110 * vFac) * vDistanceFactor;
+		var vFac = (CAMERA_REFSCRSIZEY - screen_size.y) / CAMERA_REFSCRSIZEY;
+		cam->arc = (CAMERA_REFARCBIG * (1-vFac) + CAMERA_REFARCSMALL * vFac) * vDistanceFactor;
 	}
 }
 
