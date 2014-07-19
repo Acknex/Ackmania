@@ -27,6 +27,8 @@
 void create_hud();
 void remove_hud();
 void update_hud();
+void show_hud();
+void hide_hud();
 
 #include "hud.c"
 
