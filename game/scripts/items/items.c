@@ -223,11 +223,12 @@ action grave() {
 }
 
 // Legt ein A9-Grab ab, das Fahrer ausbremst, wenn sie drüberfahren
-void plant_grave() {
-	me->item_id = ITEM_NONE;
-	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, my->x, grave);
+void plant_grave(ENTITY* driver) {
+	driver->item_id = ITEM_NONE;
+	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, driver->x, grave);
 	vec_set(entGrave.scale_x, vector(0.5,0.5,0.5));
 	place_on_floor(entGrave);
+	driver->item_id = ITEM_NONE;
 }
 
 void p_rocket_smoke(PARTICLE* p)
@@ -309,14 +310,14 @@ action _rocket()
 }
 
 // Schießt eine Rakete ab
-void shoot_rocket()
+void shoot_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _rocket);
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->item_id = ITEM_NONE;
+	driver->item_id = ITEM_NONE;
 }
 
 // Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
@@ -369,22 +370,22 @@ action _aiming_rocket()
 }
 
 // OPTIONAL: Schießt eine leicht zielgelenkte Rakete ab
-void shoot_aiming_rocket()
+void shoot_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _aiming_rocket);
+	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->item_id = ITEM_NONE;
+	driver->item_id = ITEM_NONE;
 }
 
 // Beschleunigt den Spieler für 3 Sekunden
 // auf 1,4(?)-fache Geschwindigkeit
-void use_turbo() {
-	my->item_id = ITEM_NONE;
+void use_turbo(ENTITY* driver) {
+	driver->item_id = ITEM_NONE;
 	//my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
-	ent_playsound(me, sndTurboStart, 1000);
+	ent_playsound(driver, sndTurboStart, 1000);
 	// Beschleunige
 	wait(-3);
 	// Bremse ab
@@ -456,32 +457,32 @@ action _badass_aiming_rocket()
 // OPTIONAL: Schießt einen (Lotti-)Ghost auf den 1. Spieler
 // (wenn man es nicht selber ist, sonst auf den letzten).
 // Slashed den Getroffenen mit einem LOTTI-Schrei für 3 Sekunden
-void shoot_badass_aiming_rocket()
+void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(my->x+20, my->y, my->z), _badass_aiming_rocket);
+	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _badass_aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
 	ent_playsound(rocket, sndRocketFire, 1000);
-	my->item_id = ITEM_NONE;	
+	driver->item_id = ITEM_NONE;	
 }
 
 // Macht den Spieler größer und er kann andere überfahren,
 // die nicht auch groß sind
-void start_mushroom()
+void start_mushroom(ENTITY* driver)
 {
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
-	ent_playsound(me, sndMushroomStart, 1000);
-	vec_set(my.scale_x, vector(1.33,1.33,1.33));
+	ent_playsound(driver, sndMushroomStart, 1000);
+	vec_set(driver.scale_x, vector(1.33,1.33,1.33));
 	wait(-5);
-	vec_set(my.scale_x, vector(1,1,1));
+	vec_set(driver.scale_x, vector(1,1,1));
 }
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
 // bis auf den Schützen
-void start_flash()
+void start_flash(ENTITY* driver)
 {
-	ent_playsound(me, sndFlashStart, 1000);
+	ent_playsound(driver, sndFlashStart, 1000);
 }
 
 #endif /*items_c*/

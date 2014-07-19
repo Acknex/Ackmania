@@ -67,17 +67,17 @@ void item();
 void grave();
 
 // Legt ein A9-Grab ab, das Fahrer ausbremst, wenn sie drüberfahren
-void plant_grave();
+void plant_grave(ENTITY* driver);
 
 // Schießt eine Rakete ab
-void shoot_rocket();
+void shoot_rocket(ENTITY* driver);
 
 // OPTIONAL: Schießt eine leicht zielgelenkte Rakete ab
-void shoot_aiming_rocket();
+void shoot_aiming_rocket(ENTITY* driver);
 
 // Beschleunigt den Spieler für 3 Sekunden
 // auf 1,4(?)-fache Geschwindigkeit
-void use_turbo();
+void use_turbo(ENTITY* driver);
 
 // Spikes, die aus dem Boden fahren und den Spieler
 // ausbremsen. Werden bei Berührung für 5 Sekunden inaktiviert.
@@ -86,15 +86,15 @@ void spikes();
 // OPTIONAL: Schießt einen (Lotti-)Ghost auf den 1. Spieler
 // (wenn man es nicht selber ist, sonst auf den letzten).
 // Slashed den Getroffenen mit einem LOTTI-Schrei für 3 Sekunden
-void shoot_badass_aiming_rocket();
+void shoot_badass_aiming_rocket(ENTITY* driver);
 
 // Macht den Spieler größer und er kann andere überfahren,
 // die nicht auch groß sind
-void start_mushroom();
+void start_mushroom(ENTITY* driver);
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
 // bis auf den Schützen
-void start_flash();
+void start_flash(ENTITY* driver);
 
 
 #include "items.c"
