@@ -53,6 +53,7 @@ void create_hud()
 	//SendMessage(HWND_BROADCAST, WM_FONTCHANGE, (WPARAM)0, (LPARAM)0);
 	draw_textmode("anudaw", 0, 70, 90);
 	
+	/* laps panel */
 	panLaps = pan_create(NULL, HUD_LAYER);
 	
 	/* timer panel */
@@ -75,13 +76,16 @@ void create_hud()
 	strRank[3] = str_create("rd");
 	strRank[4] = str_create("th");
 	
-	//update_hud();
+
+
+	panLaps->flags |= TRANSLUCENT;
 	panTime->flags |= TRANSLUCENT;
 	panRank->flags |= TRANSLUCENT;
 
 	wait(1);
 	update_hud();
 	vHudCreated = 1;
+	show_hud();
 }
 
 void remove_hud()
@@ -128,6 +132,7 @@ void show_hud()
 {
 	if (vHudCreated != 0)
 	{
+		panLaps->flags |= SHOW;
 		panTime->flags |= SHOW;
 		panRank->flags |= SHOW;
 	}
@@ -137,6 +142,7 @@ void hide_hud()
 {
 	if (vHudCreated != 0)
 	{
+		panLaps->flags &= ~SHOW;
 		panTime->flags &= ~SHOW;
 		panRank->flags &= ~SHOW;
 	}
