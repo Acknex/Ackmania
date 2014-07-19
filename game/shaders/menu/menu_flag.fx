@@ -31,7 +31,7 @@ float4 process_sepia(float2 Tex: TEXCOORD0): COLOR
 	
 	float4 ColorNo = float4(1.0f - ColorYes.rgb, 1.0f);
 	
-	return float4(lerp(ColorYes, ColorNo, Color.r).rgb, Color.a);
+	return tex2D(smpSrc, Tex.xy); // float4(lerp(ColorYes, ColorNo, Color.r).rgb, Color.a);
 }
 
 technique Sepia {
