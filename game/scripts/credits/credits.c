@@ -12,9 +12,22 @@ typedef struct {
 } _TimedEvent;
 
 var _credits_music = 0;
+ENTITY *_credits_sky;
 
 _TimedEvent _credits_events[CREDITS_DEF_MAX_EVENTS];
 int _credits_eventCount = 0;
+
+MATERIAL *_credits_mtlAlphaTest = {
+	effect = "technique { pass { CullMode = None; AlphaTestEnable = false; AlphaBlendEnable = false; ZEnable = true; ZWriteEnable = true; ZFunc = LessEqual; } }";
+}
+
+MATERIAL *_credits_mtlMetal = {
+	effect = "technique { pass { CullMode = None; AlphaTestEnable = false; AlphaBlendEnable = false; ZEnable = true; ZWriteEnable = true; ZFunc = LessEqual; } }";
+	power = 16;
+	specular_blue = 255;
+	specular_green = 230;
+	specular_red = 230;
+}
 
 var _ang_lerp_single(var a1, var a2, var f)
 {
@@ -75,7 +88,7 @@ void credits_init()
 	//memset(&credits, 0, sizeof(Credits));
 	
 	credits_addev(0, credev_init_scene);
-	credits_addev(500, credev_camera_flight_a);
+	//credits_addev(500, credev_camera_flight_a);
 	
 	wait(1);
 	
@@ -95,6 +108,16 @@ void credits_init()
 				}
 				currentEvent++;
 			}
+			if(media_playing(_credits_music) == 0) {
+				credits_stop();
+				break;
+			}
+			if(key_f) {
+				diag("\n");
+				diag("x: "); diag(str_for_num(NULL, camera.x)); diag(" ");
+				diag("y: "); diag(str_for_num(NULL, camera.y)); diag(" ");
+				diag("z: "); diag(str_for_num(NULL, camera.z)); diag(" ");
+			}
 			wait(1);	
 		}
 	
@@ -109,8 +132,25 @@ void credits_start()
 	if(_credits_music != 0) {
 		return;
 	}
-	level_load("creditsTerrain.hmp");	
-	ent_createlayer("cosmo_f02+6.jpg", SKY | CUBE, 10);
+	level_load("creditsTerrain.hmp");
+	level_ent.ambient = -100;
+	_credits_sky = ent_createlayer("cosmo_f02+6.jpg", SKY | CUBE, 10);
+	
+	you = ent_create("stage_buehne.mdl", vector(0, 500, 20), NULL);
+	you.pan = 180;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_dach.mdl", vector(0, 500, 20), NULL);
+	you.pan = 180;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_drums.mdl", vector(0, 500, 20), NULL);
+	you.pan = 180;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_stangen.mdl", vector(0, 500, 20), NULL);
+	you.pan = 180;
+	you.material = _credits_mtlMetal;
 	
 #ifdef TEST_DEBUG
 	_credits_music = media_play("../../media/outro-demo.ogg", NULL, 100);
@@ -124,6 +164,10 @@ void credits_start()
  */
 void credits_stop()
 {
+	if(_credits_sky != NULL) {
+		ptr_remove(_credits_sky);
+		_credits_sky = NULL;
+	}
 	if(_credits_music == 0) {
 		return;
 	}
