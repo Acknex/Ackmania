@@ -113,11 +113,6 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	t = offset/length;
 	if(offset >= 0) k = vdata.y+floor(t+vdata.z);
 	else k = vdata.x+floor(t+vdata.z);
-	DEBUG_VAR(t,300);
-	DEBUG_VAR(vdata.z,360);
-	DEBUG_VAR(vdata.x,420);
-	DEBUG_VAR(vdata.y,480);
-	DEBUG_VAR(k,540);
 	if(k <= 0) k = max_nodes;
 	if(k > max_nodes) k = 1;
 	if(offset > 0 && k != vdata.y)
@@ -176,7 +171,7 @@ var is_kart_turning(ENTITY* ent)
 	return left-right;
 }
 
-var is_kart_accelerating(ENTITY* ent);
+var is_kart_accelerating(ENTITY* ent)
 {
 	var up, down;
 	up = !!(ent->kart_input & INPUT_UP);
