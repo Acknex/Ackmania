@@ -339,6 +339,11 @@
 
 	}
 
+void trap_driver(ENTITY* ent)
+{
+	ent->kart_trapped = 32;
+}
+
 	void postConstructPlayer(ENTITY* ent)
 	{
 		set(ent, INVISIBLE);
@@ -406,7 +411,7 @@
 	void updatePlayer(ENTITY* ent)
 	{
 		int i;
-		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length;
+		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length, d;
 		VECTOR temp,temp2;
 		
 		if(ent->falling)
@@ -484,7 +489,7 @@
 		ent->kart_trapped = maxv(ent->kart_trapped-time_step,0);
 		if(ent->kart_trapped)
 		{
-			ent->speed += clamp(-ent->speed * 0.5, -g_raceplayerAccelSpeed*2, g_raceplayerAccelSpeed*2) * time_step;
+			ent->speed += clamp(-ent->speed * 0.5, -g_raceplayerAccelSpeed*3, g_raceplayerAccelSpeed*3) * time_step;
 		}
 		else
 		{
@@ -517,7 +522,7 @@
 		old_contact = ent->ground_contact;
 		ent->ground_contact = (ent->parent->z <= ent->kart_height);
 
-		if (!old_contact && ent->ground_contact && hop && ent->speed > 10) {
+		if (!old_contact && ent->ground_contact && hop && ent->speed > 10 && (left - right)) {
 			ent->drifting = 1;
 		}
 
@@ -694,24 +699,19 @@
 					ent->kart_checkpoint = 0;
 				}
 			}
-			if(ent->kart_lap > 0 && progress > length*0.5 && progress+up > ent->kart_progress+up)
+				d = (ent->kart_lap-1)*length;
+			if(ent->kart_lap > 0 && progress > length*0.5 && progress+d > ent->kart_progress)
 			{
 				ent->kart_checkpoint = 1;
 			}
 			if(ent->kart_lap > 0)
 			{
-				up = (ent->kart_lap-1)*length;
-				if(progress+up > ent->kart_progress+up) ent->kart_progress = progress+up;
+				if(progress+d > ent->kart_progress) ent->kart_progress = progress+d;
 				else
 				{
-					//if(progress+up < ent->kart_progress+up-512) ent->kart_checkpoint = -1;
+					if(progress+d < ent->kart_progress-512) ent->kart_checkpoint = -1;
 				}
 			}
-		}
-		if(ent->sk_kart_id == 1)
-		{
-			DEBUG_VAR(ent->kart_checkpoint,300);
-			DEBUG_VAR(ent->kart_lap,360);
 		}
 
 		if(ent->sk_kart_id > 1)

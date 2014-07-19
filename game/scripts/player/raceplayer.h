@@ -99,6 +99,11 @@ var get_kart_speed(ENTITY* ent, VECTOR* vdir);
 var get_kart_lap_player();
 var get_kart_rank_player();
 var is_kart_player_wrong_way(); // 1 equals wrong way (-1 player not found)
+void trap_driver(ENTITY* ent, var blackOutTime);
+void driver_hit(ENTITY* ent, var blackOutTime);
+void start_turbo(ENTITY* ent, var time);
+void enlarge_driver(ENTITY* ent);
+void minimize_driver(ENTITY* ent);
 
 void postConstructPlayer (ENTITY* ent);
 
