@@ -31,15 +31,15 @@ int invoke_game_state(int gameState) {
    return oldGameState;
 }
 
-void exitCallback () {
+void exitCallback() {
    error("exitCallback");
 }
 
-void creditsCallback () {
+void creditsCallback() {
    error("creditsCallback");
 }
 
-void selectLevelCallback (int i) {
+void selectLevelCallback(int i) {
    error(str_printf(null, "selectLevelCallback i=%d", i));
 }
 
@@ -66,7 +66,7 @@ void invoke_game_state_prerace(int oldGameState) {
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
-         load_race("dummy_level.wmb");
+         load_race(0);
          break;
    }
 }
