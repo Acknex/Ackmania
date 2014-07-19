@@ -276,9 +276,14 @@ var get_kart_lap_player()
 {
 	ENTITY* ent = get_kart_driver(0);
 	if(!ent) return -1;
+	return ent->kart_lap;
+}
+var get_kart_rank_player()
+{
+	ENTITY* ent = get_kart_driver(0);
+	if(!ent) return -1;
 	return ent->kart_rank;
 }
-var get_kart_rank_player();
 
 void kart_event()
 {
@@ -605,7 +610,6 @@ if(ent->kart_progress_update > 2)
 	ent->kart_progress_update -= 2;
 	ent->kart_progress = ent_path_get_progress(ent);
 }
-  DEBUG_VAR(ent->kart_progress,200+80*ent.skill1);
 
 }
 
