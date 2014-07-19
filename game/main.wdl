@@ -5,6 +5,7 @@ path "scripts";
 path "sounds";
 path "levels";
 path "levels\\test";
+path "levels\\test2";
 path "levels\\textures";
 path "panels\\menu";
 path "shaders\\menu";

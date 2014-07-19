@@ -15,7 +15,12 @@ TEXT* g_circuits = {
                "Dummy Level (Test)",
                "dummy_level.ogg",
                "dummy_level.bmp",
-               "dummy_level.wmb"
+               "dummy_level.wmb",
+               // Dummy Level 2
+               "Dummy Level 2 (Test 2)",
+               "dummy_level.ogg",
+               "dummy_level2.bmp",
+               "test2.wmb"
       );
 }
 
