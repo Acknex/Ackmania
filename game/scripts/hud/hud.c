@@ -39,6 +39,7 @@ var vTimeSeconds;
 var vTimeHundreds;
 var vRank;
 var vHudScale = 0;
+var vHudCreated = 0;
 STRING** strRank[5];
 
 
@@ -75,16 +76,17 @@ void create_hud()
 	strRank[4] = str_create("th");
 	
 	//update_hud();
-	panTime->flags |= TRANSLUCENT|SHOW;
-	panRank->flags |= TRANSLUCENT|SHOW;
-reset_timer();//temp
+	panTime->flags |= TRANSLUCENT;
+	panRank->flags |= TRANSLUCENT;
 
 	wait(1);
 	update_hud();
+	vHudCreated = 1;
 }
 
 void remove_hud()
 {
+	vHudCreated = 0;
 	RemoveFontResource("media//anudaw.ttf");
 	//SendMessage(HWND_BROADCAST, WM_FONTCHANGE, (WPARAM)0, (LPARAM)0);
 	
@@ -112,22 +114,32 @@ void update_hud()
 	}
 
 	/* update rank */
-   vRankOld = vRank + 1; //TEMP
-   //vRank = get_kart_rank (0);
-   vRank = 3; //TEMP
+	vRankOld = vRank + 1; //TEMP
+	//vRank = get_kart_rank (0);
+	vRank = 3; //TEMP
 	if (vRank != vRankOld)
 	{
 		update_hudrank();
-   }
+	}
    	
 }
 
 void show_hud()
 {
+	if (vHudCreated != 0)
+	{
+		panTime->flags |= SHOW;
+		panRank->flags |= SHOW;
+	}
 }
 
 void hide_hud()
 {
+	if (vHudCreated != 0)
+	{
+		panTime->flags &= ~SHOW;
+		panRank->flags &= ~SHOW;
+	}
 }
 
 void scale_hud()
