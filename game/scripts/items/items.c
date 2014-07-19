@@ -55,7 +55,7 @@ void _item_a4_cube_evt()
 	if (event_type == EVENT_TRIGGER)
 	{
 		my->event = NULL;
-		ent_playsound(me, sndCollectA4Cube, 1000);
+		snd_play(sndCollectA4Cube, 50, 0);
 		if (you != NULL) you.PL_A4_COUNT +=1;
 		//achievement("firsta4cube");
 		set(me,INVISIBLE);
@@ -110,12 +110,13 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			driver.item_id = 1 + integer(random(7));
+			//driver.item_id = 1 + integer(random(7));
+			driver.item_id = 6;
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
 			
-			ent_playsound(me, sndGotNewItem, 1000);
+			snd_play(sndGotNewItem, 50, 0);
 		}
 	}
 }
@@ -180,7 +181,7 @@ void _grave_evt()
 	if (event_type == EVENT_TRIGGER)
 	{
 		my->event = NULL;
-		ent_playsound(me, sndGraveCollision, 1000);
+		snd_play(sndGraveCollision, 50, 0);
 		
 		// Drehe Spieler
 		// trap_player();
@@ -286,7 +287,7 @@ action _rocket()
 			}
 		}
 		
-		ent_playsound(me, sndRocketFly, 1000);
+		snd_play(sndRocketFly, 50, 0);
 		liveTime--;
 		wait(1);
 		
@@ -303,7 +304,7 @@ void shoot_rocket(ENTITY* driver)
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _rocket);
 	vec_set(rocket.scale_x, vector(0.1, 0.1, 0.1));
 	c_setminmax(rocket);
-	ent_playsound(rocket, sndRocketFire, 1000);
+	snd_play(sndRocketFire, 50, 0);
 	driver->item_id = ITEM_NONE;
 }
 
@@ -357,7 +358,7 @@ action _aiming_rocket()
 			}
 		}
 		
-		ent_playsound(me, sndRocketFly, 1000);
+		snd_play(sndRocketFly, 50, 0);
 		liveTime--;
 		wait(1);
 	}
@@ -373,7 +374,7 @@ void shoot_aiming_rocket(ENTITY* driver)
 	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, vector(driver->x+20, driver->y, driver->z), _aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.1, 0.1, 0.1));
 	c_setminmax(rocket);
-	ent_playsound(rocket, sndRocketFire, 1000);
+	snd_play(sndRocketFire, 50, 0);
 	driver->item_id = ITEM_NONE;
 }
 
@@ -383,7 +384,7 @@ void use_turbo(ENTITY* driver) {
 	beep();
 	driver->item_id = ITEM_NONE;
 	//my->DRIVER_MAX_SPEED = MAX_SPEED * 1.5;
-	ent_playsound(driver, sndTurboStart, 1000);
+	snd_play(sndTurboStart, 50, 0);
 	// Beschleunige
 	wait(-3);
 	// Bremse ab
@@ -407,7 +408,7 @@ action spikes()
 	{
 		wait(-SPIKE_TIMER_UP);
 		reset(me, IS_TRAP);
-		ent_playsound(me, sndSpikesDown, 200);
+		snd_play(sndSpikesDown, 50, 0);
 		while(my->z > vPosDown)
 		{
 			wait(1);
@@ -418,7 +419,7 @@ action spikes()
 		
 		wait(-SPIKE_TIMER_DOWN);	
 		set(me, IS_TRAP);
-		ent_playsound(me, sndSpikesUp, 200);
+		snd_play(sndSpikesUp, 50, 0);
 		while(my->z < vPosUp)
 		{
 			wait(1);
@@ -454,7 +455,7 @@ action _badass_aiming_rocket()
 	set(me, PASSABLE);
 	while(me && (liveTime > 0))
 	{
-		 effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
+		effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 		
 		c_move(me, vector(50 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		
@@ -466,8 +467,8 @@ action _badass_aiming_rocket()
 				liveTime = 0;
 			}
 		}
-				
-		ent_playsound(me, sndRocketFly, 1000);
+			
+		snd_play(sndRocketFly, 50, 0);	
 		liveTime--;
 		wait(1);
 	}
@@ -482,10 +483,12 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, vector(driver->x+50, driver->y, driver->z), _badass_aiming_rocket);
+	VECTOR* rocketStart = vector(driver->x + 50, 0, 0);
+	vec_rotate(rocketStart, driver->pan);
+	ENTITY* rocket = ent_create(ITEM_BADASS_ROCKET_MODEL, rocketStart.x, _badass_aiming_rocket);
 	vec_set(rocket.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(rocket);
-	ent_playsound(rocket, sndRocketFire, 1000);
+	snd_play(sndRocketFire, 50, 0);
 	driver->item_id = ITEM_NONE;	
 }
 
@@ -494,7 +497,7 @@ void shoot_badass_aiming_rocket(ENTITY* driver)
 void start_mushroom(ENTITY* driver)
 {
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
-	ent_playsound(driver, sndMushroomStart, 1000);
+	snd_play(sndMushroomStart, 50, 0);
 	driver->item_id = ITEM_NONE;
 	vec_set(driver.scale_x, vector(2,2,2));
 	wait(-5);
@@ -505,7 +508,7 @@ void start_mushroom(ENTITY* driver)
 // bis auf den Schützen
 void start_flash(ENTITY* driver)
 {
-	ent_playsound(driver, sndFlashStart, 1000);
+	snd_play(sndFlashStart, 50, 0);
 	driver->item_id = ITEM_NONE;
 }
 
