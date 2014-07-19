@@ -206,7 +206,7 @@ void path_get_normal_position(VECTOR* vpos, var path_offset, var offset, VECTOR*
 	vec_add(vresult,vnormal);
 }
 	
-var ent_path_get_progress(ENTITY* kart)
+var ent_path_get_progress(ENTITY* kart, var* length)
 {
 	var progress = 0,dist,max_dist = 99999,t;
 	int i, j, max_nodes;
@@ -215,11 +215,13 @@ var ent_path_get_progress(ENTITY* kart)
 
 	ent = ent_create(NULL,nullvector,NULL);
 	max_nodes = path_next(ent);
+	*length = 0;
 	for(i = 1; i < max_nodes; i++)
 	{
 		path_getnode(ent,i,temp,NULL);
 		path_getnode(ent,i+1,temp2,NULL);
 		ent->skill[i+1] = vec_dist(temp2,temp);
+		*length += ent->skill[i+1];
  	}
 	for(i = 1; i < max_nodes; i++) ent->skill[i+1] = ent->skill[i+1]+ent->skill[i];
 
@@ -283,6 +285,13 @@ var get_kart_rank_player()
 	ENTITY* ent = get_kart_driver(0);
 	if(!ent) return -1;
 	return ent->kart_rank;
+}
+
+var is_kart_player_wrong_way()
+{
+	ENTITY* ent = get_kart_driver(0);
+	if(!ent) return -1;
+	return (ent->kart_checkpoint < 0);
 }
 
 void kart_event()
@@ -370,7 +379,7 @@ void loadPlayerCpuControlParams(ENTITY* ent)
 void updatePlayer(ENTITY* ent)
 {
    VECTOR temp,temp2;
-   var up, down, left, right, hop, item, underground, old_contact, turn;
+   var up, down, left, right, hop, item, underground, old_contact, turn, progress, length;
 
    if(ent->falling)
    {
@@ -608,9 +617,32 @@ ent->kart_progress_update += time_step;
 if(ent->kart_progress_update > 2)
 {
 	ent->kart_progress_update -= 2;
-	ent->kart_progress = ent_path_get_progress(ent);
+	progress = ent_path_get_progress(ent,&length);
+	if(progress < length*0.1)
+	{
+		if(!ent->kart_lap) ent->kart_lap = 1;
+		if(ent->kart_checkpoint > 0)
+		{
+			ent->kart_lap++;
+			ent->kart_checkpoint = 0;
+		}
+	}
+	if(progress > length*0.5 && progress+up > ent->kart_progress+up)
+	{
+		ent->kart_checkpoint = 1;
+	}
+	if(ent->kart_lap > 0)
+	{
+		up = (ent->kart_lap-1)*length;
+	if(progress+up > ent->kart_progress+up) ent->kart_progress = progress+up;
+	if(progress+up < ent->kart_progress+up-512) ent->kart_checkpoint = -1; 
+}
+}
+if(ent->sk_kart_id == 1)
+{
+	//DEBUG_VAR(ent->kart_checkpoint,300);
+}
 }
 
-}
 
 #endif /* raceplayer_c */
