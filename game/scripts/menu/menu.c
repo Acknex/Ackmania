@@ -32,9 +32,9 @@ int _menu_level_count = 0;
 LevelChoice *_menu_levels = NULL;
 STRING *_menu_currentChoice = "< Select Level >";
 
-SOUND *_menu_switchSound = "menu_click.wav";
-SOUND *_menu_triggerSound = "menu_action.wav";
-SOUND *_menu_music = "menu_6db.wav";
+SOUND *_menu_switchSound = "menu_click.ogg";
+SOUND *_menu_triggerSound = "menu_action.ogg";
+SOUND *_menu_music = "menu_6db.ogg";
 BMAP *_menu_baseflag = "menu_flag.png";
 
 BMAP *_menu_trackIcons[1024];
