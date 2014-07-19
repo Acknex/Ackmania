@@ -406,6 +406,10 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 	{
    	path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
   	vec_set(ent->x,temp);
+   	path_get_offset_position(temp2,64,temp);
+   	vec_diff(temp2,temp,ent->x);
+   	vec_to_angle(temp,temp2);
+   	ent->pan = ent->drive_pan = temp.x;
   vec_set(ent->parent->x, ent->x);
     ent->parent->z += ent->parent->skill1;
  vec_set(ent->parent->pan, ent->pan);
@@ -428,22 +432,24 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    item = !!(ent->kart_input & INPUT_ITEM);
 
    if (!ent->drifting) {
+      ent->kart_drift_buffer += (0-ent->kart_drift_buffer)*0.1*time_step;
       turn = g_raceplayerTurnSpeed * (left - right);
    } else {
+   	ent->kart_drift_buffer += (1-ent->kart_drift_buffer)*0.85*time_step;
       turn = ent->drift_pan * 0.3;
    }
 
-   ent->turn_speed += (turn * (ent->speed / ent->kart_maxspeed) - ent->turn_speed) * 0.55 * time_step;
+   //ent->turn_speed += (turn * (ent->speed / ent->kart_maxspeed) - ent->turn_speed) * 0.55 * time_step;
+   ent->turn_speed += (turn * pow((1.25*abs(ent->speed) / ent->kart_maxspeed),0.75)*sign(ent->speed) - ent->turn_speed) * 0.55 * time_step;
    ent->turn_speed2 += clamp((ent->turn_speed - ent->turn_speed2), -0.5, 0.5) * time_step;
-   ent->drive_pan += ent->ground_contact * ent->turn_speed * time_step;
-	ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed)*time_step;
+	ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed*2)*time_step;
 	ent->drive_pan = ang(ent->drive_pan);
 	ent->bump_ang += -ent->bump_ang*0.35*time_step;
 
   if (up && !down) {
       ent->speed += minv((ent->kart_maxspeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
    }
-            ent->speed = minv(ent->speed,(ent->kart_maxspeed - ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
+            ent->speed = minv(ent->speed,(ent->kart_maxspeed - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
    if (!(up || down)) {
       ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
@@ -526,7 +532,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 
    vec_set(ent->parent->x, ent->x);
    vec_set(ent->parent->pan, ent->pan);
-   ent->parent->pan = ent->pan + ent->drift_pan;
+   ent->parent->pan = ent->pan + ent->drift_pan*3;
    ent->parent->skill1 += ent->speed_z * time_step;
    ent->parent->skill1 = maxv(ent->parent->skill1, ent->kart_height);
    ent->parent->z = ent->parent->skill1;
