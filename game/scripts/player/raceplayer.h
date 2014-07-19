@@ -14,6 +14,7 @@ var g_kartsnd_hit = 60;
 
 BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
 BMAP* bmp_quad = "quad.tga";
+BMAP* bmp_shadow = "decal_shadow.tga";
 
 SOUND* g_sndAiaiaiai = "aiaiaiai.ogg";
 var g_kartsnd_aiaiai = 100;
