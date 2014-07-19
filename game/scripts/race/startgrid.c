@@ -12,7 +12,7 @@ void setStartgridConfig(int rank, VECTOR* pos, var ang) {
    g_numGridConfigUploaded++;
 }
 
-void create_kart_drivers_ev () {
+void create_kart_drivers_ev() {
    ac_race_kart_ent();
 }
 
@@ -32,11 +32,21 @@ ENTITY** create_kart_drivers()
 
       if (ent != null) {
          ent->pan = ang;
-         ent->sk_kart_id = i+1;
+         ent->sk_kart_id = i + 1;
       }
    }
 
    return g_kartEnts;
+}
+
+// gibt den Spieler mit dem Index zurück
+ENTITY* get_kart_driver(int index) {
+   return g_kartEnts[index];
+}
+
+// gibt HUMAN-Spieler zurück
+ENTITY* get_kart_player() {
+   return g_kartEnts[0];
 }
 
 #endif /* startgrid_c */
