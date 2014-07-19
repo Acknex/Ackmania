@@ -3,13 +3,13 @@
 
 // Typen von Items
 #define ITEM_NONE						0
-#define ITEM_GRAVE					1
-#define ITEM_ROCKET					2
-#define ITEM_AIM_ROCKET				3
-#define ITEM_TURBO					4
-#define ITEM_BADASS_ROCKET			5
-#define ITEM_MUSHROOM				6
-#define ITEM_FLASH					7
+#define ITEM_FLASH					1
+#define ITEM_AIM_ROCKET				2
+#define ITEM_ROCKET					3
+#define ITEM_GRAVE					4
+#define ITEM_MUSHROOM				5
+#define ITEM_BADASS_ROCKET			6
+#define ITEM_TURBO					7
 
 // Modellnamen der Items
 #define ITEM_GRAVE_MODEL			"item_grave.mdl"
