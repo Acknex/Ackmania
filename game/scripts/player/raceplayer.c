@@ -38,6 +38,12 @@ void p_kart_grass(PARTICLE* p)
 	p.event = NULL;
 }
 
+action ac_racetrack()
+{
+	c_setminmax(my);
+	set(my,POLYGON);
+}
+
 double dvec_dot(VECTOR* vec1, VECTOR* vec2)
 {
 	double d;
@@ -49,7 +55,7 @@ double dvec_dot(VECTOR* vec1, VECTOR* vec2)
 
 var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTOR* vresult, var* t)
 {
-    var res,i;
+    var res,dist1,dist2,i;
     VECTOR dir1,dir2;
 
     vec_diff(&dir1,vec2,vec1);
@@ -63,7 +69,22 @@ var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTO
         res = vec_dist(&dir1,point);
         if(vresult) vec_set(vresult,&dir1);
     }
-    else res = -1;
+    else
+    {
+        dist1 = vec_dist(vec1,point);
+        dist2 = vec_dist(vec2,point);
+        if(dist1 < dist2)
+        {
+        	res = dist1;
+            if(vresult) vec_set(vresult,vec1);
+        }
+        else
+        {
+         	res = dist2;
+            if(vresult) vec_set(vresult,vec2);
+       	}
+    }
+    
     if(t) *t = i;
 
     return res;
@@ -145,6 +166,7 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	ptr_remove(ent);
 }
 
+
 var get_xyangle(VECTOR* vec)
 {
 	var angle = 0, length;
@@ -176,11 +198,41 @@ void path_get_normal_position(VECTOR* vpos, var path_offset, var offset, VECTOR*
 	vec_add(vresult,vnormal);
 }
 	
-action ac_track()
+var ent_path_get_progress(ENTITY* kart)
 {
-	my.group = group_track;
-	set(my,POLYGON);
-	c_setminmax(my);
+	var progress = 0,dist,max_dist = 99999,t;
+	int i, j, max_nodes;
+	VECTOR temp,temp2,temp3;
+	ENTITY* ent;
+
+	ent = ent_create(NULL,nullvector,NULL);
+	max_nodes = path_next(ent);
+	for(i = 1; i < max_nodes; i++)
+	{
+		path_getnode(ent,i,temp,NULL);
+		path_getnode(ent,i+1,temp2,NULL);
+		ent->skill[i+1] = vec_dist(temp2,temp);
+ 	}
+	for(i = 1; i < max_nodes; i++) ent->skill[i+1] = ent->skill[i+1]+ent->skill[i];
+
+	max_nodes = path_next(ent);
+	for(i = 1; i <= max_nodes; i++)
+	{
+		path_getnode(ent,i,temp,NULL);
+		if(i == max_nodes) j = 1;
+		else j = i+1;
+		path_getnode(ent,j,temp2,NULL);
+		dist = get_line_segment_point_dist(temp,temp2,kart.x,temp3,t);
+		if(dist > 0 && dist < max_dist)
+		{
+			max_dist = dist;
+			progress = ent->skill[i]+vec_dist(temp3,temp);
+		}
+ 	}
+	
+	ptr_remove(ent);
+	
+	return progress;
 }
 
 
@@ -212,21 +264,31 @@ var get_kart_speed(ENTITY* ent, VECTOR* vdir)
 	return ent->speed;
 }
 
+var get_kart_lap_player()
+{
+	ENTITY* ent = get_kart_driver(0);
+	if(!ent) return -1;
+	return ent->kart_rank;
+}
+var get_kart_rank_player();
+
 void kart_event()
 {
-	var new_angle;
+	var new_angle,factor;
 	VECTOR temp;
 
+factor = 0.9;
+if(you)
+{
+	if(your._type == type_kart) factor = 0.5;
+}
 	vec_diff(temp,my->x,target);
-	my->bounce_x = temp.x;
-	my->bounce_y = temp.y;
-	if(my->speed > g_raceplayerMaxSpeed*0.25 || 1)
-	{
-		my->speed *= 0.3;
-		new_angle = get_xyangle(bounce);
-		if(abs(ang(new_angle-my->drive_pan)) < 90) my->bump_ang = ang(new_angle-my->drive_pan);
-		//my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
-	}
+	my->bounce_x = temp.x*factor;
+	my->bounce_y = temp.y*factor;
+	my->speed *= 0.25;
+	new_angle = get_xyangle(bounce);
+	if(abs(ang(new_angle-my->drive_pan)) < 90) my->bump_ang = ang(new_angle-my->drive_pan);
+	//my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
 }
 
 void postConstructPlayer(ENTITY* ent)
@@ -240,9 +302,10 @@ void postConstructPlayer(ENTITY* ent)
    VECTOR vecMin;
    vec_for_min(&vecMin, ent);
    ent->kart_height = -vecMin.z;
-
    ent->group = group_kart;
+   ent->kart_maxspeed = g_raceplayerMaxSpeed*(0.95+random(0.1));
    ent->bot_path_offset = random(2)-1;
+   ent->_type = type_kart;
 
    ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
    set(ent->parent, PASSABLE);
@@ -279,7 +342,7 @@ void loadPlayerCpuControlParams(ENTITY* ent)
 	var angle,angle_diff;
 	VECTOR temp,temp2;
 	
-   ent->kart_input = INPUT_UP;
+   ent->kart_input = INPUT_UP*!g_doNotDrive;
  path_get_normal_position(ent->x,256,sinv(total_ticks*4+ent->bot_path_offset),temp);
  vec_diff(temp2,temp,ent->x);
  angle = get_xyangle(temp2);
@@ -348,7 +411,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
       turn = ent->drift_pan * 0.3;
    }
 
-   ent->turn_speed += (turn * (ent->speed / g_raceplayerMaxSpeed) - ent->turn_speed) * 0.55 * time_step;
+   ent->turn_speed += (turn * (ent->speed / ent->kart_maxspeed) - ent->turn_speed) * 0.55 * time_step;
    ent->turn_speed2 += clamp((ent->turn_speed - ent->turn_speed2), -0.5, 0.5) * time_step;
    ent->drive_pan += ent->ground_contact * ent->turn_speed * time_step;
 	ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed)*time_step;
@@ -356,9 +419,9 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 	ent->bump_ang += -ent->bump_ang*0.35*time_step;
 
   if (up && !down) {
-      ent->speed += minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
+      ent->speed += minv((ent->kart_maxspeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
    }
-            ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - g_raceplayerMaxSpeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
+            ent->speed = minv(ent->speed,(ent->kart_maxspeed - ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
    if (!(up || down)) {
       ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
@@ -376,8 +439,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    ent->speed_y = temp.y;
    vec_scale(temp, time_step);
 
-   c_ignore(group_track,0);
-   c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES);
+   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES); //IGNORE_PUSH | 
 
    vec_scale(ent->bounce_x,1-0.4*time_step);
 
@@ -394,7 +456,6 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 
      c_ignore(group_kart, 0);
       c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
-      //if(!trace_hit) ent->falling = 1;
    if (ent->ground_contact) {
 
       if (tex_flag4 || hit.green > 100) {
@@ -406,22 +467,6 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    else {
       underground = ent->underground;
    }
-   #define DEBUG_FELI
-#ifdef DEBUG_FELIX
-   vec_set(temp,ent.x);
-   if(vec_to_screen(temp,camera))
-   {
-      draw_text(str_for_num(NULL,get_kart_speed(ent,NULL)),temp.x-40,temp.y-20,COLOR_RED);
-      draw_text(str_for_num(NULL,ent->drifting),temp.x-40,temp.y,COLOR_RED);
-      draw_text(str_for_num(NULL,hit.blue),temp.x-40,temp.y+20,COLOR_RED);
-      draw_text(str_for_num(NULL,hit.green),temp.x-40,temp.y+40,COLOR_RED);
-      draw_text(str_for_num(NULL,hit.red),temp.x-40,temp.y+60,COLOR_RED);
-      draw_text(str_for_num(NULL,underground),temp.x-40,temp.y+80,COLOR_RED);
-      draw_text(str_for_num(NULL,is_kart_turning(ent)),temp.x-40,temp.y+100,COLOR_RED);
-      draw_text(str_for_num(NULL,get_kart_accel(ent)),temp.x-40,temp.y+120,COLOR_RED);
-   }
-#endif
-
 
    if (ent->ground_contact) {
 
@@ -464,7 +509,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    ent->speed_z -= 9 * time_step;
 
    if(ent->speed < 15 || ent->underground < 0.9) ent->drifting = 0;
-   if(ent->ground_contact && ent->speed >= g_raceplayerMaxSpeed*0.2) {
+   if(ent->ground_contact && ent->speed >= ent->kart_maxspeed*0.2) {
    	ent->particle_emit += time_step;
    	if(ent->particle_emit > 0.5)
    	{
@@ -533,28 +578,27 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0);
    	}
-   	/*if(ent.kart_input)
-   	{
-  path_get_normal_position(ent->x,1+0*sinv(total_ticks*4),temp);
-  path_get_normal_position(ent->x,-1,temp2);
-  draw_point3d(temp,COLOR_GREEN,50,4);
-  draw_point3d(temp2,COLOR_GREEN,50,4);
-  draw_line3d(temp,NULL,50);
-  draw_line3d(temp,COLOR_GREEN,50);
-  draw_line3d(temp2,COLOR_GREEN,50);
-     }
-       // Item-Verwendung
-  if (item) {
+        // Item-Verwendung
+  /*if (item) {
   switch(ent->item_id) {
       case ITEM_GRAVE: plant_grave(ent); break;
       case ITEM_ROCKET: shoot_rocket(ent); break;
       case ITEM_AIM_ROCKET: shoot_aiming_rocket(ent); break;
-      case ITEM_TURBO: start_turbo(ent); break;
+      case ITEM_TURBO: use_turbo(ent); break;
       case ITEM_BADASS_ROCKET: shoot_badass_aiming_rocket(ent); break;
       case ITEM_MUSHROOM: start_mushroom(ent); break;
       case ITEM_FLASH: start_flash(ent); break;
       }
   }*/
+  
+ent->kart_progress_update += time_step;
+if(ent->kart_progress_update > 2)
+{
+	ent->kart_progress_update -= 2;
+	ent->kart_progress = ent_path_get_progress(ent);
+}
+  DEBUG_VAR(ent->kart_progress,200+80*ent.skill1);
+
 }
 
 #endif /* raceplayer_c */
