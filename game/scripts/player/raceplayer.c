@@ -114,7 +114,7 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	if(k > max_nodes) k = 1;
 	if(offset > 0 && k != vdata.y)
 	{
-		t = 
+		t = vdata.z*length-offset,0
 	path_getnode(ent,k,temp,NULL);
 		
 	}
