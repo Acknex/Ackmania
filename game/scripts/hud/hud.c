@@ -25,7 +25,7 @@
 #include "hud_cfg.h"
 #include "startgrid.h"
 #include "timer.h"
-#include "items.h"
+//#include "items.h"
 
 
 PANEL* panLaps;
