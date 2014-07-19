@@ -4,6 +4,92 @@
 #include "engine.h"
 #include "raceplayer.h"
 
+
+BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
+BMAP* bmp_quad = "quad.tga";
+
+void p_drift_smoke_fade(PARTICLE* p)
+{
+	vec_scale(p.vel_x,1-0.15*time_step);
+	p.size += (p.skill_a-p.size)*0.35*time_step;
+	p.alpha -= clamp(p.alpha*0.5,0.5,3)*time_step;
+	if(p.alpha <= 0) p.lifespan = 0;
+}
+
+void p_drift_smoke(PARTICLE* p)
+{
+	vec_add(p.vel_x,vector(1-random(2),1-random(2),1-random(1)));
+	vec_fill(p.blue,90+random(20));
+	set(p,MOVE);
+	p.size = 9+random(5);
+	p.alpha = 30+random(10);
+	p.skill_a = p.size*5;
+	p.bmap = bmp_smoke_spr1;
+	p.event = p_drift_smoke_fade;
+}
+
+void p_kart_grass(PARTICLE* p)
+{
+	vec_add(p.vel_x,vector(1-random(2)-p.vel_x*0.65,1-random(2),7+random(4)));
+	vec_set(p.blue,vector(100,130+random(20),109));
+	vec_scale(p.blue,0.8+random(0.2));
+	set(p,MOVE);
+	p.bmap = bmp_quad;
+	p.gravity = 3;
+	p.lifespan = 24;
+	p.size = 2+random(2);
+	p.event = NULL;
+}
+
+var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTOR* vresult, var* t)
+{
+    var res,i;
+    VECTOR dir1,dir2;
+    
+    vec_diff(&dir1,vec2,vec1);
+    vec_diff(&dir2,point,vec1);
+    i = vec_dot(&dir2,&dir1)/vec_dot(&dir1,&dir1);
+    
+    if(i >= 0 && i <= 1)
+    {
+        vec_lerp(&dir1,vec1,vec2,i);
+        
+        res = vec_dist(&dir1,point);
+        if(vresult) vec_set(vresult,&dir1);
+    }
+    else res = -1;
+    if(t) *t = i;
+    
+    return res; 
+}
+
+var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
+{
+	var dist,max_dist = 99999;
+	int i, j, max_nodes;
+	VECTOR temp,temp2,temp3;
+	ENTITY* ent;
+	
+	ent = ent_create(NULL,nullvector,NULL);
+	max_nodes = path_next(ent);
+	for(i = 1; i <= max_nodes; i++)
+	{
+		path_getnode(ent,i,temp,NULL);
+		if(i == max_nodes) j = 1;
+		else j = i+1;
+		path_getnode(ent,j,temp2,NULL);
+		dist = get_line_segment_point_dist(temp,temp2,vpos,temp3,NULL);
+		if(dist < max_dist)
+		{
+			max_dist = dist;
+			vec_set(vresult,temp3);
+		}
+	}
+	
+	ptr_remove(ent);
+}
+
+
 action ac_track()
 {
 	my.group = group_track;
@@ -105,42 +191,6 @@ void loadPlayerHumanControlParams(ENTITY* ent)
 void loadPlayerCpuControlParams(ENTITY* ent)
 {
    // TODO
-}
-
-BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
-BMAP* bmp_quad = "quad.tga";
-
-void p_drift_smoke_fade(PARTICLE* p)
-{
-	vec_scale(p.vel_x,1-0.15*time_step);
-	p.size += (p.skill_a-p.size)*0.35*time_step;
-	p.alpha -= clamp(p.alpha*0.5,0.5,3)*time_step;
-	if(p.alpha <= 0) p.lifespan = 0;
-}
-
-void p_drift_smoke(PARTICLE* p)
-{
-	vec_add(p.vel_x,vector(1-random(2),1-random(2),1-random(1)));
-	vec_fill(p.blue,90+random(20));
-	set(p,MOVE);
-	p.size = 9+random(5);
-	p.alpha = 30+random(10);
-	p.skill_a = p.size*5;
-	p.bmap = bmp_smoke_spr1;
-	p.event = p_drift_smoke_fade;
-}
-
-void p_kart_grass(PARTICLE* p)
-{
-	vec_add(p.vel_x,vector(1-random(2)-p.vel_x*0.65,1-random(2),7+random(4)));
-	vec_set(p.blue,vector(100,130+random(20),109));
-	vec_scale(p.blue,0.8+random(0.2));
-	set(p,MOVE);
-	p.bmap = bmp_quad;
-	p.gravity = 3;
-	p.lifespan = 24;
-	p.size = 2+random(2);
-	p.event = NULL;
 }
 
 void updatePlayer(ENTITY* ent)
@@ -378,6 +428,9 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
+   	
+   	path_get_closest_position(ent.x,temp2);
+   	draw_point3d(temp2,COLOR_RED,100,10);
 }
 
 #endif /* raceplayer_c */
