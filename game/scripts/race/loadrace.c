@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "circuitinfo.h"
 #include "environment.h"
+#include "postprocessing.h"
 
 void load_race(int index)
 {
@@ -28,14 +29,20 @@ void load_race(int index)
    str_remove(str);
 
    g_numGridConfigUploaded = 0;
-   environment_load(strLevelFilename, 0.5);
 
-   create_camera();
+   double skyspeed = g_circuit_skyspeeds[index];
+   environment_load(strLevelFilename, skyspeed);
+
+   float hdrstrength = g_circuit_hdrstrengths[index];
+   float hdrthreshold = g_circuit_hdrthresholds[index];
+   float hdrexposure = g_circuit_hdrexposures[index];
+
+   setHdr(hdrstrength, hdrthreshold, hdrexposure);
+   show_camera();
 
    wait(2);
 
    create_kart_drivers();
-   show_camera();
 
    // TODO lifecycle
    while (1) {

@@ -7,6 +7,7 @@
 #include <litec.h>
 #include <windows.h>
 #include <stdio.h>
+#include <mtlView.c>
 
 typedef BOOL bool;
 #define NULL 0
