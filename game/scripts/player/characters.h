@@ -1,8 +1,6 @@
 #ifndef characters_h
 #define characters_h
 
-#include "characters.c"
-
 TEXT* g_characterNames = {
    string (
          "Lotti",
@@ -12,7 +10,21 @@ TEXT* g_characterNames = {
    );
 }
 
+TEXT* g_characterKartFilenames = {
+   string (
+         "kart-pl1.mdl",
+         "kart-pl2.mdl",
+         "kart-pl3.mdl",
+         "kart-pl4.mdl"
+   );
+}
+
 // gibt den Namen des Spielers mit dem index = 0... zurück
-STRING* get_charactername (int id);
+STRING* get_charactername(int id);
+
+// gibt den Dateinamen des Spielerkarts mit dem index = 0... zurück
+STRING* get_kartfilename(int id);
+
+#include "characters.c"
 
 #endif /* characters_h */

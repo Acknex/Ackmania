@@ -123,13 +123,13 @@ void invoke_game_state_prerace(int oldGameState, int levelIndex) {
    switch (oldGameState) {
 
       case GAME_STATE_VIRGIN:
-         load_race(levelIndex);
          break;
 
       case GAME_STATE_MENU:
-         load_race(levelIndex);
          break;
    }
+
+   load_race(levelIndex);
 }
 
 void invoke_game_state_race(int oldGameState, int levelIndex) {

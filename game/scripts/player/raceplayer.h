@@ -3,6 +3,8 @@
 
 #include "skilldefines.h"
 
+bool g_doNotDrive = false;
+
 var gamepad_active;
 var key_up = 0;
 var key_down = 0;

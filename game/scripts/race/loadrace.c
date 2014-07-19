@@ -19,6 +19,8 @@ void load_race(int index)
 {
    level_load(null);
 
+   g_doNotDrive = true;
+
    on_esc = quit_race;
    on_space = null;
    on_enter = null;
