@@ -25,6 +25,8 @@
 #define TIMER_H
 
 void reset_timer();
+void pause_timer();
+void unpause_timer();
 var timer_getHundreds();
 var timer_getSeconds();
 var timer_getMinutes();
