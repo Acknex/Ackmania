@@ -51,6 +51,7 @@ var g_raceplayerBadGroundFac = 0.333;
 #define group_kart 1
 #define group_item 2
 #define group_obstacle 3
+#define group_track 4
 
 void postConstructPlayer (ENTITY* ent);
 
