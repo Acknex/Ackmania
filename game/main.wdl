@@ -9,6 +9,7 @@ path "levels\\test";
 path "levels\\test2";
 path "levels\\textures";
 path "panels\\menu";
+path "panels\\items";
 path "shaders\\menu";
 path "sounds\\menu";
 path "sprites";
