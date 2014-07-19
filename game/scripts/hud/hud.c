@@ -44,21 +44,15 @@ var vCurrentLap;
 var vTotalLaps;
 var vHudScale = 0;
 var vHudCreated = 0;
+var vItemX;
+var vItemY;
+var vItemId;
 STRING** strRank[5];
-BMAP* bmapItem;
+BMAP* bmapItem = "item_strip.tga";
 
 
 void scale_hud();
 void update_hudrank();
-void update_huditem();
-
-//temp
-BMAP* tempBmap = "item_jetpack.tga";
-BMAP* getItemByPlayer()
-{
-	return tempBmap;
-}
-//temp END
  
 void create_hud()
 {
@@ -98,6 +92,8 @@ void create_hud()
 	
 	/* item panel */
 	panItem = pan_create(NULL, HUD_LAYER);
+	panItem->bmap = bmap_create("item_border.tga");
+	pan_setwindow (panItem, 0, HUD_PANITEM_BORDERWIDTH, HUD_PANITEM_BORDERWIDTH, HUD_PANITEM_SIZE, HUD_PANITEM_SIZE, bmapItem, &vItemX, &vItemY);
 	panItem->flags |= TRANSLUCENT;
 	
 	
@@ -116,7 +112,8 @@ void remove_hud()
 	ptr_remove(panLaps);
 	ptr_remove(panTime);
 	ptr_remove(panRank);
-	
+	ptr_remove(panItem);
+	ptr_remove(panItem->bmap);
 	for (i = 0; i < 5; i++)
 	{
 		ptr_remove(strRank[i]);
@@ -157,17 +154,9 @@ void update_hud()
 	//vTotalLaps = 5;   	
 
 	/* update item slot */
-	bmapItem = getItemByPlayer();
-	if (bmapItem != panItem->bmap)
-	{
-		panItem->bmap = bmapItem;
-		if (bmapItem != NULL)
-		{
-			panItem->size_x = bmap_width(bmapItem);
-			panItem->size_y = bmap_height(bmapItem);
-			update_huditem();
-		}
-	}
+	//vItemId = getItemByPlayer();
+	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
+	vItemY = 0;
 }
 
 void show_hud()
@@ -233,7 +222,10 @@ void scale_hud()
 	update_hudrank();
 	
 	/* item panel */
-	update_huditem();
+	panItem->scale_x = HUD_PANITEM_SCALE * vHudScale;
+	panItem->scale_y = HUD_PANITEM_SCALE * vHudScale;
+	panItem->pos_x = (screen_size.x - HUD_PANITEM_BORDERSIZE * panItem->scale_x) * 0.5;
+	panItem->pos_y = HUD_PANLAPS_POSY * vHudScale;
 }
 
 void update_hudrank()
@@ -246,17 +238,5 @@ void update_hudrank()
 	vPosX = (HUD_PANRANK_POSX + HUD_PANRANK_OFFSX) * vHudScale;
 	pan_setdigits(panRank, 2, vPosX, vPosY, (strRank[vRank]), fntTime, 1, &vRank);
 }
-
-void update_huditem()
-{
-	panItem->scale_x = vHudScale;
-	panItem->scale_y = vHudScale;
-	if (panItem->bmap != NULL)
-	{
-		panItem->pos_x = (screen_size.x - bmap_width(panItem->bmap) * panItem->scale_x) * 0.5;
-		panItem->pos_y = 150;
-	}
-}
-
 
 
