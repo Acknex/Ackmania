@@ -1,22 +1,12 @@
 #define DEBUG
 
-#define PRAGMA_PATH "scripts\\engine";
-#include "engine.h"
-
-#ifdef DEBUG
-#include <default.c>
-#endif
-
 #define PRAGMA_PATH "levels";
 #define PRAGMA_PATH "scripts";
 #define PRAGMA_PATH "sprites";
 #define PRAGMA_PATH "music";
 #define PRAGMA_PATH "scripts\\camera";
-#define PRAGMA_PATH "scripts\\circuits";
 #define PRAGMA_PATH "scripts\\credits";
-#define PRAGMA_PATH "scripts\\engine";
 #define PRAGMA_PATH "scripts\\environment";
-#define PRAGMA_PATH "scripts\\globals";
 #define PRAGMA_PATH "scripts\\helper";
 #define PRAGMA_PATH "scripts\\hud";
 #define PRAGMA_PATH "scripts\\main";
@@ -24,6 +14,12 @@
 #define PRAGMA_PATH "scripts\\player";
 #define PRAGMA_PATH "scripts\\race";
 #define PRAGMA_PATH "scripts\\shaders";
+
+#include "engine.h"
+
+#ifdef DEBUG
+#include <default.c>
+#endif
 
 #include "sysinit.h"
 #include "skilldefines.h"
