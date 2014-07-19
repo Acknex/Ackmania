@@ -7,7 +7,7 @@
 var g_doNotDrive = false;
 
 SOUND* g_sndKartJump = "kart_jump.wav";
-var g_kartsnd_jump = 75;
+var g_kartsnd_jump = 60;
 
 BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
 BMAP* bmp_quad = "quad.tga";
