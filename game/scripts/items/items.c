@@ -180,6 +180,8 @@ void _item_evt()
 action item()
 {
 	_item_setup();	
+	place_on_floor(me);
+	my->z +=5;
 	my->event = _item_evt;
 	var vZ = my->z;
 	var vOffset = random(500);
