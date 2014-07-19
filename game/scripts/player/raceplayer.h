@@ -1,9 +1,10 @@
 #ifndef raceplayer_h
 #define raceplayer_h
 
+#include "engine.h"
 #include "skilldefines.h"
 
-bool g_doNotDrive = false;
+var g_doNotDrive = false;
 
 var gamepad_active;
 var key_up = 0;

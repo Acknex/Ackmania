@@ -3,11 +3,7 @@
 
 #include "sky.h"
 
-void environment_load (char* str, float skyspeed)
-{
-   level_load(str);
-   skychange(skyspeed);
-}
+void environment_load (char* str, float skyspeed);
 
 #include "environment.c"
 

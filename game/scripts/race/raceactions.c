@@ -25,6 +25,12 @@ void ac_race_kart_ent()
 {
    wait(1);
 
+   // decal shadow
+   set(my, SHADOW);
+   if (my->parent != null) {
+      set(my->parent, SHADOW);
+   }
+
    postConstructPlayer(my);
 
    while (1) {
