@@ -14,9 +14,6 @@ void load_race(int index)
    STRING* strMusicFilename = getCircuitMusicFilenameStr(index);
    STRING* strLevelFilename = getCircuitLevelFilenameStr(index);
 
-   error(strMusicFilename);
-   error(strLevelFilename);
-
    media_stop(g_raceMusicHandle);
 
    STRING* str = str_create("#128");
