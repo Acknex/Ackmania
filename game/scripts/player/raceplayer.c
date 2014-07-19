@@ -502,6 +502,8 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
             key_hop_off = 0;
          }
 
+         snd_play(g_sndKartJump, g_kartsnd_jump, 0);
+
          ent->speed_z = 15;
          ent->ground_contact = 0;
       }
