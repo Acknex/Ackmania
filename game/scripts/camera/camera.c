@@ -62,8 +62,8 @@ void update_camera()
 	
 	if (camera_focus_ent != NULL)
 	{
-//		vDistanceFactor = 1 + get_kart_speed(camera_focus_ent, NULL);
-		vDistanceFactor = 1;
+		//vDistanceFactor = get_kart_speed(camera_focus_ent, NULL);
+		vDistanceFactor = 1;//0.25;
 	
 		vec_set(vecPos, vector(-CAMERA_DIST, 0, 0));
 		vec_rotate(vecPos, cam->pan);
@@ -77,7 +77,7 @@ void update_camera()
 		1920x1200 --> ARC 60
 		*/
 		var vFac = (1200 - screen_size.y) / 1200;
-		cam->arc = 60 * (1-vFac) + 110 * vFac;
+		cam->arc = (60 * (1-vFac) + 110 * vFac) * vDistanceFactor;
 	}
 }
 
