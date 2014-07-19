@@ -1,8 +1,8 @@
 A4 CUbes - Firo hat Modelle - nach 10 cubes gibte es einen Spontanboost --DONE
-A9 Grab - Hindernis/Bremse - Lotti fledermause kommen beim EInsammeln heraus - Fledermaus
+A9 Grab - Hindernis/Bremse - Lotti fledermause kommen beim EInsammeln heraus - Fledermaus --DONE
 Rakete - Projetil - grün/rot (vielleicht zielverfolgung) --DONE
 TUrbo - Jetpack --DONE
 Spikes - aus dem Boden --DONE
-Ultima - Lottighost / Flaschengeist
+Ultima - Bombe
 Mushroom - Rainbowmode --DONE
 Flash - Bliz --DONE
