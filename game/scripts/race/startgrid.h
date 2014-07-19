@@ -1,7 +1,9 @@
 #ifndef startgrid_h
 #define startgrid_h
 
-#define MAX_STARTGRID_POS 4
+#include "skilldefines.h"
+
+#define MAX_STARTGRID_POS MAX_PLAYERS
 
 VECTOR g_vecStartgridPos [MAX_STARTGRID_POS];
 var g_vecStartgridAng [MAX_STARTGRID_POS];
