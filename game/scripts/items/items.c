@@ -18,33 +18,9 @@ var get_current_item_id()
 void _item_setup()
 {
 	my->emask |= ENABLE_TRIGGER; 
-	my->trigger_range = 20;
+	my->trigger_range = 70;
 	set (me, PASSABLE);
-}
-
-// Lässt ein Item in die obere linke Ecke verschwinden
-action _item_fade()
-{
-	var vTicks = total_ticks;
-	VECTOR vecDist;
-	
-	vec_set(&vecDist, &my->x);
-	vec_sub(&vecDist, &player->x);
-	while (my->scale_x > 0)
-	{
-		//scale down item
-		my->scale_x = maxv(my->scale_x - 0.1 * time_step, 0);
-		my->scale_y = my->scale_x;
-		my->scale_z = my->scale_x;
-		my->pan += (total_ticks - vTicks) * 10 * time_step;
-
-		//move item towards player
-		vec_set(&my->x, &vecDist);
-		vec_scale(&my->x, my->scale_x);
-		vec_add(&my->x, &player->x);
-		wait(1);
-	}
-	ent_remove(me);
+	c_setminmax(me);
 }
 
 // Effekte für Items
@@ -82,7 +58,7 @@ void _item_a4_cube_evt()
 		if (you != NULL) you.PL_A4_COUNT +=1;
 		//achievement("firsta4cube");
 		set(me,INVISIBLE);
-		ent_create(str_for_entfile(NULL,me), my->x, _item_fade);
+		//ent_create(str_for_entfile(NULL,me), my->x, _item_fade);
 		wait(-3);
 		vec_set(my.scale_x, vector(0,0,0));
 		reset(me,INVISIBLE);
@@ -99,6 +75,7 @@ void _item_a4_cube_evt()
 action a4_cube()
 {
 	_item_setup();
+	//my->trigger_range = 200;
 	place_on_floor(me);
 	my->z +=5;
 	my->emask |=ENABLE_TRIGGER;
@@ -124,7 +101,7 @@ action a4_cube()
 		my->tilt = 30 * sinv(total_ticks * 10 + vOffset);
 		wait(1);
 	}
-	_item_fade();
+	//_item_fade();
 }
 
 // Gebe dem Spieler ein zufälliges Item
@@ -139,7 +116,7 @@ void _give_random_item(ENTITY* driver)
 			// Rotation an.
 			
 			ent_playsound(me, sndGotNewItem, 1000);
-			switch(driver.item_id) {
+			/*switch(driver.item_id) {
 				case 1: ent_create(ITEM_GRAVE_MODEL, my->x, _item_fade); break;
 				case 2: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
 				case 3: ent_create(ITEM_ROCKET_MODEL, my->x, _item_fade); break;
@@ -147,7 +124,7 @@ void _give_random_item(ENTITY* driver)
 				case 5: ent_create(ITEM_BADASS_ROCKET_MODEL, my->x, _item_fade); break;
 				case 6: ent_create(ITEM_MUSHROOM_MODEL, my->x, _item_fade); break;
 				case 7: ent_create(ITEM_FLASH_MODEL, my->x, _item_fade); break;
-			}
+			}*/
 		}
 	}
 }
@@ -182,13 +159,11 @@ action item()
 {
 	_item_setup();	
 	place_on_floor(me);
-	my->z +=5;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_evt;
 	var vZ = my->z;
 	var vOffset = random(500);
 	var vParticles = 0;
-	my->material = mtl_specBump;
 	my->pan = random(360);
 	
 	while(me)
