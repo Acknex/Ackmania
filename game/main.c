@@ -5,6 +5,7 @@
 
 #define PRAGMA_PATH "levels";
 #define PRAGMA_PATH "scripts";
+#define PRAGMA_PATH "sprites";
 #define PRAGMA_PATH "scripts\\camera";
 #define PRAGMA_PATH "scripts\\circuits";
 #define PRAGMA_PATH "scripts\\globals";

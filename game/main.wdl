@@ -9,3 +9,4 @@ path "levels\\textures";
 path "panels\\menu";
 path "shaders\\menu";
 path "sounds\\menu";
+path "sprites";
