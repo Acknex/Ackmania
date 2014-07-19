@@ -32,9 +32,9 @@ int _menu_level_count = 0;
 LevelChoice *_menu_levels = NULL;
 STRING *_menu_currentChoice = "< Select Level >";
 
-SOUND *_menu_switchSound = "menu_click.ogg";
-SOUND *_menu_triggerSound = "menu_action.ogg";
-SOUND *_menu_music = "menu_6db.ogg";
+SOUND *_menu_switchSound = "menu_click.wav";
+SOUND *_menu_triggerSound = "menu_action.wav";
+SOUND *_menu_music = "menu_6db.wav";
 BMAP *_menu_baseflag = "menu_flag.png";
 
 BMAP *_menu_trackIcons[1024];
@@ -280,6 +280,15 @@ void menu_init(int baseLayer)
 void menu_open()
 {
 	_menu_visible = true;
+
+	// play sound on entry
+	if (g_menuOpenedFirst) {
+	   snd_play(g_sndMenuOpen1st, 100, 0);
+	   g_menuOpenedFirst = false;
+	} else {
+	   snd_play(g_sndMenuOpenNext, 100, 0);
+	}
+
 }
 
 /**

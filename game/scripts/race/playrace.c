@@ -8,6 +8,11 @@ void play_race(int index)
 {
    reset_timer();
    show_hud();
+
+   while (1) {
+      update_camera();
+      wait(1);
+   }
 }
 
 

@@ -7,12 +7,18 @@
 #include "playrace.h"
 #include "menu.h"
 
+void quitGame ()
+{
+   sys_exit("bye bye Lotti...");
+}
+
 // gibt den aktuellen Spielstatus zurück
 int get_game_state() {
    return g_gameState;
 }
 
-void enforce_game_state_credits_stop () {
+void enforce_game_state_credits_stop() {
+   g_creditsStopEnforced = true;
    invoke_game_state(GAME_STATE_MENU, 0);
 }
 
@@ -25,11 +31,19 @@ void invoke_game_state_credits(int oldGameState, int levelIndex)
          break;
    }
 
+   hide_hud();
+
+   g_creditsStopEnforced = false;
+
+   credits_start();
+
+   while (key_esc || key_space || key_enter) {
+      wait(1);
+   }
+
    on_esc = enforce_game_state_credits_stop;
    on_space = enforce_game_state_credits_stop;
    on_enter = enforce_game_state_credits_stop;
-
-   credits_start();
 }
 
 // wechselt vom aktuellen Spielstand in den angegebenen - gibt den letzten zurück; -1 wenn nicht erlaubt
@@ -60,6 +74,8 @@ int invoke_game_state(int gameState, int levelIndex) {
    return oldGameState;
 }
 
+
+
 void invoke_game_state_menu(int oldGameState, int levelIndex) {
 
    switch (oldGameState) {
@@ -72,17 +88,20 @@ void invoke_game_state_menu(int oldGameState, int levelIndex) {
          break;
    }
 
-   menu_init(15);
+   on_esc = invoke_game_state_menu_exit_ev;
+   on_space = null;
+   on_enter = null;
 
    menu.onExit = invoke_game_state_menu_exit_ev;
    menu.onCredits = invoke_game_state_menu_credits;
    menu.onLevelStart = invoke_game_state_menu_level_ev;
 
+   hide_camera();
    menu_open();
 }
 
 void invoke_game_state_menu_exit_ev() {
-   sys_exit("Bye bye Lotti!");
+   quitGame();
 }
 
 void invoke_game_state_menu_credits() {
