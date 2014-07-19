@@ -1,7 +1,7 @@
 #ifndef _CREDITS_C_
 #define _CREDITS_C_
 
-#define TEST_DEBUG
+//#define TEST_DEBUG
 
 #ifdef TEST_DEBUG
 
