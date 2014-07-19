@@ -9,6 +9,8 @@ void play_race(int index)
    g_doNotDrive = false;
 
    reset_timer();
+   unpause_timer();
+
    show_hud();
 
    while (1) {
