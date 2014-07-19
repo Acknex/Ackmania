@@ -101,6 +101,9 @@ void create_hud()
 	update_hud();
 	vHudCreated = 1;
 	show_hud();
+	
+	//temp
+	vItemId = 4;
 }
 
 void remove_hud()
