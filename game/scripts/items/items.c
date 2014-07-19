@@ -98,7 +98,9 @@ void _item_a4_cube_evt()
 // Bringt Punkte. Bei 10 Punkten -> Sofortiger Speedboost.
 action a4_cube()
 {
-	_item_setup();	
+	_item_setup();
+	place_on_floor(me);
+	my->z +=5;
 	my->event = _item_a4_cube_evt;
 	var vZ = my->z;
 	var vOffset = random(500);
