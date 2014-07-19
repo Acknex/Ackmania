@@ -6,3 +6,6 @@ path "sounds";
 path "levels";
 path "levels\\test";
 path "levels\\textures";
+path "panels\\menu";
+path "shaders\\menu";
+path "sounds\\menu";
