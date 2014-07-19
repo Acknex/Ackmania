@@ -7,6 +7,7 @@ path "sounds";
 path "levels";
 path "levels\\test";
 path "levels\\test2";
+path "levels\\desert-road";
 path "levels\\textures";
 path "panels\\menu";
 path "panels\\items";
