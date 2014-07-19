@@ -13,6 +13,7 @@
 	#define PRAGMA_PATH "../../levels/"
 	#define PRAGMA_PATH "../../levels/test/"
 	#define PRAGMA_PATH "../../models/"
+	#define PRAGMA_PATH "../../music/"
 
 	#include <acknex.h>
 	#include <windows.h>
@@ -33,6 +34,7 @@ STRING *_menu_currentChoice = "< Select Level >";
 
 SOUND *_menu_switchSound = "menu_click.wav";
 SOUND *_menu_triggerSound = "menu_action.wav";
+SOUND *_menu_music = "menu_6db.wav";
 BMAP *_menu_baseflag = "menu_flag.png";
 
 BMAP *_menu_trackIcons[1024];
@@ -103,6 +105,9 @@ void menu_init(int baseLayer)
 		_menu_trackIcons[i] = bmap_create(getCircuitPicFilenameStr(i));
 	}
 	
+	var menuMusic = snd_loop(_menu_music, 80, 0);
+	snd_pause(menuMusic);
+	
 	while(1) {
 		lastKeyLeft = MENU_DEF_LEFT;
 		lastKeyRight = MENU_DEF_RIGHT;
@@ -114,6 +119,9 @@ void menu_init(int baseLayer)
 		ent_animate(_menu_flag, "Wave", 0.8 * total_ticks, ANM_CYCLE);
 		
 		if(_menu_visible) {
+			if(!snd_playing(menuMusic)) {
+				snd_start(menuMusic);
+			}
 			_menu_background.flags |= SHOW;
 			_menu_background.scale_x = screen_size.x / bmap_width(_menu_background.bmap);
 			_menu_background.scale_y = screen_size.y / bmap_height(_menu_background.bmap);
@@ -254,6 +262,9 @@ void menu_init(int baseLayer)
 				}
 			}
 		} else {
+			if(snd_playing(menuMusic)) {
+				snd_pause(menuMusic);
+			}
 			_menu_background.flags &= ~SHOW;
 			_menu_bigheader.flags &= ~SHOW;
 			_menu_flag.flags2 &= ~SHOW;
