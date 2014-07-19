@@ -9,6 +9,7 @@
 #define ITEM_TURBO					4
 #define ITEM_BADASS_ROCKET			5
 #define ITEM_MUSHROOM				6
+#define ITEM_FLASH					7
 
 // Modellnamen der Items
 #define ITEM_GRAVE_MODEL			"item_grave.mdl"
@@ -17,6 +18,7 @@
 #define ITEM_TURBO_MODEL			"item_turbo.mdl"
 #define ITEM_BADASS_ROCKET_MODEL	"item_bomb.mdl"
 #define ITEM_MUSHROOM_MODEL		"item_mushroom.mdl"
+#define ITEM_FLASH_MODEL			"item_flash.mdl"
 
 // Flage für die Items
 #define IS_TRAP						FLAG3
@@ -44,14 +46,6 @@ SOUND* sndFlashStart						= "spikes01.wav";
 // Bitmaps für Effekte
 BMAP* bmapRocketSmoke					= "smoke.tga";
 BMAP* bmapStar								= "star.tga";
-
-// Bitmaps der Items
-/*BMAP* bmapRocketItem			= "rocketItem.tga";
-BMAP* bmapGraveItem			= "graveItem.tga";
-BMAP* bmapAimrocketItem		= "aimrocketItem.tga";
-BMAP* bmapTurboItem			= "turboItem.tga";
-BMAP* bmapBadassRocketItem	= "badassRocketItem.tga";
-BMAP* bmapMushroomItem		= "mushroomItem.tga";*/
 
 // Gib das aktuelle Item des Spielers zurück
 var get_current_item_id();

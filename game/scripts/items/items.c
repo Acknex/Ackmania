@@ -132,7 +132,7 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			driver.item_id = 1 + integer(random(5));
+			driver.item_id = 1 + integer(random(6));
 			
 			// Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
@@ -145,6 +145,7 @@ void _give_random_item(ENTITY* driver)
 				case 4: ent_create(ITEM_TURBO_MODEL, my->x, _item_fade); break;
 				case 5: ent_create(ITEM_BADASS_ROCKET_MODEL, my->x, _item_fade); break;
 				case 6: ent_create(ITEM_MUSHROOM_MODEL, my->x, _item_fade); break;
+				case 7: ent_create(ITEM_FLASH_MODEL, my->x, _item_fade); break;
 			}
 		}
 	}

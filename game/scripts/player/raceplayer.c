@@ -602,8 +602,9 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0);
    	}
-        // Item-Verwendung
-  /*if (item) {
+   	
+  // Item-Verwendung
+  if (item) {
   switch(ent->item_id) {
       case ITEM_GRAVE: plant_grave(ent); break;
       case ITEM_ROCKET: shoot_rocket(ent); break;
@@ -613,7 +614,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
       case ITEM_MUSHROOM: start_mushroom(ent); break;
       case ITEM_FLASH: start_flash(ent); break;
       }
-  }*/
+  }
   
 ent->kart_progress_update += time_step;
 if(ent->kart_progress_update > 2)
