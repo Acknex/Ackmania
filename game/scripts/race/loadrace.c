@@ -5,13 +5,32 @@
 #include "loadrace.h"
 #include "startgrid.h"
 #include "camera.h"
+#include "circuitinfo.h"
 
-void load_race (char* filename)
+void load_race(int index)
 {
    level_load(null);
 
+   STRING* strMusicFilename = getCircuitMusicFilenameStr(index);
+   STRING* strLevelFilename = getCircuitLevelFilenameStr(index);
+
+   error(strMusicFilename);
+   error(strLevelFilename);
+
+   media_stop(g_raceMusicHandle);
+
+   STRING* str = str_create("#128");
+   str_cpy(str, "media\\");
+   str_cat(str, strMusicFilename);
+
+   if (strMusicFilename != null) {
+      g_raceMusicHandle = media_loop(str, null, g_raceMusicVolume);
+   }
+
+   str_remove(str);
+
    g_numGridConfigUploaded = 0;
-   level_load(filename);
+   level_load(strLevelFilename);
 
    create_camera();
 
