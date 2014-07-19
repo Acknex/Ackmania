@@ -163,7 +163,7 @@ void show_hud()
 	if (vHudCreated != 0)
 	{
 		panLaps->flags |= SHOW;
-		panTime->flags |= SHOW;
+		//panTime->flags |= SHOW;
 		panRank->flags |= SHOW;
 		panItem->flags |= SHOW;
 	}

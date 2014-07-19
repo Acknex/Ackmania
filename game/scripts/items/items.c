@@ -101,6 +101,7 @@ action a4_cube()
 	_item_setup();
 	place_on_floor(me);
 	my->z +=5;
+	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_a4_cube_evt;
 	var vZ = my->z;
 	var vOffset = random(500);
@@ -182,6 +183,7 @@ action item()
 	_item_setup();	
 	place_on_floor(me);
 	my->z +=5;
+	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_evt;
 	var vZ = my->z;
 	var vOffset = random(500);
