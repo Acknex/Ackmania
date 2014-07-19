@@ -33,7 +33,7 @@ var is_kart_turning(ENTITY* ent)
 
 var get_kart_accel(ENTITY* ent)
 {
-	return ent->speed-ent->old_speed;
+	return (ent->speed-ent->old_speed)/time_step;
 }
 
 var get_kart_speed(ENTITY* ent, VECTOR* vdir)
@@ -107,9 +107,31 @@ void loadPlayerCpuControlParams(ENTITY* ent)
    // TODO
 }
 
+BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
+
+void p_drift_smoke_fade(PARTICLE* p)
+{
+	vec_scale(p.vel_x,1-0.15*time_step);
+	p.size += (p.skill_a-p.size)*0.35*time_step;
+	p.alpha -= clamp(p.alpha*0.5,0.5,3)*time_step;
+	if(p.alpha <= 0) p.lifespan = 0;
+}
+
+void p_drift_smoke(PARTICLE* p)
+{
+	vec_add(p.vel_x,vector(1-random(2),1-random(2),1-random(1)));
+	vec_fill(p.blue,80);
+	set(p,MOVE);
+	p.size = 9+random(5);
+	p.alpha = 30+random(10);
+	p.skill_a = p.size*5;
+	p.bmap = bmp_smoke_spr1;
+	p.event = p_drift_smoke_fade;
+}
+
 void updatePlayer(ENTITY* ent)
 {
-   VECTOR temp;
+   VECTOR temp,temp2;
    var up, down, left, right, hop, item, underground, old_contact, turn;
 
    ent->old_speed = ent->speed;
@@ -123,7 +145,7 @@ void updatePlayer(ENTITY* ent)
    if (!ent->drifting) {
       turn = g_raceplayerTurnSpeed * (left - right);
    } else {
-      turn = ent->drift_pan * 0.2;
+      turn = ent->drift_pan * 0.3;
    }
 
    ent->turn_speed += (turn * (ent->speed / g_raceplayerMaxSpeed) - ent->turn_speed) * 0.55 * time_step;
@@ -136,7 +158,7 @@ void updatePlayer(ENTITY* ent)
   if (up && !down) {
       ent->speed += minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
    }
-            ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
+            ent->speed = minv(ent->speed,(g_raceplayerMaxSpeed - g_raceplayerMaxSpeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
    if (!(up || down)) {
       ent->speed += clamp(-ent->speed * 0.25, -g_raceplayerAccelSpeed, g_raceplayerAccelSpeed) * time_step;
@@ -229,7 +251,7 @@ void updatePlayer(ENTITY* ent)
          ent->drift_dir = left - right;
       }
 
-      ent->drift_pan += clamp((ent->drift_dir * (10 + 10 * abs(left - right) * (sign(left - right) == ent->drift_dir)) - ent->drift_pan)*0.4, -3.5, 3.5)
+      ent->drift_pan += clamp((ent->drift_dir * (3 + 15 * abs(left - right) * (sign(left - right) == ent->drift_dir)) - ent->drift_pan)*0.4, -3.5, 3.5)
             * time_step;
    }
 
@@ -240,6 +262,30 @@ void updatePlayer(ENTITY* ent)
    ent->parent->skill1 = maxv(ent->parent->skill1, ent->kart_height);
    ent->parent->z = ent->parent->skill1;
    ent->speed_z -= 9 * time_step;
+   
+   if(ent->speed < 15 || ent->underground < 0.9) ent->drifting = 0;
+   if(ent->ground_contact) {
+   	ent->particle_emit += time_step;
+   	if(ent->particle_emit > 0.5)
+   	{
+   		ent->particle_emit -= 0.5;
+   		vec_set(temp,vector(-22,22,-ent->kart_height*0.5));
+   		vec_rotate(temp,ent->parent->pan);
+   		vec_add(temp,ent->parent->x);
+   		vec_set(temp2,vector(-4,0,4));
+   		vec_rotate(temp2,ent->parent->pan);
+		if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
+		else
+		{
+      c_ignore(group_kart, 0);
+      c_trace(vector(temp->x, temp->y, temp->z + 64), vector(temp->x, temp->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
+		}
+   		vec_set(temp,vector(-22,-22,-ent->kart_height*0.5));
+   		vec_rotate(temp,ent->parent->pan);
+   		vec_add(temp,ent->parent->x);
+		if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
+	}
+   }
 }
 
 #endif /* raceplayer_c */
