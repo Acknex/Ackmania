@@ -4,6 +4,7 @@
 #include <default.c>
 
 #define PRAGMA_PATH "scripts";
+#define PRAGMA_PATH "scripts\\camera";
 #define PRAGMA_PATH "scripts\\globals";
 #define PRAGMA_PATH "scripts\\main";
 #define PRAGMA_PATH "scripts\\player";

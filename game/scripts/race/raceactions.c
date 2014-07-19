@@ -6,6 +6,7 @@
 #include "startgrid.h"
 #include "skilldefines.h"
 #include "raceplayer.h"
+#include "camera.h"
 
 void ac_race_kart_pos()
 {
@@ -40,6 +41,10 @@ void ac_race_kart_ent()
       }
 
       updatePlayer(my);
+
+      if (id == 1) {
+         camera_focus(my);
+      }
 
       wait(1);
    }
