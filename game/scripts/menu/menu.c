@@ -28,8 +28,6 @@
 BOOL _menu_visible = false;
 BOOL _menu_trackSelectionActive = false;
 int _menu_selection = 0;
-int _menu_level_count = 0;
-LevelChoice *_menu_levels = NULL;
 STRING *_menu_currentChoice = "< Select Level >";
 
 SOUND *_menu_switchSound = "menu_click.wav";
@@ -297,20 +295,6 @@ void menu_open()
 void menu_close()
 {
 	_menu_visible = false;
-}
-
-/**
- * Setzt die Levelauswahl.
- */
-void menu_set_levels(int count, LevelChoice *choices)
-{
-	if(count > 0) {
-		_menu_level_count = count;
-		_menu_levels = choices;
-	} else {
-		_menu_level_count = 0;
-		_menu_levels = NULL;
-	}
 }
 
 #ifdef TEST_DEBUG
