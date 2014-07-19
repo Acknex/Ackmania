@@ -34,6 +34,31 @@ action _item_fade()
 	ent_remove(me);
 }
 
+// Effekte für Items
+void _item_particleFader(PARTICLE *p) 
+{
+	p->alpha -= 5 * time_step;
+	p->size += time_step;
+	if (p->alpha <= 0) 
+	{
+		p->lifespan = 0;
+	}
+}
+
+void _item_particle (PARTICLE *p) 
+{
+	VECTOR vecTemp;
+	vec_randomize(&vecTemp, 10);
+	vec_normalize(&vecTemp, 4);
+	vec_add (&p->vel_x, &vecTemp);
+	p->vel_y = 0;
+	vec_set(&p->blue, vector(0, 255, 255));
+	set(p, MOVE | TRANSLUCENT | BRIGHT);
+	p->lifespan = 80;
+	p->size  = 30 + random(5);
+	p->event = _item_particleFader;
+}
+
 // Event für einen einsammelbaren Cube (Münzen)
 void _item_a4_cube_evt()
 {
@@ -74,7 +99,7 @@ action a4_cube()
 		if (vParticles > 10)
 		{
 			if (!is(me,INVISIBLE)) {
-				effect(item_particle, 10, &my->x, nullvector);
+				effect(_item_particle, 10, &my->x, nullvector);
 				vParticles -= 10;
 			}
 		}
@@ -148,7 +173,7 @@ action item()
 		if (vParticles > 10)
 		{
 			if (!is(me,INVISIBLE)) {
-				effect(item_particle, 10, &my->x, nullvector);
+				effect(_item_particle, 10, &my->x, nullvector);
 				vParticles -= 10;
 			}
 		}
@@ -190,11 +215,15 @@ void plant_grave(VECTOR* pos) {
 // Rakete, die geradeaus fliegt
 action _rocket()
 {
-	while(me)
+	int liveTime = 4000;
+	while(me && liveTime > 0)
 	{
 		c_move(me, vector(10 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		liveTime--;
 		wait(1);
 	}
+	// effect(explode, 20, my->x, nullvector);
+	ent_remove(me);
 }
 
 // Schießt eine Rakete ab
@@ -206,17 +235,21 @@ void shoot_rocket()
 	my->CURRENT_ITEM = ITEM_NONE;
 }
 
-// Rakete, die 
+// Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
 action _aiming_rocket()
 {
+	int liveTime = 4000;
 	VECTOR movement;
-	while(me)
+	while(me && liveTime > 0)
 	{
 		// Rotiere in Richtung des nächsten Spielers
 		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		liveTime--;
 		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
 		wait(1);
-	}	
+	}
+	// effect(explode, 20, my->x, nullvector);
+	ent_remove(me);
 }
 
 // OPTIONAL: Schießt eine leicht zielgelenkte Rakete ab
@@ -280,12 +313,37 @@ action spikes()
 	}
 }
 
+// Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
+action _ultra_badass_aiming_rocket()
+{
+	int liveTime = 4000;
+	VECTOR movement;
+	while(me && liveTime > 0)
+	{
+		// Rotiere in Richtung des ersten Spielers
+		vec_set(movement.x, vector(10 * time_step, 0, 0));
+		liveTime--;
+		c_move(me, movement.x, nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | GLIDE);
+		wait(1);
+	}
+	// effect(explode, 20, my->x, nullvector);
+	ent_remove(me);
+}
+
 // OPTIONAL: Schießt einen (Lotti-)Ghost auf den 1. Spieler
 // (wenn man es nicht selber ist, sonst auf den letzten).
 // Slashed den Getroffenen mit einem LOTTI-Schrei für 3 Sekunden
-void shoot_ultra_badass_aiming_rocket();
+void shoot_ultra_badass_aiming_rocket()
+{
+	// Erzeuge Rakete
+	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, me, _ultra_badass_aiming_rocket);
+	rocket.pan = my.pan;
+	my->CURRENT_ITEM = ITEM_NONE;		
+}
 
 // Aktiviert den Lotteriatypischen Rainbowmode für 8 Sekunden
-void start_rainbow_mode();
+void start_rainbow_mode() {
+	// Tue verückte Dinge mit Farben.
+}
 
 #endif /*items_c*/
