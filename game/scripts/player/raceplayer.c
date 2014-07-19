@@ -304,6 +304,8 @@ void kart_event()
    var new_angle, factor;
    VECTOR temp;
 
+if(event_type == EVENT_TRIGGER) return;
+   
    factor = 0.9;
 
    if (you != null) {
@@ -335,7 +337,6 @@ void kart_event()
       snd_tune (h, g_kartsnd_hit, 90+random(20), 0);
    }
 
-   //my.bump_ang = ang(new_angle-my.drive_pan)*(abs(ang(new_angle-my.drive_pan));
 }
 
 void postConstructPlayer(ENTITY* ent)
@@ -404,9 +405,10 @@ void loadPlayerCpuControlParams(ENTITY* ent)
 
 void updatePlayer(ENTITY* ent)
 {
-   VECTOR temp,temp2;
+   int i;
    var up, down, left, right, hop, item, underground, old_contact, turn, progress, length;
-
+   VECTOR temp,temp2;
+  
    if(ent->falling)
    {
    	set(ent,PASSABLE);
@@ -500,7 +502,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    ent->speed_y = temp.y;
    vec_scale(temp, time_step);
 
-   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES); //IGNORE_PUSH | 
+   c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES | ACTIVATE_TRIGGER); //IGNORE_PUSH | 
 
    vec_scale(ent->bounce_x,1-0.4*time_step);
 
@@ -680,9 +682,31 @@ if(ent->kart_progress_update > 2)
 	if(progress+up < ent->kart_progress+up-512) ent->kart_checkpoint = -1; 
 }
 }
-if(ent->sk_kart_id == 1)
+
+if(ent->sk_kart_id > 1 && 0)
 {
-	//DEBUG_VAR(ent->kart_checkpoint,300);
+	ent->kart_bot_separate += time_step;
+	if(ent->kart_bot_separate > 4)
+	{
+		ent->kart_bot_separate -= 4;
+		for(i = 2; i <= 4; i++)
+		{
+			if(i != ent->sk_kart_id)
+			{
+				ENTITY* ent2 = get_kart_driver(i-1);
+				vec_diff(temp,ent2->x,ent->x);
+				temp.z = 0;
+				if(vec_length(temp) < 1) vec_randomize(temp,128);
+				else
+				{
+					vec_normalize(temp,48);
+					vec_add(ent->x,temp);
+					vec_inverse(temp);
+					vec_add(ent2->x,temp);
+				}
+			}
+		}
+	}
 }
 }
 
