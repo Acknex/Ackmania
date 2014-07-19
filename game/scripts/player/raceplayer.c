@@ -111,7 +111,13 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	length = vec_dist(temp,temp2);
 	if(length < 0.1) return;
 	t = offset/length;
-	k = floor(t+vdata.z);
+	if(offset >= 0) k = vdata.y+floor(t+vdata.z);
+	else k = vdata.x+floor(t+vdata.z);
+	DEBUG_VAR(t,300);
+	DEBUG_VAR(vdata.z,360);
+	DEBUG_VAR(vdata.x,420);
+	DEBUG_VAR(vdata.y,480);
+	DEBUG_VAR(k,540);
 	if(k <= 0) k = max_nodes;
 	if(k > max_nodes) k = 1;
 	if(offset > 0 && k != vdata.y)
@@ -170,6 +176,14 @@ var is_kart_turning(ENTITY* ent)
 	return left-right;
 }
 
+var is_kart_accelerating(ENTITY* ent);
+{
+	var up, down;
+	up = !!(ent->kart_input & INPUT_UP);
+	down = !!(ent->kart_input & INPUT_DOWN);
+	return up-down;
+}
+
 var get_kart_accel(ENTITY* ent)
 {
 	return (ent->speed-ent->old_speed)/time_step;
@@ -181,6 +195,7 @@ var get_kart_speed(ENTITY* ent, VECTOR* vdir)
 
 	return ent->speed;
 }
+
 void kart_event()
 {
 	var new_angle;
@@ -497,12 +512,15 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0);
    	}
+   	if(ent.kart_input)
+   	{
  	path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
  	int i;
- 	for(i = 0; i < 15; i++)
+ 	for(i = 0; i < 1; i++)
  	{
-  path_get_offset_position(temp2,(i-7)*16,temp);
+  path_get_offset_position(temp2,-(i-7)*16,temp);
   draw_point3d(temp,COLOR_RED,50,4);
+  }
   }
 }
 
