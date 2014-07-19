@@ -23,6 +23,7 @@
 
  ARROW KEYS     -  drive, steer
  SPACE          -  jump / drift
+ CTRL           -  weapon / item
  ESC            -  go back
  ENTER / SPACE  -  action
  F5             -  resolution change
