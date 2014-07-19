@@ -78,7 +78,7 @@ void update_camera()
 		*/
 
 		vDistanceFactor += ((is_kart_accelerating(camera_focus_ent) > 0) * 0.05 - 0.02) * time_step;
-		vDistanceFactor = clamp(abs(vDistanceFactor), 0.25, 0.75);
+		vDistanceFactor = clamp(abs(vDistanceFactor), 0.28, 0.6);
 		vFac = (CAMERA_REFSCRSIZEY - screen_size.y) / CAMERA_REFSCRSIZEY;
 		cam->arc = (CAMERA_REFARCBIG * (1 - vFac) + CAMERA_REFARCSMALL * vFac) * vDistanceFactor;
 
