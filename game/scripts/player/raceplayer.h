@@ -14,10 +14,11 @@ var key_item = 0;
 
 var g_raceplayerTurnSpeed = 4;
 var g_raceplayerMaxSpeed = 50;
-var g_raceplayerAccelSpeed = 2;
+var g_raceplayerAccelSpeed = 1.75;
 var g_raceplayerBreakForce = 15;
 var g_raceplayerBadGroundFac = 0.333;
 
+#define particle_emit skill79
 #define old_speed skill80
 #define bump_ang skill81
 #define drift_dir skill82
@@ -54,6 +55,8 @@ var g_raceplayerBadGroundFac = 0.333;
 #define group_obstacle 3
 #define group_track 4
 
+var is_kart_turning(ENTITY* ent); // left = 1, right = -1
+var get_kart_accel(ENTITY* ent);
 var get_kart_speed(ENTITY* ent, VECTOR* vdir);
 
 void postConstructPlayer (ENTITY* ent);
