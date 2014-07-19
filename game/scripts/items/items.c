@@ -110,8 +110,7 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			//driver.item_id = 1 + integer(random(7));
-			driver.item_id = 6;
+			driver.item_id = 1 + integer(random(7));
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
@@ -185,7 +184,7 @@ void _grave_evt()
 		snd_play(sndGraveCollision, 50, 0);
 		
 		// Drehe Spieler
-		trap_driver(you, 64);
+		trap_driver(you, 1);
 		
 		wait(1);
 		ent_remove(me);
@@ -288,7 +287,7 @@ action _rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
-				driver_hit(you, 64);
+				driver_hit(you, 1);
 			}
 		}
 		
@@ -364,7 +363,7 @@ action _aiming_rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
-				driver_hit(you, 64);
+				driver_hit(you, 2);
 			}
 		}
 		
@@ -394,7 +393,7 @@ void shoot_aiming_rocket(ENTITY* driver)
 void use_turbo(ENTITY* driver) {
 	driver->item_id = ITEM_NONE;
 	snd_play(sndTurboStart, 50, 0);
-	start_turbo(driver, 64);
+	start_turbo(driver, 4);
 }
 
 // Spikes, die aus dem Boden fahren und den Spieler
@@ -473,7 +472,7 @@ action _badass_aiming_rocket()
 			if (you._type == type_kart)
 			{
 				liveTime = 0;
-				driver_hit(you, 92);
+				driver_hit(you, 4);
 			}
 		}
 			
@@ -507,7 +506,7 @@ void start_mushroom(ENTITY* driver)
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
 	snd_play(sndMushroomStart, 50, 0);
 	driver->item_id = ITEM_NONE;
-	enlarge_driver(driver);
+	enlarge_driver(driver, 5);
 }
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
@@ -522,19 +521,19 @@ void start_flash(ENTITY* driver)
 	if (ki1 != NULL)
 	{
 		if (ki1.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(1));
+			minimize_driver(get_kart_driver(1), 4);
 		}
 	}
 	if (ki2 != NULL)
 	{
 		if (ki2.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(2));
+			minimize_driver(get_kart_driver(2), 4);
 		}
 	}
 	if (ki3 != NULL)
 	{
 		if (ki3.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(3));
+			minimize_driver(get_kart_driver(3), 4);
 		}
 	}
 }
