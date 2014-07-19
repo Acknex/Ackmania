@@ -21,8 +21,9 @@
  *******************************************************************************
  */
  
-#include "raceplayer.h"
 #include "camera_cfg.h"
+#include "raceplayer.h"
+#include "startgrid.h"
 
 
 ENTITY* camera_focus_ent = NULL;
@@ -39,11 +40,12 @@ void create_camera(int layer)
 	cam->pan = CAMERA_PAN;
 	cam->tilt = CAMERA_TILT; 
 	cam->flags |= ISOMETRIC;
-}
-
-void camera_focus(ENTITY* ent)
-{
-	camera_focus_ent = ent;
+	
+	do
+	{
+ 		camera_focus_ent = get_kart_player();
+		wait(1);
+	} while (camera_focus_ent == NULL);
 }
 
 void remove_camera()
