@@ -6,6 +6,9 @@
 
 var g_doNotDrive = false;
 
+BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
+BMAP* bmp_quad = "quad.tga";
+
 var gamepad_active;
 var key_up = 0;
 var key_down = 0;

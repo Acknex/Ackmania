@@ -12,10 +12,10 @@ TEXT* g_characterNames = {
 
 TEXT* g_characterKartFilenames = {
    string (
-         "kart-pl1.mdl",
-         "kart-pl2.mdl",
-         "kart-pl3.mdl",
-         "kart-pl4.mdl"
+         "gocart01.mdl",
+         "gocart01.mdl",
+         "gocart01.mdl",
+         "gocart01.mdl"
    );
 }
 

@@ -4,10 +4,6 @@
 #include "engine.h"
 #include "raceplayer.h"
 
-
-BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
-BMAP* bmp_quad = "quad.tga";
-
 void p_drift_smoke_fade(PARTICLE* p)
 {
 	vec_scale(p.vel_x,1-0.15*time_step);
@@ -45,22 +41,22 @@ var get_line_segment_point_dist(VECTOR* vec1, VECTOR* vec2, VECTOR* point, VECTO
 {
     var res,i;
     VECTOR dir1,dir2;
-    
+
     vec_diff(&dir1,vec2,vec1);
     vec_diff(&dir2,point,vec1);
     i = vec_dot(&dir2,&dir1)/vec_dot(&dir1,&dir1);
-    
+
     if(i >= 0 && i <= 1)
     {
         vec_lerp(&dir1,vec1,vec2,i);
-        
+
         res = vec_dist(&dir1,point);
         if(vresult) vec_set(vresult,&dir1);
     }
     else res = -1;
     if(t) *t = i;
-    
-    return res; 
+
+    return res;
 }
 
 var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
@@ -69,7 +65,7 @@ var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
 	int i, j, max_nodes;
 	VECTOR temp,temp2,temp3;
 	ENTITY* ent;
-	
+
 	ent = ent_create(NULL,nullvector,NULL);
 	max_nodes = path_next(ent);
 	for(i = 1; i <= max_nodes; i++)
@@ -85,7 +81,7 @@ var path_get_closest_position(VECTOR* vpos, VECTOR* vresult)
 			vec_set(vresult,temp3);
 		}
 	}
-	
+
 	ptr_remove(ent);
 }
 
@@ -100,12 +96,12 @@ action ac_track()
 var get_xyangle(VECTOR* vec)
 {
 	var angle = 0, length;
-	
+
 	length = vec_length(vector(vec->x,vec->y,0));
 	if(abs(length) < 0.015) return -1;
 	angle = acosv(vec->x/length);
 	if(vec->y < 0) angle *= -1;
-	
+
 	return angle;
 }
 
@@ -125,14 +121,14 @@ var get_kart_accel(ENTITY* ent)
 var get_kart_speed(ENTITY* ent, VECTOR* vdir)
 {
 	if(vdir) vec_set(vdir,ent->speed_x);
-	
+
 	return ent->speed;
 }
 void kart_event()
 {
 	var new_angle;
 	VECTOR temp;
-	
+
 	vec_diff(temp,my->x,target);
 	my->bounce_x = temp.x;
 	my->bounce_y = temp.y;
@@ -252,7 +248,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 	ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed)*time_step;
 	ent->drive_pan = ang(ent->drive_pan);
 	ent->bump_ang += -ent->bump_ang*0.35*time_step;
-	
+
   if (up && !down) {
       ent->speed += minv((g_raceplayerMaxSpeed-ent->speed)*0.1,g_raceplayerAccelSpeed) * time_step;
    }
@@ -294,7 +290,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
       c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON);
       //if(!trace_hit) ent->falling = 1;
    if (ent->ground_contact) {
- 
+
       if (tex_flag4 || hit.green > 100) {
          underground = g_raceplayerBadGroundFac;
       } else {
@@ -360,7 +356,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    ent->parent->skill1 = maxv(ent->parent->skill1, ent->kart_height);
    ent->parent->z = ent->parent->skill1;
    ent->speed_z -= 9 * time_step;
-   
+
    if(ent->speed < 15 || ent->underground < 0.9) ent->drifting = 0;
    if(ent->ground_contact && ent->speed >= g_raceplayerMaxSpeed*0.2) {
    	ent->particle_emit += time_step;
@@ -431,7 +427,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0)+3;
    	}
-   	
+
    	path_get_closest_position(ent.x,temp2);
    	draw_point3d(temp2,COLOR_RED,100,10);
 }

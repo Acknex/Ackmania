@@ -12,6 +12,10 @@
 #include "hud.h"
 
 void quit_race() {
+
+   media_stop(g_raceMusicHandle);
+   g_raceMusicHandle = 0;
+
    invoke_game_state(GAME_STATE_MENU, 0);
 }
 

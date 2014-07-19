@@ -14,4 +14,5 @@ path "shaders\\menu";
 path "sounds\\menu";
 path "sprites";
 path "sounds\\taunts";
+path "sounds\\karts";
 path "textures";

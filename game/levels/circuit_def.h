@@ -13,12 +13,12 @@ TEXT* g_circuits = {
       string (
                // Dummy Level
                "Dummy Level (Test)",
-               "dummy_level.ogg",
+               "game1_3db.wav",
                "dummy_level.bmp",
                "dummy_level.wmb",
                // Dummy Level 2
                "Dummy Level 2 (Test 2)",
-               "dummy_level.ogg",
+               "game1_3db.wav",
                "dummy_level2.bmp",
                "test2.wmb"
       );

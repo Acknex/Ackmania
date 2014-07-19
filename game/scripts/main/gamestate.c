@@ -74,7 +74,7 @@ int invoke_game_state(int gameState, int levelIndex) {
    return oldGameState;
 }
 
-
+void escdummy () {}
 
 void invoke_game_state_menu(int oldGameState, int levelIndex) {
 
@@ -88,7 +88,7 @@ void invoke_game_state_menu(int oldGameState, int levelIndex) {
          break;
    }
 
-   on_esc = invoke_game_state_menu_exit_ev;
+   on_esc = escdummy;
    on_space = null;
    on_enter = null;
 
