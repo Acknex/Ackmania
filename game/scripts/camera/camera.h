@@ -31,6 +31,7 @@ void remove_camera();
 void update_camera();
 void show_camera();
 void hide_camera();
+void focus_camera();
  
  
 #include "camera.c"

@@ -41,12 +41,7 @@ void create_camera(int layer)
 	cam->pan = CAMERA_PAN;
 	cam->tilt = CAMERA_TILT; 
 	cam->flags |= ISOMETRIC;
-	
-	do
-	{
- 		camera_focus_ent = get_kart_player();
-		wait(1);
-	} while (camera_focus_ent == NULL);
+	//focus_camera();	
 }
 
 void remove_camera()
@@ -105,6 +100,14 @@ void hide_camera()
 	}
 }
 
-
+void focus_camera()
+{
+	camera_focus_ent = NULL;
+	do
+	{
+ 		camera_focus_ent = get_kart_player();
+		wait(1);
+	} while (camera_focus_ent == NULL);
+}
  
 
