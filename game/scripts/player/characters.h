@@ -19,11 +19,24 @@ TEXT* g_characterKartFilenames = {
    );
 }
 
+TEXT* g_characterPlayerFilenames = {
+   string (
+         "ackmen01.mdl",
+         "ackmen02.mdl",
+         "ackmen03.mdl",
+         "ackmen04.mdl"
+   );
+}
+
+
 // gibt den Namen des Spielers mit dem index = 0... zurück
 STRING* get_charactername(int id);
 
 // gibt den Dateinamen des Spielerkarts mit dem index = 0... zurück
 STRING* get_kartfilename(int id);
+
+// gibt den Dateinamen des Spielermodells mit dem index = 0... zurück
+STRING* get_kartplayerfilename(int id);
 
 #include "characters.c"
 

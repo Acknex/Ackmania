@@ -17,6 +17,10 @@ void create_kart_drivers_ev() {
    ac_race_kart_ent();
 }
 
+void create_kart_driverplayer_ev() {
+   set(my,PASSABLE);
+}
+
 // erzeugt alle Spieler und gibt das globale Entity-Array zurück
 ENTITY** create_kart_drivers()
 {
@@ -29,8 +33,13 @@ ENTITY** create_kart_drivers()
       var ang = g_vecStartgridAng[i];
 
       STRING* strKartFilename = get_kartfilename(i);
+      STRING* strKartModelFilename = get_kartplayerfilename(i);
 
       ENTITY* ent = ent_create(strKartFilename, pos, create_kart_drivers_ev);
+      ENTITY* entplayer = ent_create(strKartModelFilename, pos, create_kart_driverplayer_ev);
+
+      ent->playermodel = entplayer;
+
       g_kartEnts[i] = ent;
 
       if (ent != null) {

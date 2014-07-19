@@ -12,12 +12,7 @@
 TEXT* g_circuits = {
       string (
                // Dummy Level
-               "Dummy Level (Test)",
-               "game1_3db.wav",
-               "dummy_level.bmp",
-               "dummy_level.wmb",
-               // Dummy Level 2
-               "Dummy Level 2 (Test 2)",
+               "Ackplains",
                "game1_3db.wav",
                "dummy_level2.bmp",
                "test2.wmb",
@@ -29,10 +24,10 @@ TEXT* g_circuits = {
       );
 }
 
-double g_circuit_skyspeeds [2] = {1, 0.25, 0.5};
+double g_circuit_skyspeeds [2] = {0.25, 0.75};
 
-float g_circuit_hdrthresholds [2] = {30, 30, 5};
-float g_circuit_hdrstrengths [2] = {20, 20, 5};
-float g_circuit_hdrexposures [2] = {0, 0, 0};
+float g_circuit_hdrthresholds [2] = {20, 55};
+float g_circuit_hdrstrengths [2] = {20, 50};
+float g_circuit_hdrexposures [2] = {0, 0};
 
 #endif /* circuit_def_h */
