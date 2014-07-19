@@ -220,14 +220,30 @@ void plant_grave(VECTOR* pos) {
 	place_on_floor(entGrave);
 }
 
-void p_rocket_explode() {
-	
+
+
+void p_rocket_explode(PARTICLE* p)
+{
+   VECTOR vTemp;
+   vec_randomize(vTemp,40);
+   vec_add(p.vel_x,vTemp);
+   switch (integer(random(2))) {
+   	case 0: vec_set(p.blue,colExplosionYellow); break;
+   	case 1: vec_set(p.blue,colExplosionOrange); break;
+   	case 2: vec_set(p.blue,colExplosionRed); break;
+   }
+   set(p, MOVE | BRIGHT | TRANSLUCENT);
+   p.alpha = 100;
+   p.size = 20;
+   p.skill_a = 20;
+   p.event = p_fade;
 }
+
 
 // Rakete, die geradeaus fliegt
 action _rocket()
 {
-	int liveTime = 2000;
+	int liveTime = 300;
 	while(me && (liveTime > 0))
 	{
 		c_move(me, vector(60 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
@@ -235,7 +251,8 @@ action _rocket()
 		liveTime--;
 		wait(1);
 	}
-	effect(p_rocket_explode, 20, my->x, nullvector);
+	effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
+	// Play sound boom
 	ent_remove(me);
 }
 
