@@ -27,7 +27,6 @@
  
 void create_camera();
 void create_camera(int);
-void camera_focus(ENTITY*);
 void remove_camera();
 void update_camera();
 void show_camera();

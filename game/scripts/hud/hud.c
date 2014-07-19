@@ -116,15 +116,16 @@ void update_hud()
 
 	/* rescale HUD if needed */
 	vHudScaleOld = vHudScale;
-   vHudScale = screen_size.y / 1200;	
-   if (vHudScale != vHudScaleOld)
-   {
-   	scale_hud();
-   }
+	vHudScale = screen_size.y / 1200;	
+	if (vHudScale != vHudScaleOld)
+	{
+		scale_hud();
+	}
 
 	/* update rank */
-   vRankOld = vRank;
+   vRankOld = vRank + 1; //TEMP
    //vRank = get_kart_rank (0);
+   vRank = 3; //TEMP
 	if (vRank != vRankOld)
 	{
 		update_hudrank();
