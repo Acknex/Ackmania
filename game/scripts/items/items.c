@@ -220,18 +220,12 @@ void plant_grave(VECTOR* pos) {
 	place_on_floor(entGrave);
 }
 
-
-
 void p_rocket_explode(PARTICLE* p)
 {
    VECTOR vTemp;
    vec_randomize(vTemp,40);
    vec_add(p.vel_x,vTemp);
-   switch (integer(random(2))) {
-   	case 0: vec_set(p.blue,colExplosionYellow); break;
-   	case 1: vec_set(p.blue,colExplosionOrange); break;
-   	case 2: vec_set(p.blue,colExplosionRed); break;
-   }
+	vec_set(p.blue,vector(random(255),random(255),255));
    set(p, MOVE | BRIGHT | TRANSLUCENT);
    p.alpha = 100;
    p.size = 20;
@@ -243,10 +237,41 @@ void p_rocket_explode(PARTICLE* p)
 // Rakete, die geradeaus fliegt
 action _rocket()
 {
-	int liveTime = 300;
+	int liveTime = 300 + integer(random(100));
+	var flyHeight = 0;
+	int reachedTop = 0;
+	var initHeight = 0;
+	var zSpeed = 0;
+	var xSpeed = 0;
+	var animPercentage = 0;
+	set(me, PASSABLE);
 	while(me && (liveTime > 0))
 	{
-		c_move(me, vector(60 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		// Lass die Rakete nach Abschuss hüpfen
+		if (reachedTop == 0) {
+			flyHeight +=20 * time_step;
+			zSpeed = 20 * time_step;
+			xSpeed = 20 * time_step;
+			if (flyHeight >= 60) reachedTop = 1;
+		} else {
+			if (flyHeight >= initHeight) {
+				flyHeight -=20 * time_step;
+				zSpeed = -20 * time_step;
+				xSpeed +=2 * time_step;
+			} else {
+				zSpeed = 0;
+			}
+		}
+		
+		if (animPercentage + 20 * time_step < 80) {
+			animPercentage +=20 * time_step;
+		} else {
+			animPercentage = 80;
+			reset(me, PASSABLE);
+		}
+		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
 		liveTime--;
 		wait(1);
