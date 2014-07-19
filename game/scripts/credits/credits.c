@@ -85,7 +85,7 @@ void credev_camera_flight_a()
  */
 void credits_init()
 {
-	//memset(&credits, 0, sizeof(Credits));
+	memset(&credits, 0, sizeof(Credits));
 	
 	credits_addev(0, credev_init_scene);
 	//credits_addev(500, credev_camera_flight_a);
@@ -178,9 +178,6 @@ void credits_stop()
 	}	
 	media_stop(_credits_music);
 	_credits_music = 0;
-
-	proc_kill(credits_init);
-	level_load(null);
 }
 
 #endif // #ifndef _CREDITS_C_
