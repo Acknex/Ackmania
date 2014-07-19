@@ -110,4 +110,8 @@ void focus_camera()
 	} while (camera_focus_ent == NULL);
 }
  
+VIEW* get_camera()
+{
+	return cam;
+}
 
