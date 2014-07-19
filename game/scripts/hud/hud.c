@@ -100,7 +100,6 @@ void create_hud()
 	wait(1);
 	update_hud();
 	vHudCreated = 1;
-	create_map();
 	show_hud();	
 }
 
@@ -170,7 +169,7 @@ void show_hud()
 		panTime->flags |= SHOW;
 		panRank->flags |= SHOW;
 		panItem->flags |= SHOW;
-		show_map();
+		create_map();
 	}
 }
 
@@ -182,7 +181,7 @@ void hide_hud()
 		panTime->flags &= ~SHOW;
 		panRank->flags &= ~SHOW;
 		panItem->flags &= ~SHOW;
-		hide_map();
+		remove_map();
 	}
 }
 
