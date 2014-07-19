@@ -40,16 +40,12 @@ int main() {
 
    doSysInit();
 
+   menu_init(15);
+
    create_camera();
    create_hud();
 
-   menu_init(15);
    initPostprocessing(cam);
 
    invoke_game_state(TARGET_GAME_STATE, 0);
-
-   while (1) {
-      update_hud();
-      wait(1);
-   }
 }

@@ -6,11 +6,14 @@
 
 void play_race(int index)
 {
+   g_doNotDrive = false;
+
    reset_timer();
    show_hud();
 
    while (1) {
       update_camera();
+      update_hud();
       wait(1);
    }
 }

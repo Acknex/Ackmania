@@ -169,19 +169,22 @@ void loadPlayerHumanControlParams(ENTITY* ent)
 {
    if (gamepad_active)
    {
-      key_up = 0;
-      key_down = 0;
+      key_up = !g_doNotDrive * 0;
+      key_down = !g_doNotDrive * 0;
       key_left = 0;
       key_right = 0;
       key_hop = 0;
       key_item = 0;
+
    } else {
-      key_up = key_cuu;
-      key_down = key_cud;
+
+      key_up = !g_doNotDrive * key_cuu;
+      key_down = !g_doNotDrive * key_cud;
       key_left = key_cul;
       key_right = key_cur;
       key_hop = key_space;
       key_item = key_ctrl;
+
    }
 
    ent->kart_input = key_up * INPUT_UP | key_down * INPUT_DOWN | key_left * INPUT_LEFT | key_right * INPUT_RIGHT | key_hop * INPUT_HOP
