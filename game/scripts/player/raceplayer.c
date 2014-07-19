@@ -23,7 +23,12 @@ var get_xyangle(VECTOR* vec)
 	return angle;
 }
 
-
+var get_kart_speed(ENTITY* ent, VECTOR* vdir)
+{
+	if(vdir) vec_set(vdir,ent->speed_x);
+	
+	return ent->speed;
+}
 void kart_event()
 {
 	var new_angle;
@@ -128,19 +133,21 @@ void updatePlayer(ENTITY* ent)
    }
 
 #ifdef DEBUG_FELIX
-   DEBUG_VAR(ent->speed, screen_size.y - 40);
+   if(!ent->kart_id) DEBUG_VAR(get_kart_speed(ent,NULL), screen_size.y - 180);
 #endif
 
    ent->pan = ent->drive_pan;
    vec_set(temp, vector(ent->speed, 0, 0));
    vec_rotate(temp, vector(ent->drive_pan, 0, 0));
-	vec_add(temp,vector(ent.bounce_x,ent.bounce_y,0));
+   vec_add(temp,vector(ent->bounce_x,ent->bounce_y,0));
+   ent->speed_x = temp.x;
+   ent->speed_y = temp.y;
    vec_scale(temp, time_step);
 
-c_ignore(group_track,0);
+   c_ignore(group_track,0);
    c_move(ent, nullvector, temp, IGNORE_PUSH | IGNORE_PASSABLE | GLIDE | USE_POLYGON);
 
-	vec_scale(ent->bounce_x,1-0.4*time_step);
+   vec_scale(ent->bounce_x,1-0.4*time_step);
 
    old_contact = ent->ground_contact;
    ent->ground_contact = (ent->parent->z <= ent->kart_height);
