@@ -24,9 +24,9 @@
 #ifndef CAMERA_CFG_H
 #define CAMERA_CFG_H
 
-#define CAMERA_DIST 300
+#define CAMERA_DIST 800
 #define CAMERA_PAN 45
-#define CAMERA_TILT 30
+#define CAMERA_TILT -25
 #define CAMERA_DELAY 0.7
 
 #endif
