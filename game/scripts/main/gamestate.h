@@ -22,6 +22,7 @@ int invoke_game_state (int gameState);
 
 // --------------------------------------------------------------------------------------------------------------------
 
+void invoke_game_state_menu(int oldGameState);
 void invoke_game_state_prerace(int oldGameState);
 
 #include "gamestate.c"

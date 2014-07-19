@@ -63,5 +63,6 @@ void menu_close();
  */
 void menu_set_levels(int count, LevelChoice *choices);
 
+#include "menu.c"
 
 #endif // #ifndef _MENU_H_

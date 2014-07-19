@@ -7,6 +7,7 @@
 #define PRAGMA_PATH "scripts\\camera";
 #define PRAGMA_PATH "scripts\\globals";
 #define PRAGMA_PATH "scripts\\main";
+#define PRAGMA_PATH "scripts\\menu";
 #define PRAGMA_PATH "scripts\\player";
 #define PRAGMA_PATH "scripts\\race";
 
@@ -14,6 +15,9 @@
 #include "skilldefines.h"
 #include "gamestate.h"
 #include "raceactions.h"
+
+//#define TARGET_GAME_STATE GAME_STATE_MENU
+#define TARGET_GAME_STATE GAME_STATE_PRERACE
 
 int main() {
 
@@ -24,5 +28,5 @@ int main() {
    wait(1);
    level_load(null);
 
-   invoke_game_state(GAME_STATE_PRERACE);
+   invoke_game_state(TARGET_GAME_STATE);
 }
