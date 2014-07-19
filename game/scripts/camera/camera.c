@@ -65,12 +65,19 @@ void update_camera()
 //		vDistanceFactor = 1 + get_kart_speed(camera_focus_ent, NULL);
 		vDistanceFactor = 1;
 	
-		vec_set(vecPos, vector(-vDistanceFactor * CAMERA_DIST, 0, 0));
+		vec_set(vecPos, vector(-CAMERA_DIST, 0, 0));
 		vec_rotate(vecPos, cam->pan);
 		vec_add(vecPos, camera_focus_ent->x);
 		vec_sub(vecPos, cam->x);
 		vec_scale(vecPos, CAMERA_DELAY);
 		vec_add(cam->x, vecPos);
+
+		/* interpolate ARC based on y resolution
+		640x400 --> ARC 110
+		1920x1200 --> ARC 60
+		*/
+		var vFac = (1200 - screen_size.y) / 1200;
+		cam->arc = 60 * (1-vFac) + 110 * vFac;
 	}
 }
 
@@ -78,9 +85,8 @@ void show_camera()
 {
 	if (cam != NULL)
 	{
-		camera->flags &= ~SHOW;
-		wait(0); //WTF!?
 		cam->flags |= SHOW;
+		camera->flags &= ~SHOW;
 	}
 }
 
@@ -88,10 +94,11 @@ void hide_camera()
 {
 	if (cam != NULL)
 	{
-		cam->flags &= ~SHOW;
 		camera->flags |= SHOW;
+		cam->flags &= ~SHOW;
 	}
 }
+
 
  
 
