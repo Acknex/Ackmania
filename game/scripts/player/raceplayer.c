@@ -27,9 +27,12 @@ void p_drift_smoke(PARTICLE* p)
 
 void p_kart_grass(PARTICLE* p)
 {
+	ENTITY* ent = your->parent;
+	vec_set(p.blue,p.vel_x);
+	vec_set(p.vel_x,vector(-4,0,4));
+	vec_rotate(p.vel_x,ent->pan);
 	vec_add(p.vel_x,vector(1-random(2)-p.vel_x*0.65,1-random(2),7+random(4)));
-	vec_set(p.blue,vector(100,130+random(20),109));
-	vec_scale(p.blue,0.8+random(0.2));
+	vec_scale(p.blue,0.875+random(0.2));
 	set(p,MOVE);
 	p.bmap = bmp_quad;
 	p.gravity = 3;
@@ -37,6 +40,7 @@ void p_kart_grass(PARTICLE* p)
 	p.size = 2+random(2);
 	p.event = NULL;
 }
+
 
 action ac_racetrack()
 {
@@ -319,7 +323,8 @@ void postConstructPlayer(ENTITY* ent)
    c_setminmax(ent);
 
    ent->event = kart_event;
-   ent->emask |= ENABLE_BLOCK | ENABLE_ENTITY | ENABLE_ENTITY;
+   ent->emask |= ENABLE_BLOCK | ENABLE_ENTITY | ENABLE_ENTITY | ENABLE_TRIGGER;
+   ent->trigger_range = 32;
 
    VECTOR vecMin;
    vec_for_min(&vecMin, ent);
@@ -554,7 +559,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 		{
       		c_ignore(group_kart, 0);
       		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
-      		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
+      		if(hit.green > 100) effect(p_kart_grass,1,temp,hit.blue); //temp2);
 		}
    		vec_set(temp,vector(-22,-22,-ent->kart_height*0.5));
    		vec_rotate(temp,ent->parent->pan);
@@ -564,7 +569,7 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
 		{
       		c_ignore(group_kart, 0);
       		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
-      		if(hit.green > 100) effect(p_kart_grass,1,temp,temp2);
+      		if(hit.green > 100) effect(p_kart_grass,1,temp,hit.blue); //temp2
 		}
 	}
    }
