@@ -30,7 +30,7 @@ void doSysInit() {
    long resY = (double) sys_metrics(SM_CYSCREEN) * resFac;
 
    video_set(resX, resY, 0, 2);
-   video_window(NULL, NULL, 0, "deadnex");
+   video_window(NULL, NULL, 0, "Ackmania (Operation Deadnex)");
 
    random_seed((sys_seconds % sys_month) * sys_hours - 42);
 

@@ -7,10 +7,16 @@
 var g_doNotDrive = false;
 
 SOUND* g_sndKartJump = "kart_jump.wav";
-var g_kartsnd_jump = 60;
+var g_kartsnd_jump = 45;
+
+SOUND* g_sndKartHit = "kart_hit.wav";
+var g_kartsnd_hit = 60;
 
 BMAP* bmp_smoke_spr1 = "smoke_spr1.tga";
 BMAP* bmp_quad = "quad.tga";
+
+SOUND* g_sndAiaiaiai = "aiaiaiai.ogg";
+var g_kartsnd_aiaiai = 100;
 
 var gamepad_active;
 var key_up = 0;
