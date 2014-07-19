@@ -221,6 +221,21 @@ void plant_grave() {
 	place_on_floor(entGrave);
 }
 
+void p_rocket_smoke(PARTICLE* p)
+{
+	VECTOR vecTemp;
+	vec_randomize(vecTemp, 2);
+	vec_add(p.vel_x, vector(-1+random(2), -1+random(2), 1));
+	vec_set(p.blue, vector(140, 140, 140));
+	
+	set(p, MOVE | TRANSLUCENT);
+	p.alpha = 60 + random(20);
+	p.size = 20;
+	p.gravity = 0;
+	p.skill_a = 10;
+	p.event = p_fade;
+}
+
 void p_rocket_explode(PARTICLE* p)
 {
    VECTOR vTemp;
@@ -271,6 +286,8 @@ action _rocket()
 			reset(me, PASSABLE);
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
@@ -329,6 +346,8 @@ action _aiming_rocket()
 			reset(me, PASSABLE);
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
@@ -440,6 +459,8 @@ action _badass_aiming_rocket()
 			reset(me, PASSABLE);
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+		
+		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
 		ent_playsound(me, sndRocketFly, 1000);
