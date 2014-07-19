@@ -8,10 +8,15 @@
 #include "circuitinfo.h"
 #include "environment.h"
 #include "postprocessing.h"
+#include "gamestate.h"
 
 void load_race(int index)
 {
    level_load(null);
+
+   g_preraceActive = true;
+
+   // TODO: hide hud
 
    STRING* strMusicFilename = getCircuitMusicFilenameStr(index);
    STRING* strLevelFilename = getCircuitLevelFilenameStr(index);
@@ -44,10 +49,23 @@ void load_race(int index)
 
    create_kart_drivers();
 
-   // TODO lifecycle
-   while (1) {
-      update_camera();
+   g_race_pretimer = 3 * 16;
+
+   while (g_preraceActive) {
+      update_race_pre();
       wait(1);
+   }
+
+   invoke_game_state(GAME_STATE_RACE, index);
+}
+
+void update_race_pre()
+{
+   g_race_pretimer -= time_step;
+   update_camera();
+
+   if (g_race_pretimer < 0) {
+      g_preraceActive = false;
    }
 }
 

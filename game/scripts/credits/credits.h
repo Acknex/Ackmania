@@ -25,4 +25,6 @@ void credits_start();
  */
 void credits_stop();
 
+#include "credits.c"
+
 #endif // #ifndef _CREDITS_H_

@@ -31,6 +31,8 @@ void invoke_game_state_menu_level_ev(int i);
 
 void invoke_game_state_prerace(int oldGameState, int index);
 
+void invoke_game_state_race(int oldGameState, int levelIndex);
+
 #include "gamestate.c"
 
 #endif /* gamestate_h */
