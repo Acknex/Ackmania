@@ -103,7 +103,7 @@ void menu_init(int baseLayer)
 		_menu_trackIcons[i] = bmap_create(getCircuitPicFilenameStr(i));
 	}
 	
-	var menuMusic = snd_loop(_menu_music, 80, 0);
+	var menuMusic = snd_loop(_menu_music, g_music, 0);
 	snd_pause(menuMusic);
 	
 	while(1) {

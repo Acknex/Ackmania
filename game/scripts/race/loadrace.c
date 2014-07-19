@@ -43,7 +43,7 @@ void load_race(int index)
    str_cat(str, strMusicFilename);
 
    if (strMusicFilename != null) {
-      g_raceMusicHandle = media_loop(str, null, g_raceMusicVolume);
+      g_raceMusicHandle = media_loop(str, null, g_music);
    }
 
    str_remove(str);

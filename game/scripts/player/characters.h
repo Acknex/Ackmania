@@ -13,9 +13,9 @@ TEXT* g_characterNames = {
 TEXT* g_characterKartFilenames = {
    string (
          "gocart01.mdl",
-         "gocart01.mdl",
-         "gocart01.mdl",
-         "gocart01.mdl"
+         "gocart02.mdl",
+         "gocart03.mdl",
+         "gocart04.mdl"
    );
 }
 

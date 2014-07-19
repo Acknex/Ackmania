@@ -22,4 +22,6 @@
 #define PL_JUMPKEYSTILLPRESSED   skill90
 #define PL_ATTACKED_ONCE         FLAG8
 
+var g_music = 75;
+
 #endif /* skilldefines_h */
