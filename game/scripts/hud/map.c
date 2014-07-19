@@ -66,7 +66,7 @@ void create_map()
 	}
 				
 	vec_add(&vecMapMax, &vecMapMin);
-	//vec_scale(&vecMapMax, 0.8); 
+	vec_scale(&vecMapMax, 0.9); 
 	vec_set(&vecMapMin, nullvector);
 	vMapActive = 1;
 	wait(1);
