@@ -68,6 +68,8 @@ var g_raceplayerBadGroundFac = 0.333;
 var is_kart_turning(ENTITY* ent); // left = 1, right = -1
 var get_kart_accel(ENTITY* ent);
 var get_kart_speed(ENTITY* ent, VECTOR* vdir);
+var get_kart_rank(ENTITY* ent);
+var get_kart_lap(ENTITY* ent);
 
 void postConstructPlayer (ENTITY* ent);
 
