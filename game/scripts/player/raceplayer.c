@@ -17,7 +17,7 @@ void p_drift_smoke(PARTICLE* p)
 	vec_add(p.vel_x,vector(1-random(2),1-random(2),1-random(1)));
 	vec_fill(p.blue,90+random(20));
 	set(p,MOVE);
-	p.size = 9+random(5);
+	p.size = (9+random(5))*0.5;
 	p.alpha = 30+random(10);
 	p.skill_a = p.size*5;
 	p.bmap = bmp_smoke_spr1;
@@ -99,13 +99,15 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 {
 	var length,t;
 	int i, j, k, max_nodes;
-	VECTOR temp,temp2,temp3;
+	VECTOR temp,temp2;
 	ENTITY* ent;
 	
 	ent = ent_create(NULL,nullvector,NULL);
 	max_nodes = path_next(ent);
 	path_getnode(ent,vdata.x,temp,NULL);
 	path_getnode(ent,vdata.y,temp2,NULL);
+	//draw_point3d(temp,COLOR_BLUE,50,4);
+	//draw_point3d(temp2,COLOR_BLUE,50,4);
 	length = vec_dist(temp,temp2);
 	if(length < 0.1) return;
 	t = offset/length;
@@ -114,15 +116,27 @@ void path_get_offset_position(VECTOR* vdata, var offset, VECTOR* vresult)
 	if(k > max_nodes) k = 1;
 	if(offset > 0 && k != vdata.y)
 	{
-		t = vdata.z*length-offset,0
 	path_getnode(ent,k,temp,NULL);
-		
+		offset = offset-(length-vdata.z*length);
+	length = vec_dist(temp,temp2);
+	if(length < 0.1) return;
+		t = offset/length;
+		vec_lerp(vresult,temp2,temp,t);
 	}
 	else
 	{
 		if(offset < 0 && k != vdata.x)
 		{
-		
+	path_getnode(ent,k,temp2,NULL);
+		offset = offset+vdata.z*length;
+	length = vec_dist(temp,temp2);
+	if(length < 0.1) return;
+		t = 1+offset/length;
+		vec_lerp(vresult,temp,temp2,t);
+		}
+		else
+		{
+			vec_lerp(vresult,temp,temp2,vdata.z+t);
 		}		
 	}
 	
@@ -483,7 +497,13 @@ ang_rotate(ent->parent->pan,vector(0,(-(ent->falling_dir == 0)+(ent->falling_dir
    		ent->falling_dir = 3;
    		ent->speed_z = maxv(ent->speed_z,0);
    	}
-
+ 	path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
+ 	int i;
+ 	for(i = 0; i < 15; i++)
+ 	{
+  path_get_offset_position(temp2,(i-7)*16,temp);
+  draw_point3d(temp,COLOR_RED,50,4);
+  }
 }
 
 #endif /* raceplayer_c */
