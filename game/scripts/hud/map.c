@@ -29,7 +29,7 @@ VECTOR vecMapMax;
 var* vNodeX;
 var* vNodeY;
 var vMapSize;
-var vMapCreated = 0;
+var vMapActive = 0;
 var vMapNodes;
 
 void create_map()
@@ -65,14 +65,17 @@ void create_map()
 		}
 	}
 				
-	vec_add(&vecMapMax, &vecMapMin); 
+	vec_add(&vecMapMax, &vecMapMin);
+	//vec_scale(&vecMapMax, 0.8); 
 	vec_set(&vecMapMin, nullvector);
-	vMapCreated = 1;
+	vMapActive = 1;
+	wait(1);
 	ptr_remove(ent);
 }
 
 void remove_map()
 {
+	vMapActive = 0;
 	sys_free(vNodeX);
 	sys_free(vNodeY);
 }
@@ -86,7 +89,7 @@ void update_map()
 	var i;
 	var x, y;
 	
-	if (vMapCreated)
+	if (vMapActive != 0)
 	{
 		vMapSize = screen_size.y * 0.33;
 		vMapPosX = screen_size.x - vMapSize;
@@ -103,16 +106,8 @@ void update_map()
 		}
 		x = vMapPosX + (vNodeX[1] / vecMapMax.x) * vMapSize;
 		y = vMapPosY + (vNodeY[1] / vecMapMax.x) * vMapSize;
-				draw_line(vector(x,y,0),vector(255,255,255),100);
+		draw_line(vector(x,y,0),vector(255,255,255),100);
 	}	
 	
-}
-
-void show_map()
-{
-}
-
-void hide_map()
-{
 }
 
