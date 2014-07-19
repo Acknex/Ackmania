@@ -12,5 +12,4 @@ path "panels\\menu";
 path "panels\\items";
 path "shaders\\menu";
 path "sprites";
-path "sounds"
-path "textures";
+path "sounds";

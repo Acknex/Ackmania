@@ -7,7 +7,7 @@
 #include "playrace.h"
 #include "menu.h"
 
-void quitGame ()
+void quitGame()
 {
    sys_exit("bye bye Lotti...");
 }
@@ -74,7 +74,8 @@ int invoke_game_state(int gameState, int levelIndex) {
    return oldGameState;
 }
 
-void escdummy () {}
+void escdummy() {
+}
 
 void invoke_game_state_menu(int oldGameState, int levelIndex) {
 
