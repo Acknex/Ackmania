@@ -6,12 +6,12 @@
 /**
  * Left "click" check
  */
-#define MENU_DEF_LEFT (key_cur | (joy_raw.x < -(MENU_DEF_THRESHOLD)) | (joy2_raw.x < -(MENU_DEF_THRESHOLD)))
+#define MENU_DEF_LEFT (key_cul | (joy_raw.x < -(MENU_DEF_THRESHOLD)) | (joy2_raw.x < -(MENU_DEF_THRESHOLD)))
 
 /**
  * Right "click" check
  */
-#define MENU_DEF_RIGHT (key_cul | (joy_raw.x > (MENU_DEF_THRESHOLD)) | (joy2_raw.x > (MENU_DEF_THRESHOLD)))
+#define MENU_DEF_RIGHT (key_cur | (joy_raw.x > (MENU_DEF_THRESHOLD)) | (joy2_raw.x > (MENU_DEF_THRESHOLD)))
 
 /**
  * Action "click" check
@@ -49,20 +49,6 @@ typedef struct {
 	BOOL closeOnCallback;
 } Menu;
 
-/**
- * Definiert ein Level in der Levelauswahl.
- */
-typedef struct {
-	/**
-	 * Bild in der Levelauswahl.
-	 */
-	BMAP *image;
-	/**
-	 * Name in der Levelauswahl
-	 */
-	char name[128];
-} LevelChoice;
-
 Menu menu;
 
 /**
@@ -79,11 +65,6 @@ void menu_open();
  * Schließt das Menü.
  */
 void menu_close();
-
-/**
- * Setzt die Levelauswahl.
- */
-void menu_set_levels(int count, LevelChoice *choices);
 
 bool g_menuOpenedFirst = true;
 
