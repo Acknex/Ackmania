@@ -12,6 +12,7 @@
 	#define PRAGMA_PATH "../engine/"
 	#define PRAGMA_PATH "../../levels/"
 	#define PRAGMA_PATH "../../levels/test/"
+	#define PRAGMA_PATH "../../models/"
 
 	#include <acknex.h>
 	#include <windows.h>
@@ -44,25 +45,23 @@ PANEL *_menu_bigheader = {
 	bmap = "menu_header.png";
 }
 
-PANEL *_menu_flag = {
-	bmap = "menu_flag.png";
-}
-
 PANEL *_menu_course = {
 	size_x = 256;
 	size_y = 256;
 }
 
-#ifdef DEBUG
 MATERIAL *_menu_flagshader = {
-	effect = "menu_flag.fx";
-	flags = AUTORELOAD;
+	effect =
+"technique Sepia {
+	pass p1 {
+		AlphaBlendEnable = false;
+		ZEnable = true;
+		ZFunc = LessEqual;
+		CullMode = None;
+	}
+}";
+	flags = PASS_SOLID;
 }
-#else
-MATERIAL *_menu_flagshader = {
-	effect = "menu_flag.fx";
-}
-#endif
 
 TEXT *_menu_selection_txt = {
 	font = "menu_ackfont_large.png";
@@ -70,6 +69,10 @@ TEXT *_menu_selection_txt = {
 	flags = CENTER_X | CENTER_Y;
 }
 
+ENTITY *_menu_flag = {
+	type = "flag.mdl";
+	material = _menu_flagshader;
+}
 
 /**
  * Initialisiert das Menü.
@@ -107,6 +110,8 @@ void menu_init(int baseLayer)
 		
 		wait(1);
 		
+		ent_animate(_menu_flag, "Wave", total_ticks, ANM_CYCLE);
+		
 		if(_menu_visible) {
 			_menu_background.flags |= SHOW;
 			_menu_background.scale_x = screen_size.x / bmap_width(_menu_background.bmap);
@@ -116,12 +121,15 @@ void menu_init(int baseLayer)
 			_menu_bigheader.pos_x = 0.5 * screen_size.x - 0.5 * bmap_width(_menu_bigheader.bmap);
 			_menu_bigheader.pos_y = 0.25 * screen_size.y - 0.5 * bmap_height(_menu_bigheader.bmap);
 			
-			_menu_flag.flags |= SHOW;
-			_menu_flag.pos_x = 0.5 * screen_size.x - 0.5 * bmap_width(_menu_flag.bmap) + 91;
-			_menu_flag.pos_y = 0.65 * screen_size.y - 0.5 * bmap_height(_menu_flag.bmap);
+			_menu_flag.flags2 |= SHOW;
+			VECTOR pos;
+			pos.x = 0.6 * screen_size.x;
+			pos.y = 0.75 * screen_size.y;
+			pos.z = 1000;
 			
-			_menu_flagshader.skill1 = floatv(total_ticks);
-			bmap_process(_menu_flag.bmap, _menu_baseflag, _menu_flagshader);
+			rel_for_screen(pos, camera);
+			
+			vec_set(_menu_flag.x, pos);
 			
 			// Left
 			if(MENU_DEF_LEFT && MENU_DEF_LEFT != lastKeyLeft) {
@@ -247,7 +255,7 @@ void menu_init(int baseLayer)
 		} else {
 			_menu_background.flags &= ~SHOW;
 			_menu_bigheader.flags &= ~SHOW;
-			_menu_flag.flags &= ~SHOW;
+			_menu_flag.flags2 &= ~SHOW;
 			_menu_selection_txt.flags &= ~SHOW;
 			_menu_course.flags &= ~SHOW;
 		}
