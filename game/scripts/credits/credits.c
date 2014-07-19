@@ -1,28 +1,6 @@
 #ifndef _CREDITS_C_
 #define _CREDITS_C_
 
-//#define TEST_DEBUG
-
-#ifdef TEST_DEBUG
-
-	#define PRAGMA_PATH "../../panels/menu/"
-	#define PRAGMA_PATH "../../shaders/menu/"
-	#define PRAGMA_PATH "../../sounds/menu/"
-	#define PRAGMA_PATH "../circuits/"
-	#define PRAGMA_PATH "../engine/"
-	#define PRAGMA_PATH "../../levels/"
-	#define PRAGMA_PATH "../../levels/test/"
-	#define PRAGMA_PATH "../../models/"
-	#define PRAGMA_PATH "../../music/"
-	#define PRAGMA_PATH "../../textures/"
-
-	#include <acknex.h>
-	#include <windows.h>
-	#include <default.c>
-	
-	#define BOOL int
-#endif // TEST_DEBUG
-
 #include <windows.h>
 #include "credits.h"
 
@@ -157,19 +135,5 @@ void credits_stop()
 	media_stop(_credits_music);
 	_credits_music = 0;
 }
-
-
-#ifdef TEST_DEBUG
-
-function main()
-{
-	credits_init();
-	
-	
-	on_space = credits_start;
-}
-
-
-#endif
 
 #endif // #ifndef _CREDITS_C_

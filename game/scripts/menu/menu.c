@@ -130,8 +130,8 @@ void menu_init(int baseLayer)
 			
 			_menu_flag.flags2 |= SHOW;
 			VECTOR pos;
-			pos.x = 0.5 * screen_size.x;
-			pos.y = 0.75 * screen_size.y;
+			pos.x = 0.25 * screen_size.x;
+			pos.y = 0.65 * screen_size.y;
 			pos.z = 1000;
 			
 			rel_for_screen(pos, camera);
@@ -160,13 +160,13 @@ void menu_init(int baseLayer)
 				
 				_menu_course.flags |= VISIBLE;
 				_menu_course.bmap = _menu_trackIcons[_menu_selection];
-				_menu_course.pos_x = 0.5 * screen_size.x - _menu_course->bmap->width / 2;
-				_menu_course.pos_y = 0.5 * screen_size.y - 128;
+				_menu_course.pos_x = 0.7 * screen_size.x - _menu_course->bmap->width / 2;
+				_menu_course.pos_y = 0.62 * screen_size.y - _menu_course->bmap->height / 2;
 
 			
 				_menu_selection_txt.flags |= SHOW;
-				_menu_selection_txt.pos_x = 0.5 * screen_size.x;
-				_menu_selection_txt.pos_y = _menu_course.pos_y + 256 + 32;
+				_menu_selection_txt.pos_x = 0.7 * screen_size.x;
+				_menu_selection_txt.pos_y = _menu_course.pos_y + _menu_course->bmap->height + 48;
 				
 				str_cpy(_menu_currentChoice, "< ");
 				str_cat(_menu_currentChoice, getCircuitTitleStr(_menu_selection));
@@ -205,8 +205,8 @@ void menu_init(int baseLayer)
 				}
 				
 				_menu_selection_txt.flags |= SHOW;
-				_menu_selection_txt.pos_x = 0.5 * screen_size.x;
-				_menu_selection_txt.pos_y = 0.5 * screen_size.y;
+				_menu_selection_txt.pos_x = 0.7 * screen_size.x;
+				_menu_selection_txt.pos_y = 0.65 * screen_size.y;
 				
 				// Action
 				if(MENU_DEF_ACTION && MENU_DEF_ACTION != lastKeyAction ) {
