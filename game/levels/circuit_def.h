@@ -20,14 +20,19 @@ TEXT* g_circuits = {
                "Dummy Level 2 (Test 2)",
                "game1_3db.wav",
                "dummy_level2.bmp",
-               "test2.wmb"
+               "test2.wmb",
+               // Desert Road
+               "Desert Road",
+               "game1_3db.wav",
+               "droad-icon.bmp",
+               "droad.wmb"
       );
 }
 
-double g_circuit_skyspeeds [2] = {1, 0.25};
+double g_circuit_skyspeeds [2] = {1, 0.25, 1};
 
-float g_circuit_hdrthresholds [2] = {30, 30};
-float g_circuit_hdrstrengths [2] = {20, 20};
-float g_circuit_hdrexposures [2] = {0, 0};
+float g_circuit_hdrthresholds [2] = {30, 30, 0};
+float g_circuit_hdrstrengths [2] = {20, 20, 0};
+float g_circuit_hdrexposures [2] = {0, 0, 0};
 
 #endif /* circuit_def_h */
