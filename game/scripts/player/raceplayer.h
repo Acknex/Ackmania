@@ -53,6 +53,8 @@ var g_raceplayerBadGroundFac = 0.333;
 #define group_obstacle 3
 #define group_track 4
 
+var get_kart_speed(ENTITY* ent, VECTOR* vdir);
+
 void postConstructPlayer (ENTITY* ent);
 
 void loadPlayerHumanControlParams (ENTITY* ent);
