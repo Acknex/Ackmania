@@ -121,7 +121,7 @@ void updatePlayer(ENTITY* ent)
 	
   if (up && !down) {
       ent->speed = minv(ent->speed + minv((g_raceplayerMaxSpeed-ent->speed)*0.1,0.5 * g_raceplayerAccelSpeed) * time_step,
-            (g_raceplayerMaxSpeed - 4 * ent->turn_speed2 * !ent->drifting) * ent->underground);
+            (g_raceplayerMaxSpeed - 4 * abs(ent->turn_speed2) * !ent->drifting) * ent->underground);
    }
 
    if (!(up || down)) {
