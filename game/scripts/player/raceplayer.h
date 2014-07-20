@@ -40,6 +40,7 @@ var g_raceTrackWidth = 160;
 
 void synplayermodel (ENTITY* ent);
 
+#define scale skill59
 #define kart_turbo_ent skill60
 #define kart_hit skill61
 #define kart_turbo skill62
