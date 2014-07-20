@@ -23,7 +23,6 @@
  
 #include "map_cfg.h"
 #include "startgrid.h"
-#include "camera.h"
 
 VECTOR vecMapMin;
 VECTOR vecMapMax;
@@ -34,7 +33,6 @@ var vMapScale;
 var vMapNodes;
 var vMap3DSize;
 PANEL* panMapMarker[4];
-
 PANEL** panMapSegments;
 
 
