@@ -335,7 +335,7 @@
 
 		if(event_type == EVENT_TRIGGER) return;
 		
-		factor = 0.9;
+		factor = 0.3+clamp(my->speed/my->kart_maxspeed,0,0.7);
 
 		if (you != null) {
 			if (your._type == type_kart) {
@@ -344,7 +344,7 @@
 					trap_driver(you,1.5);
 					return;
 				}
-				factor = 0.5;
+				factor *= 0.5;
 			}
 		}
 
@@ -358,7 +358,7 @@
 		new_angle = get_xyangle(bounce);
 
 		if (abs(ang(new_angle - my->drive_pan)) < 90) {
-			my->bump_ang = ang(new_angle - my->drive_pan);
+			my->bump_ang = (ang(new_angle - my->drive_pan))*factor;
 		}
 
 		VECTOR vs;
