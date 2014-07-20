@@ -43,7 +43,7 @@ void credits_initstages() {
 	_add_stage(785.279, -562.790, 54.465, 484.703, 12.754, 0, 1);
 }
 
-TEXT *creditsContent = {
+TEXT *creditsLyrics = {
 	string(
 		"The forum users always seem to say",
 		"that Acknex is dead, please just stay away",
