@@ -445,11 +445,13 @@
 		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length, d;
 		VECTOR temp,temp2;
 		
+		/*
 		if(key_1) trap_driver(ent, 1.5);
 		if(key_2) driver_hit(ent, 1.5);
 		if(key_3) start_turbo(ent, 3.5);
 		if(key_4) enlarge_driver(ent, 5);
 		if(key_5) minimize_driver(ent, 5);
+		*/
 
 		if(ent->falling)
 		{
@@ -558,8 +560,9 @@
 		old_contact = ent->ground_contact;
 		ent->ground_contact = (ent->parent->z <= ent->kart_height);
 
-		if (!old_contact && ent->ground_contact && hop && ent->speed > 10 && (left - right)) {
+		if (!old_contact && ent->ground_contact && hop && ent->speed > 10 && (left - right) && !ent->drifting) {
 			ent->drifting = 1;
+			snd_play(g_sndDrift, g_sndDriftvol, 0);
 		}
 
 		if (!hop) {
