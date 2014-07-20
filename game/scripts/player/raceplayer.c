@@ -790,9 +790,12 @@ vec_fill(ent->parent->scale_x,ent->parent->scale_x);
 	      ENTITY* epl = (ENTITY*) ent->playermodel;
 
 	      if (epa != null && epl != null) {
+
 	         vec_set(epl->x, epa->x);
 	         vec_set(epl->pan, epa->pan);
 	         vec_set(epl->scale_x, epa->scale_x);
+
+	         ent_animate(epl, "", (ent->skill1 * 42 + total_ticks * 5) % 100, ANM_CYCLE);
 	      }
 	   }
 	}
