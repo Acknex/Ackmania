@@ -189,7 +189,7 @@ void credits_nextentry() {
 	texts[2] = creditsWorkPan2;
 	texts[3] = creditsWorkPan3;
 	
-	var blendSpeed = 8;
+	var blendSpeed = 12;
 	
 	int i;
 	for(i = 0; i < 4; i++) {
@@ -201,7 +201,9 @@ void credits_nextentry() {
 	}
 	
 	creditsCurrentEntry += 1;
-	wait(-3);
+	wait(-1);
+	
+	blendSpeed = 24;
 	
 	for(i = 3; i >= 0; i--) {
 		for(texts[i].alpha = 100; texts[i].alpha > 0; texts[i].alpha -= blendSpeed * time_step) {
@@ -217,7 +219,7 @@ void credits_nextentry() {
 void credits_init()
 {
 	memset(&credits, 0, sizeof(Credits));
-	credits.lottiSpeed = 20;
+	credits.lottiSpeed = 18;
 	
 	credits_initstages();
 	
@@ -237,12 +239,12 @@ void credits_init()
 	credits_addev(84000, credits_stage);
 	credits_addev(90000, credits_nextentry);
 	credits_addev(91000, credits_stage);
-	credits_addev(100000, credits_nextentry);
+	credits_addev(95000, credits_nextentry);
 	
 	int i;
 	int count = creditsContent.strings / 4;
 	for(i = 2; i < count; i++) {
-		credits_addev(110000 + 10000 * (i-2), credits_nextentry);
+		credits_addev(100000 + 5000 * (i-2), credits_nextentry);
 	}
 	
 	wait(1);
@@ -281,9 +283,9 @@ void credits_init()
 			if(creditsBlendPerc > 0 && creditsBlendPerc < 100) {
 				creditsBlendPerc = minv(creditsBlendPerc + creditsBlendSpeed * time_step, 100);
 				if(creditsBlendPerc == 100) {
-					diag("\nBlend stage finished: ");
-					diag(str_for_int(NULL, time));
-					diag(" ms");
+					//diag("\nBlend stage finished: ");
+					//diag(str_for_int(NULL, time));
+					//diag(" ms");
 				}
 				
 				var blend = sin(0.5 * 0.0314159 * creditsBlendPerc);
@@ -372,12 +374,7 @@ void credits_start()
 	you.pan = 270;
 	you.material = _credits_mtlAlphaTest;
 	
-	
-#ifdef TEST_DEBUG
-	_credits_music = media_play("../../media/outro-demo.ogg", NULL, 100);
-#else
-	_credits_music = media_play("media\\outro-demo.ogg", NULL, 100);
-#endif
+	_credits_music = media_play("media\\lotti_credits.ogg", NULL, 100);
 }
 
 /**
@@ -392,13 +389,13 @@ void credits_stop()
 	if(_credits_music == 0) {
 		return;
 	}
+	media_stop(_credits_music);
+	_credits_music = 0;
 	if(credits.onCreditsEnd != NULL) {
 		void tmp();
 		tmp = credits.onCreditsEnd;
 		tmp();
-	}	
-	media_stop(_credits_music);
-	_credits_music = 0;
+	}
 }
 
 #endif // #ifndef _CREDITS_C_
