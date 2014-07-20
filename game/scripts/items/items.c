@@ -23,6 +23,7 @@ void _item_setup()
 	set (me, PASSABLE);
 	c_setminmax(me);
 	set(me, FLAG2);
+	set(me, SHADOW);
 }
 
 // Effekte für Items
@@ -79,7 +80,7 @@ action a4_cube()
 	_item_setup();
 	//my->trigger_range = 200;
 	place_on_floor(me);
-	my->z -=3;
+	my->z -=40;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_a4_cube_evt;
 	var vZ = my->z;
@@ -111,8 +112,7 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			//driver.item_id = 1 + integer(random(7));
-			driver.item_id = 3;
+			driver.item_id = 1 + integer(random(7));
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
@@ -152,7 +152,7 @@ action item()
 {
 	_item_setup();	
 	place_on_floor(me);
-	my->z -=3;
+	my->z -=40;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_evt;
 	var vZ = my->z;
@@ -242,7 +242,7 @@ void p_rocket_explode(PARTICLE* p)
 // Rakete, die geradeaus fliegt
 action _rocket()
 {
-	int liveTime = 300 + integer(random(100));
+	int liveTime = ROCKET_LIFE_FRAMES + integer(random(100));
 	var flyHeight = 0;
 	int reachedTop = 0;
 	var initHeight = 0;
@@ -253,6 +253,7 @@ action _rocket()
 	vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 	c_setminmax(me);
 	snd_play(sndRocketFire, 50, 0);
+	VECTOR vertexPos;
 	while(me && (liveTime > 0))
 	{
 		// Lass die Rakete nach Abschuss hüpfen
@@ -280,7 +281,9 @@ action _rocket()
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
 		
-		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
+		// Vertex 634
+		vec_for_vertex(vertexPos, me, 634);
+		effect(p_rocket_smoke, maxv(2,time_step), vertexPos, nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
 		
@@ -318,7 +321,7 @@ void shoot_rocket(ENTITY* driver)
 // Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
 action _aiming_rocket()
 {
-	int liveTime = 300 + integer(random(100));
+	int liveTime = ROCKET_LIFE_FRAMES + integer(random(100));
 	var flyHeight = 0;
 	int reachedTop = 0;
 	var initHeight = 0;
@@ -329,6 +332,7 @@ action _aiming_rocket()
 	vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 	c_setminmax(me);
 	snd_play(sndRocketFire, 50, 0);
+	VECTOR vertexPos;
 	while(me && (liveTime > 0))
 	{
 		// Lass die Rakete nach Abschuss hüpfen
@@ -356,7 +360,9 @@ action _aiming_rocket()
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
 		
-		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
+		// Vertex 634
+		vec_for_vertex(vertexPos, me, 634);
+		effect(p_rocket_smoke, maxv(2,time_step), vertexPos, nullvector);
 		
 		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
 		
@@ -459,7 +465,7 @@ action _badass_aiming_rocket()
 	vec_set(my.scale_x, vector(0.2, 0.2, 0.2));
 	c_setminmax(me);
 	snd_play(sndRocketFire, 50, 0);
-	int liveTime = 3000 + integer(random(500));
+	int liveTime = BADASS_ROCKET_LIFE_FRAMES + integer(random(500));
 	var animPercentage = 0;
 	set(me, PASSABLE);
 	while(me && (liveTime > 0))
