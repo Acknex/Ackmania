@@ -68,8 +68,8 @@ void menu_close();
 
 bool g_menuOpenedFirst = true;
 
-SOUND* g_sndMenuOpen1st = "menu_open_1st.ogg";
-SOUND* g_sndMenuOpenNext = "menu_open_next.ogg";
+SOUND* g_sndMenuOpen1st = "welcome1.wav";
+SOUND* g_sndMenuOpenNext = "welcome2.wav";
 
 #include "menu.c"
 
