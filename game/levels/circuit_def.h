@@ -24,7 +24,7 @@ TEXT* g_circuits = {
                // Desert Road
                "King Lotti's Bridge",
                "game1_3db.wav",
-               "droad-icon.bmp",
+               "kbridge.bmp",
                "kbridge.wmb"
       );
 }
