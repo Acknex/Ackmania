@@ -479,11 +479,23 @@ action _badass_aiming_rocket()
 	int liveTime = BADASS_ROCKET_LIFE_FRAMES + integer(random(500));
 	var animPercentage = 0;
 	set(me, PASSABLE);
+	
+	path_set(me, "path_001");
+	var dist = get_nearest_path_point(me, "path_001");
+	var vLastPos[3];
+	var vDir[3];
+	
 	while(me && (liveTime > 0))
 	{
 		effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 		
-		c_move(me, vector(ROCKET_SPEED * 5 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
+		path_spline(me,my->x,dist);
+		my->z -=35;
+		dist -= ROCKET_SPEED * time_step;
+		vec_diff(vDir,my.x,vLastPos);
+		vec_to_angle(my.pan,vDir);
+		vec_set(vLastPos,my.x);
+		
 		
 		if (HIT_TARGET != NULL)
 		{
@@ -508,7 +520,7 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	VECTOR* rocketStart = vector(ROCKET_X_OFFSET,0,0);
+	VECTOR* rocketStart = vector(-ROCKET_X_OFFSET,0,0);
 	vec_rotate(rocketStart, driver->pan);
 	vec_add(rocketStart, driver->x);
 	driver->item_id = ITEM_NONE;
