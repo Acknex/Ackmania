@@ -207,3 +207,4 @@ bind "iglo.mdl";
 bind "drums.mdl";
 bind "ski.mdl";
 bind "zorroLotti.mdl";
+bind "kart_drift.wav";

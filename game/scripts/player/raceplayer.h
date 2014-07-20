@@ -19,6 +19,9 @@ BMAP* bmp_shadow = "decal_shadow.tga";
 SOUND* g_sndAiaiaiai = "aiaiaiai.ogg";
 var g_kartsnd_aiaiai = 100;
 
+SOUND* g_sndDrift = "kart_drift.wav";
+var g_sndDriftvol = 60;
+
 var gamepad_active;
 var key_up = 0;
 var key_down = 0;
