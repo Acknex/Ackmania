@@ -59,7 +59,7 @@
 	{
 		return 5;
 	}
-
+	
 	double dvec_dot(VECTOR* vec1, VECTOR* vec2)
 	{
 		double d;
@@ -298,9 +298,20 @@
 	}
 	var get_kart_rank_player()
 	{
-		ENTITY* ent = get_kart_driver(0);
+		int i;
+		var rank;
+		ENTITY* ent;
+		
+		ent = get_kart_driver(0);
 		if(!ent) return -1;
-		return ent->kart_rank;
+		rank = 1;
+		for(i = 1; i < 4; i++)
+		{
+			ENTITY* ent_enemy = get_kart_driver(i);
+			if(ent_enemy->kart_progress > ent->kart_progress) rank++;
+		}
+		ent->kart_rank = rank;
+		return rank;
 	}
 
 	var is_kart_player_wrong_way()
@@ -321,7 +332,7 @@
 
 		if (you != null) {
 			if (your._type == type_kart) {
-				if(my->kart_big) return;
+				if(my->kart_big || (!my->kart_small && your->kart_small)) return;
 				factor = 0.5;
 			}
 		}
@@ -740,9 +751,16 @@
 				if(!ent->kart_lap) ent->kart_lap = 1;
 				if(ent->kart_checkpoint > 0)
 				{
-					playTaunt(ent->sk_kart_id-1);
-					ent->kart_lap++;
-					ent->kart_checkpoint = 0;
+					if(ent->kart_checkpoint >= get_max_laps())
+					{
+						// race end here
+					}
+					else
+					{
+						playTaunt(ent->sk_kart_id-1);
+						ent->kart_lap++;
+						ent->kart_checkpoint = 0;
+					}
 				}
 			}
 			d = (ent->kart_lap-1)*length;
