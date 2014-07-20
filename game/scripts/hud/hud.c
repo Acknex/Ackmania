@@ -98,9 +98,9 @@ void create_hud()
 	
 	
 	wait(1);
-	update_hud();
+	//update_hud();
 	vHudCreated = 1;
-	show_hud();	
+	//show_hud();	
 }
 
 void remove_hud()

@@ -23,18 +23,20 @@
  
 #include "map_cfg.h"
 #include "startgrid.h"
+#include "camera.h"
 
-var vMapScale;
 VECTOR vecMapMin;
 VECTOR vecMapMax;
 var* vNodeX;
 var* vNodeY;
 var vMapActive = 0;
+var vMapScale;
 var vMapNodes;
 var vMap3DSize;
 PANEL* panMapMarker[4];
 
-void map_particle(PARTICLE *p); 
+PANEL** panMapSegments;
+
 
 void create_map()
 {
@@ -84,10 +86,10 @@ void create_map()
 		vMap3DSize *= 1.1; /* pretend on slightly bigger map for better look */
 		//printf("%d %d %d %d %d", (int)vecMapMin.x, (int)vecMapMin.y, (int)vecMapMax.x, (int)vecMapMax.y, (int)vMap3DSize);
 	
-		/* create panels */
+		/* create driver markers */
 		for (i = 0; i < 4; i++)
 		{
-			panMapMarker[i] = pan_create(NULL, MAP_LAYER);
+			panMapMarker[i] = pan_create(NULL, MAP_LAYER_MARKER);
 			panMapMarker[i]->flags |= SHOW|LIGHT;
 		}
 		vec_set(panMapMarker[0]->blue, vector(255,0,0));
@@ -95,7 +97,17 @@ void create_map()
 		vec_set(panMapMarker[2]->blue, vector(0,255,255));
 		vec_set(panMapMarker[3]->blue, vector(0,255,0));
 	
+		/* create track segments */
+		panMapSegments = sys_malloc(sizeof(PANEL*) * vMapNodes);
+		for(i = 0; i < vMapNodes; i++)
+		{
+			panMapSegments[i] = pan_create(NULL, MAP_LAYER);
+			vec_set(panMapSegments[i]->blue, vector(100,100,100));
+			panMapSegments[i]->flags |= SHOW|LIGHT;
+		}
+		
 		wait(1);
+		vMapScale = 0; //make sure whole map update will be triggered once (bleh)
 		vMapActive = 1;
 	}
 	ptr_remove(ent);
@@ -103,6 +115,7 @@ void create_map()
 
 void remove_map()
 {
+	var i;
 	if (vMapActive == 1)
 	{
 		vMapActive = 0;
@@ -112,30 +125,35 @@ void remove_map()
 		ptr_remove(panMapMarker[3]);
 		sys_free(vNodeX);
 		sys_free(vNodeY);
+		for (i = 0; i < vMapNodes; i++)
+		{
+			ptr_remove(panMapSegments[i]);
+		}
+		sys_free(panMapSegments);
 	}
 }
 
 void update_map()
 {
-	VECTOR vecMapOffset;
-	
 	var vMapPosX;
 	var vMapPosY;
 	var vMapSize;
-
 	var i;
 	var x, y;
-	var xNew, yNew;
+	var vMapScaleOld;
 	ENTITY* ent;
-	var vMapScale;
+	VECTOR* vecTemp;		
+	ANGLE angTemp;		
 	
 	if (vMapActive != 0)
 	{
+		vMapScaleOld = vMapScale;
 		vMapScale = screen_size.y / 1200;	
 		vMapSize = screen_size.y * 0.33;
 		vMapPosX = screen_size.x - vMapSize;
 		vMapPosY = screen_size.y - vMapSize;
 
+#ifdef DRAW_LINE_MAP
 		/* draw race track */
 		for(i = 1; i <= vMapNodes; i++)
 		{
@@ -154,6 +172,7 @@ void update_map()
 		x = vMapPosX + (vNodeX[1] / vMap3DSize) * vMapSize;
 		y = vMapPosY + (vNodeY[1] / vMap3DSize) * vMapSize;
 		draw_line(vector(x,y,0),vector(255,255,255),100);
+#endif
 
 		/* draw player positions */
 		for (i = 0; i < 4; i++)
@@ -168,7 +187,47 @@ void update_map()
 			panMapMarker[i]->size_x = MAP_MARKERSIZE;
 			panMapMarker[i]->size_y = MAP_MARKERSIZE;
 		}
+
+		/* this only needs to run once on resolution change */
+		if(vMapScale != vMapScaleOld)
+		{
+			for(i = 0; i < vMapNodes; i++)
+			{
+				/* track length
+				   length is defined by distance to next path node.
+				   in order to avoid gaps, the length is increased by adding an overdraw value
+				   the rotation center is set to half of this value to make sure  the
+				   overdraw is used on both ends in x direction
+				 */
+				panMapSegments[i]->center_x = MAP_TRACK_OVERDRAW * vMapScale * 0.5;
+				/* track width */
+				panMapSegments[i]->size_y = MAP_TRACK_WIDTH * vMapScale;
+				panMapSegments[i]->center_y = panMapSegments[i]->size_y * 0.5;
+				/* get node position add offset, scale it to screen */
+				panMapSegments[i]->pos_x = vMapPosX + (vNodeX[i+1] / vMap3DSize) * vMapSize;
+				panMapSegments[i]->pos_y = vMapPosY + (vNodeY[i+1] / vMap3DSize) * vMapSize;
+				/* track segments must be center aligned, offset can be used from center parameters */
+				panMapSegments[i]->pos_x -= panMapSegments[i]->center_x;
+				panMapSegments[i]->pos_y -= panMapSegments[i]->center_y;
+				
+				if(i > 0)
+				{
+					/* get length and direction for last track element */
+					/* needs pos of current track element for direction calculation */
+					vecTemp = vector(panMapSegments[i]->pos_x, panMapSegments[i]->pos_y, 0);
+					vec_sub(vecTemp, vector(panMapSegments[i-1]->pos_x, panMapSegments[i-1]->pos_y, 0));
+					panMapSegments[i-1]->size_x = vec_length(vecTemp) + (MAP_TRACK_OVERDRAW * vMapScale);
+					vec_to_angle(&angTemp, vecTemp);
+					panMapSegments[i-1]->angle = -angTemp.pan;
+				}
+			}
+			/* repeat for last track element which needs reference to first node */
+			vecTemp = vector(panMapSegments[0]->pos_x, panMapSegments[0]->pos_y, 0);
+			vec_sub(vecTemp, vector(panMapSegments[i-1]->pos_x, panMapSegments[i-1]->pos_y, 0));
+			panMapSegments[i-1]->size_x = vec_length(vecTemp) + (MAP_TRACK_OVERDRAW * vMapScale);
+			vec_to_angle(&angTemp, vecTemp);
+			panMapSegments[i-1]->angle = -angTemp.pan;
+		}
 	}	
 	
 }
-
