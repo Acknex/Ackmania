@@ -17,8 +17,6 @@
 
  These are the racing adventures of Lotti in dimension JCL-Zeta-Oscar-Romeo-Romeo-Oscar-ACKMANIA.
 
-
-
  How to play:
 
  ARROW KEYS     -  drive, steer

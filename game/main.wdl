@@ -205,9 +205,7 @@ bind "welcome2.wav";
 bind "welcome3.wav";
 
 bind "iglo.mdl";
-bind "drums.mdl";
 bind "ski.mdl";
-bind "zorroLotti.mdl";
 bind "kart_drift.wav";
 
 bind "place_lost1.ogg";
@@ -215,3 +213,24 @@ bind "place_lost2.ogg";
 bind "place_lost3.ogg";
 bind "place_lost4.ogg";
 bind "place_lost5.ogg";
+
+bind "kart.fx";
+
+bind "a4Cube.mdl";
+bind "environment.tga";
+bind "gate01.mdl";
+bind "item_a3_collectable.mdl";
+bind "kbridge.bmp";
+bind "kbridge.wed";
+bind "kbridge.wmb";
+bind "kbridge.wmp";
+bind "kingsbridge.mdl";
+bind "list.txt";
+bind "lotter_dummy.mdl";
+bind "pfosten.mdl";
+bind "planke.mdl";
+bind "stone.mdl";
+bind "tree01.mdl";
+bind "tree02.mdl";
+bind "tree03.mdl";
+bind "water.mdl";

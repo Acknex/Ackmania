@@ -761,7 +761,7 @@
 				if(!ent->kart_lap) ent->kart_lap = 1;
 				if(ent->kart_checkpoint > 0)
 				{
-					if(ent->kart_lap >= get_max_laps())
+					if(ent->kart_lap >= get_max_laps() && ent->sk_kart_id == 1)
 					{
 						do_race_end(ent);
 					}
