@@ -48,13 +48,8 @@ void create_map()
 		wait(1);
 	}
 
-//	vec_set(&vecMapMin, level_ent->min_x);
-//	vec_set(&vecMapMax, level_ent->max_x);
 	vec_set(&vecMapMin, vector(999999,999999,0));
 	vec_set(&vecMapMax, vector(-999999,-999999,0));
-//	vecMapMin.z = 0;
-//	vecMapMax.z = 0;
-//	vec_scale(&vecMapMin, -1);
 	
 	ent = ent_create(NULL,nullvector,NULL);
 	vMapNodes = path_next(ent);
@@ -77,50 +72,47 @@ void create_map()
 		
 		for(i = 1; i <= vMapNodes; i++)
 		{
-			vNodeX[i] += vecMapMin.x;
-			vNodeY[i] += vecMapMin.y;
+			vNodeX[i] -= vecMapMin.x;
+			vNodeY[i] -= vecMapMin.y;
 		}
-		vTemp = vecMapMin.x + vecMapMax.x;
-		vMap3DSize = vecMapMin.y + vecMapMax.y;
+		vTemp =  vecMapMax.x - vecMapMin.x;
+		vMap3DSize = vecMapMax.y - vecMapMin.y;
 		if (vTemp > vMap3DSize)
 		{
 			vMap3DSize = vTemp;
 		}
-	//	printf("%d %d %d %d", )
+		vMap3DSize *= 1.1; /* pretend on slightly bigger map for better look */
+		//printf("%d %d %d %d %d", (int)vecMapMin.x, (int)vecMapMin.y, (int)vecMapMax.x, (int)vecMapMax.y, (int)vMap3DSize);
+	
+		/* create panels */
+		for (i = 0; i < 4; i++)
+		{
+			panMapMarker[i] = pan_create(NULL, MAP_LAYER);
+			panMapMarker[i]->flags |= SHOW|LIGHT;
+		}
+		vec_set(panMapMarker[0]->blue, vector(255,0,0));
+		vec_set(panMapMarker[1]->blue, vector(0,0,255));
+		vec_set(panMapMarker[2]->blue, vector(0,255,255));
+		vec_set(panMapMarker[3]->blue, vector(0,255,0));
+	
+		wait(1);
+		vMapActive = 1;
 	}
-	//else
-	//{
-	//	error("no path in level! Crashes coming up");
-	//}				
-	//vec_add(&vecMapMax, &vecMapMin);
-	//vec_scale(&vecMapMax, 0.9); /* looks better */
-	//vec_set(&vecMapMin, nullvector); //old value needed in update function
-
-	/* create panels */
-	for (i = 0; i < 4; i++)
-	{
-		panMapMarker[i] = pan_create(NULL, MAP_LAYER);
-		panMapMarker[i]->flags |= SHOW|LIGHT;
-	}
-	vec_set(panMapMarker[0]->blue, vector(255,0,0));
-	vec_set(panMapMarker[1]->blue, vector(0,0,255));
-	vec_set(panMapMarker[2]->blue, vector(0,255,255));
-	vec_set(panMapMarker[3]->blue, vector(0,255,0));
-
-	wait(1);
-	vMapActive = 1;
 	ptr_remove(ent);
 }
 
 void remove_map()
 {
-	vMapActive = 0;
-	ptr_remove(panMapMarker[0]);
-	ptr_remove(panMapMarker[1]);
-	ptr_remove(panMapMarker[2]);
-	ptr_remove(panMapMarker[3]);
-	sys_free(vNodeX);
-	sys_free(vNodeY);
+	if (vMapActive == 1)
+	{
+		vMapActive = 0;
+		ptr_remove(panMapMarker[0]);
+		ptr_remove(panMapMarker[1]);
+		ptr_remove(panMapMarker[2]);
+		ptr_remove(panMapMarker[3]);
+		sys_free(vNodeX);
+		sys_free(vNodeY);
+	}
 }
 
 void update_map()
@@ -167,8 +159,8 @@ void update_map()
 		for (i = 0; i < 4; i++)
 		{
 			ent = get_kart_driver(i);
-			x = vMapPosX + ((ent->x + vecMapMin.x) / vMap3DSize) * vMapSize;
-			y = vMapPosY + ((-ent->y  + vecMapMin.y) / vMap3DSize) * vMapSize;
+			x = vMapPosX + ((ent->x - vecMapMin.x) / vMap3DSize) * vMapSize;
+			y = vMapPosY + ((-ent->y - vecMapMin.y) / vMap3DSize) * vMapSize;
 			panMapMarker[i]->scale_x = vMapScale;
 			panMapMarker[i]->scale_y = vMapScale;
 			panMapMarker[i]->pos_x = x - (panMapMarker[i]->size_x * 0.5 * panMapMarker[i]->scale_x);
