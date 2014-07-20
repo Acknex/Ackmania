@@ -359,13 +359,23 @@ void credits_start()
 	you.pan = 180;
 	you.material = _credits_mtlMetal;
 	
-	you = ent_create("lotterBass.mdl", stage.x, credits_lottiPlay);
-	vec_add(you.x, vector(-90, 40, 90));
+	you = ent_create("lotterGitarre.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(-100, 40, 90));
 	you.pan = 300;
 	you.material = _credits_mtlAlphaTest;
 	
-	you = ent_create("lotterGitarre.mdl", stage.x, credits_lottiPlay);
-	vec_add(you.x, vector(90, 40, 90));
+	you = ent_create("stage_mikro.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(0, 0, -1));
+	you.pan = 180;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_mikro2.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(0, 0, -1));
+	you.pan = 180;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("lotterBass.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(100, 40, 90));
 	you.pan = 230;
 	you.material = _credits_mtlAlphaTest;
 	
