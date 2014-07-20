@@ -5,6 +5,7 @@
 	#include "raceplayer.h"
 	#include "items.h"
 	#include "camera.h"
+	#include "taunts.h"
 
 	void p_drift_smoke_fade(PARTICLE* p)
 	{
@@ -44,7 +45,7 @@
 
 	MATERIAL* mat_water1 =
 	{
-		effect = "water1.fx";
+		effect = "shaders\\water1.fx";
 		flags = AUTORELOAD;
 	}
 
@@ -739,6 +740,7 @@
 				if(!ent->kart_lap) ent->kart_lap = 1;
 				if(ent->kart_checkpoint > 0)
 				{
+					playTaunt(ent->sk_kart_id-1);
 					ent->kart_lap++;
 					ent->kart_checkpoint = 0;
 				}
