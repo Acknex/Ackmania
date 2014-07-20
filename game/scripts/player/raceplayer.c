@@ -49,6 +49,12 @@
 		effect = "shaders\\water1.fx";
 		flags = AUTORELOAD;
 	}
+	
+	MATERIAL* mat_kart1 =
+	{
+		effect = "shaders\\kart.fx";
+		flags = AUTORELOAD;
+	}
 
 	action ac_racetrack()
 	{
@@ -333,7 +339,11 @@
 
 		if (you != null) {
 			if (your._type == type_kart) {
-				if(my->kart_big || (!my->kart_small && your->kart_small)) return;
+				if((my->kart_big && !your->kart_big) || (!my->kart_small && your->kart_small))
+				{
+					trap_driver(you,1.5);
+					return;
+				}
 				factor = 0.5;
 			}
 		}
@@ -412,6 +422,9 @@
 
 		ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
 		set(ent->parent, PASSABLE);
+		ent->parent->material = mat_kart1;
+		ent->parent->scale = 1;
+		ent->parent->skill41 = floatv(ent->parent->scale);
 	}
 
 	void loadPlayerHumanControlParams(ENTITY* ent)
@@ -463,14 +476,6 @@
 		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length, d;
 		VECTOR temp,temp2;
 		
-		/*
-		if(key_1) trap_driver(ent, 1.5);
-		if(key_2) driver_hit(ent, 1.5);
-		if(key_3) start_turbo(ent, 3.5);
-		if(key_4) enlarge_driver(ent, 5);
-		if(key_5) minimize_driver(ent, 5);
-		*/
-
 		if(ent->falling)
 		{
 			set(ent,PASSABLE);
@@ -479,6 +484,7 @@
 				snd_play(g_sndAiaiaiai, g_kartsnd_aiaiai, 0);
 				ent->isfallingsndplayed = true;
 			}
+			if(you = ent->kart_turbo_ent) set(you,INVISIBLE);
 			
 			ent->speed_z = maxv(ent->speed_z-5*time_step,-90);
 			up = maxv(0,40+ent->speed_z);
@@ -554,7 +560,7 @@
 		else
 		{
 			if (up && !down) {
-				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
+				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small+0.2*!ent->kart_turbo*!!ent->kart_big)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
 			}
 			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
@@ -580,7 +586,7 @@
 		vec_scale(ent->bounce_x,1-0.4*time_step);
 
 		old_contact = ent->ground_contact;
-		ent->ground_contact = (ent->parent->z <= ent->kart_height);
+		ent->ground_contact = (ent->parent->z <= ent->kart_height*ent->parent->scale*1.05);
 
 		if (!old_contact && ent->ground_contact && hop && ent->speed > 10 && (left - right) && !ent->drifting) {
 			ent->drifting = 1;
@@ -594,7 +600,7 @@
 		c_ignore(group_kart, 0);
 		c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 		
-		PARTICLE* p = ent_decal(you,bmp_shadow,70*ent->parent->scale_x,ent->parent->pan);
+		PARTICLE* p = ent_decal(you,bmp_shadow,70*ent->parent->scale,ent->parent->pan);
 		set(p,TRANSLUCENT);
 		p.alpha = 50;
 		p.lifespan = 0.01;
@@ -649,7 +655,7 @@
 		ent->parent->pan = ent->pan + ent->drift_pan*3.25 + ent->kart_trapped/16.0*720;
 		ent->parent->skill1 += ent->speed_z * time_step;
 		ent->parent->skill1 = maxv(ent->parent->skill1, ent->kart_height);
-		ent->parent->z = ent->parent->skill1;
+		ent->parent->z = ent->parent->skill1*ent->parent->scale;
 		ent->speed_z -= 9 * time_step;
 
 		if(ent->speed < 15 || ent->underground < 0.9) ent->drifting = 0;
@@ -814,8 +820,9 @@
 		ent->kart_big = maxv(ent->kart_big-time_step,0);
 		ent->kart_small = maxv(ent->kart_small-time_step,0);
 
-		ent->parent->scale_x += (1.0+0.5*!!ent->kart_big-0.35*!!ent->kart_small-ent->parent->scale_x)*0.9*time_step;
-		vec_fill(ent->parent->scale_x,ent->parent->scale_x);
+		ent->parent->scale += (1.0+0.5*!!ent->kart_big-0.35*!!ent->kart_small-ent->parent->scale)*0.9*time_step;
+		ent->parent->skill41 = floatv(ent->parent->scale);
+		
 
 		if(ent->kart_turbo)
 		{
@@ -824,12 +831,15 @@
 				you = ent_create("gocart_flame01.mdl",ent->x,NULL);
 				set(you,PASSABLE);
 				ent->kart_turbo_ent = you;
+				your->material = mat_kart1;
+				your->ambient = 65;
 			}
 			you = ent->kart_turbo_ent;
 			reset(you,INVISIBLE);
 			vec_fill(your->scale_x,ent->parent->scale_x);
 			vec_set(your->x,ent->parent->x);
 			vec_set(your->pan,ent->parent->pan);
+			your->skill41 = floatv(ent->parent->scale);
 			ent_bonereset_all(you);
 			ent_bonescale(you,"flame_node_tr0",vector(1+0.1*sinv(total_ticks*300),1+0.1*sinv(total_ticks*263),1+0.1*sinv(total_ticks*287)));
 		}
@@ -849,7 +859,9 @@
 			ENTITY* epl = (ENTITY*) ent->playermodel;
 
 			if (epa != null && epl != null) {
-
+				
+				epl->material = epa->material;
+				epl->skill41 = floatv(epa->scale);
 				vec_set(epl->x, epa->x);
 				vec_set(epl->pan, epa->pan);
 				vec_set(epl->scale_x, epa->scale_x);
