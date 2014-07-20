@@ -130,8 +130,7 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			//driver.item_id = 1 + integer(random(7));
-			driver.item_id = 2;
+			driver.item_id = 1 + integer(random(7));
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
