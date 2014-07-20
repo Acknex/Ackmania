@@ -206,3 +206,4 @@ bind "welcome3.wav";
 bind "iglo.mdl";
 bind "drums.mdl";
 bind "ski.mdl";
+bind "zorroLotti.mdl";
