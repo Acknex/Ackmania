@@ -77,7 +77,7 @@ void update_camera()
 		vFac = (CAMERA_REFSCRSIZEY - screen_size.y) / CAMERA_REFSCRSIZEY;
 		cam->arc = (CAMERA_REFARCBIG * (1 - vFac) + CAMERA_REFARCSMALL * vFac) * vDistanceFactor;
 
-//	DEBUG_VAR(vDistanceFactor, 200);
+//		DEBUG_VAR(vDistanceFactor, 200);
 	}
 	
 }

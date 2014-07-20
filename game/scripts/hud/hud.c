@@ -27,7 +27,7 @@
 #include "timer.h"
 #include "items.h"
 #include "map.h"
-
+#include "raceplayer.h"
 
 PANEL* panLaps;
 PANEL* panTime;
@@ -141,17 +141,16 @@ void update_hud()
 	}
 
 	/* update rank */
-	vRankOld = vRank + 1; //TEMP
-	//vRank = clamp(get_kart_rank (0), 1, 4);
-	vRank = 3; //TEMP
+	vRankOld = vRank;
+	vRank = clamp(get_kart_rank_player(), 1, 4);
 	if (vRank != vRankOld)
 	{
 		update_hudrank();
 	}
 	
 	/* update laps */
-	//vCurrentLap = 2;
-	//vTotalLaps = 5;   	
+	vCurrentLap = get_kart_lap_player();
+	vTotalLaps = get_max_laps();   	
 
 	/* update item slot */
 	vItemId = get_current_item_id();
