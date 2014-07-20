@@ -1,12 +1,12 @@
 #ifndef raceplayer_c
-#define raceplayer_c
+	#define raceplayer_c
 
-#include "engine.h"
-#include "raceplayer.h"
-#include "items.h"
-#include "camera.h"
-#include "taunts.h"
-#include "playrace.h"
+	#include "engine.h"
+	#include "raceplayer.h"
+	#include "items.h"
+	#include "camera.h"
+	#include "taunts.h"
+	#include "playrace.h"
 
 	void p_drift_smoke_fade(PARTICLE* p)
 	{
@@ -419,6 +419,7 @@
 		ent->kart_maxspeed = g_raceplayerMaxSpeed*(0.95+random(0.1));
 		ent->bot_path_offset = random(2)-1;
 		ent->_type = type_kart;
+		ent->has_finished = 0;
 
 		ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
 		set(ent->parent, PASSABLE);
@@ -429,24 +430,21 @@
 
 	void loadPlayerHumanControlParams(ENTITY* ent)
 	{
-		if (gamepad_active)
+		key_up = !g_doNotDrive * key_cuu;
+		key_down = !g_doNotDrive * key_cud;
+		key_left = key_cul;
+		key_right = key_cur;
+		key_hop = key_space;
+		key_item = key_ctrl;
+
+		if (!(key_item+key_hop+key_right+key_left+key_down+key_up))
 		{
-			key_up = !g_doNotDrive * 0;
-			key_down = !g_doNotDrive * 0;
-			key_left = 0;
-			key_right = 0;
-			key_hop = 0;
-			key_item = 0;
-
-			} else {
-
-			key_up = !g_doNotDrive * key_cuu;
-			key_down = !g_doNotDrive * key_cud;
-			key_left = key_cul;
-			key_right = key_cur;
-			key_hop = key_space;
-			key_item = key_ctrl;
-
+			key_up = !g_doNotDrive * (joy_rot.y > 128);
+			key_down = !g_doNotDrive * (joy_rot.z > 128);
+			key_left = (joy_force.x < -1);
+			key_right = (joy_force.x > 1);
+			key_hop = joy_6;
+			key_item = joy_2;
 		}
 
 		ent->kart_input = key_up * INPUT_UP | key_down * INPUT_DOWN | key_left * INPUT_LEFT | key_right * INPUT_RIGHT | key_hop * INPUT_HOP
@@ -530,6 +528,7 @@
 		reset(ent,PASSABLE);
 		ent.z = 16;
 
+		if(ent->has_finished) ent->kart_input = 0;
 		ent->old_speed = ent->speed;
 		up = !!(ent->kart_input & INPUT_UP);
 		down = !!(ent->kart_input & INPUT_DOWN);
@@ -761,9 +760,13 @@
 				if(!ent->kart_lap) ent->kart_lap = 1;
 				if(ent->kart_checkpoint > 0)
 				{
-					if(ent->kart_lap >= get_max_laps() && ent->sk_kart_id == 1)
+					if(ent->kart_lap >= get_max_laps())
 					{
-						do_race_end(ent);
+						ent->has_finished = 1;
+						if(ent->sk_kart_id == 1)
+						{
+							do_race_end(ent);
+						}
 					}
 					else
 					{
@@ -773,17 +776,20 @@
 					}
 				}
 			}
-			d = (ent->kart_lap-1)*length;
-			if(ent->kart_lap > 0 && progress > length*0.5 && progress+d > ent->kart_progress)
+			if(!ent->has_finished)
 			{
-				ent->kart_checkpoint = 1;
-			}
-			if(ent->kart_lap > 0)
-			{
-				if(progress+d > ent->kart_progress) ent->kart_progress = progress+d;
-				else
+				d = (ent->kart_lap-1)*length;
+				if(ent->kart_lap > 0 && progress > length*0.5 && progress+d > ent->kart_progress)
 				{
-					if(progress+d < ent->kart_progress-512) ent->kart_checkpoint = -1;
+					ent->kart_checkpoint = 1;
+				}
+				if(ent->kart_lap > 0)
+				{
+					if(progress+d > ent->kart_progress) ent->kart_progress = progress+d;
+					else
+					{
+						if(progress+d < ent->kart_progress-512) ent->kart_checkpoint = -1;
+					}
 				}
 			}
 		}
