@@ -86,6 +86,7 @@ void create_map()
 		{
 			vMap3DSize = vTemp;
 		}
+	//	printf("%d %d %d %d", )
 	}
 	//else
 	//{
