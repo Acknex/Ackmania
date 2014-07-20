@@ -50,7 +50,7 @@ TEXT *creditsContent = {
 		"Andreas Schmidt", "Credit Designer", "", "",
 		"Robert Jäger", "2D Display Maker", "2D Map Minificator", "Chasing Camera Holder",
 		"Christian Behrenberg", "Lower Management", "Sound Effect Voice Actor", "Framework Code Creator",
-		"Marius Kay Appes", "Upper Management", "Music Composer", ""
+		"Marius Kappes", "Upper Management", "Music Composer", ""
 		"Michael Schwarz", "Voice Actor", "Level Designer", "",
 		"Simon Trümpler", "Chief 3D Designer", "", "",
 		"Patrick Jendral", "Detail Creationist", "3D Font Maker", "",
