@@ -3,6 +3,8 @@
 
 #include <windows.h>
 #include "credits.h"
+#include "credits_flow.h"
+
 
 #define CREDITS_DEF_MAX_EVENTS 256
 
@@ -55,27 +57,37 @@ void credits_addev(int ms, void *fn)
 	_credits_eventCount++;
 }
 
-void credev_init_scene()
-{
-	vec_set(camera.x, vector(175, -2211, 531));
-	vec_set(camera.pan, vector(94, -13, 0));
+
+int creditsCurrentStage = 0;
+
+VECTOR creditsFrom, creditsTo;
+ANGLE creditsFromA, creditsToA;
+var creditsBlendPerc = 0;
+var creditsBlendSpeed = 0;
+
+void credits_stage() {
+	if(creditsCurrentStage >= credits_stageCount) {
+		error("end!");
+		return;
+	}
+	
+	creditsBlendPerc = 0.1;
+	
+	vec_set(creditsFrom, camera.x);
+	vec_set(creditsFromA, camera.pan);
+	
+	vec_set(creditsTo, credits_stages[creditsCurrentStage].x);
+	vec_set(creditsToA, credits_stages[creditsCurrentStage].pan);
+	
+	creditsBlendSpeed = credits_stages[creditsCurrentStage].speed;
+	
+	creditsCurrentStage += 1;
 }
 
-void credev_camera_flight_a()
+action credits_lottiPlay()
 {
-	var delta;
-	for(delta = 0; delta <= 100; delta += time_step)
-	{
-		vec_lerp(
-			camera.x, 
-			vector(175, -2211, 531),
-			vector(0, 0, 0),
-			0.01 * delta);
-		_ang_lerp(
-			camera.pan,
-			vector(94, -13, 0),
-			vector(-94, 13, 0),
-			0.01 * delta);
+	while(me) {
+		ent_animate(me, "Play", credits.lottiSpeed * total_ticks, ANM_CYCLE);
 		wait(1);
 	}
 }
@@ -86,15 +98,34 @@ void credev_camera_flight_a()
 void credits_init()
 {
 	memset(&credits, 0, sizeof(Credits));
+	credits.lottiSpeed = 10;
 	
-	credits_addev(0, credev_init_scene);
-	//credits_addev(500, credev_camera_flight_a);
+	credits_initstages();
+	
+	credits_addev(0, credits_stage);
+	//credits_addev(7000, credits_stage);
+	//credits_addev(14000, credits_stage);
+	//credits_addev(21000, credits_stage);
+	//credits_addev(28000, credits_stage);
+	//credits_addev(35000, credits_stage);
+	//credits_addev(42000, credits_stage);
+	//credits_addev(49000, credits_stage);
+	//credits_addev(56000, credits_stage);
+	//credits_addev(63000, credits_stage);
+	//credits_addev(70000, credits_stage);
+	//credits_addev(77000, credits_stage);
+	//credits_addev(84000, credits_stage);
+	//credits_addev(91000, credits_stage);
+	//credits_addev(98000, credits_stage);
 	
 	wait(1);
 	
 	while(1) {
 		// Wait for running credits
 		while(_credits_music == 0) wait(1);
+
+		creditsCurrentStage = 0;
+		creditsBlendPerc = 0;
 
 		int currentEvent = 0;
 		int startUpTime = GetTickCount();
@@ -113,11 +144,29 @@ void credits_init()
 				break;
 			}
 			if(key_f) {
-				diag("\n");
-				diag("x: "); diag(str_for_num(NULL, camera.x)); diag(" ");
-				diag("y: "); diag(str_for_num(NULL, camera.y)); diag(" ");
-				diag("z: "); diag(str_for_num(NULL, camera.z)); diag(" ");
+				diag("\n_add_stage(");
+				diag(str_for_num(NULL, camera.x)); diag(", ");
+				diag(str_for_num(NULL, camera.y)); diag(", ");
+				diag(str_for_num(NULL, camera.z)); diag(", ");
+				diag(str_for_num(NULL, camera.pan)); diag(", ");
+				diag(str_for_num(NULL, camera.tilt)); diag(", ");
+				diag(str_for_num(NULL, camera.roll)); diag(", 1);");
 			}
+			
+			if(creditsBlendPerc > 0 && creditsBlendPerc < 100) {
+				creditsBlendPerc = minv(creditsBlendPerc + creditsBlendSpeed * time_step, 100);
+				if(creditsBlendPerc == 100) {
+					diag("\nBlend stage finished: ");
+					diag(str_for_int(NULL, time));
+					diag(" ms");
+				}
+				
+				var blend = sin(0.5 * 0.0314159 * creditsBlendPerc);
+				
+				vec_lerp(camera.x, creditsFrom, creditsTo, blend);
+				_ang_lerp(camera.pan, creditsFromA, creditsToA, blend);
+			}
+			
 			wait(1);	
 		}
 	
@@ -136,9 +185,9 @@ void credits_start()
 	level_ent.ambient = -100;
 	_credits_sky = ent_createlayer("cosmo_f02+6.jpg", SKY | CUBE, 10);
 	
-	you = ent_create("stage_buehne.mdl", vector(0, 500, 20), NULL);
-	you.pan = 180;
-	you.material = _credits_mtlAlphaTest;
+	ENTITY *stage = ent_create("stage_buehne.mdl", vector(0, 500, 20), NULL);
+	stage.pan = 180;
+	stage.material = _credits_mtlAlphaTest;
 	
 	you = ent_create("stage_dach.mdl", vector(0, 500, 20), NULL);
 	you.pan = 180;
@@ -151,6 +200,17 @@ void credits_start()
 	you = ent_create("stage_stangen.mdl", vector(0, 500, 20), NULL);
 	you.pan = 180;
 	you.material = _credits_mtlMetal;
+	
+	you = ent_create("lotterBass.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(-90, 40, 90));
+	you.pan = 300;
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("lotterGitarre.mdl", stage.x, credits_lottiPlay);
+	vec_add(you.x, vector(90, 40, 90));
+	you.pan = 230;
+	you.material = _credits_mtlAlphaTest;
+	
 	
 #ifdef TEST_DEBUG
 	_credits_music = media_play("../../media/outro-demo.ogg", NULL, 100);
