@@ -31,6 +31,7 @@ var* vNodeX;
 var* vNodeY;
 var vMapActive = 0;
 var vMapNodes;
+var vMap3DSize;
 PANEL* panMapMarker[4];
 
 void map_particle(PARTICLE *p); 
@@ -40,17 +41,20 @@ void create_map()
 	ENTITY* ent;
 	VECTOR vecTemp;
 	var i;
+	var vTemp;
 	
 	while(level_ent == NULL)
 	{
 		wait(1);
 	}
 
-	vec_set(&vecMapMin, level_ent->min_x);
-	vec_set(&vecMapMax, level_ent->max_x);
-	vecMapMin.z = 0;
-	vecMapMax.z = 0;
-	vec_scale(&vecMapMin, -1);
+//	vec_set(&vecMapMin, level_ent->min_x);
+//	vec_set(&vecMapMax, level_ent->max_x);
+	vec_set(&vecMapMin, vector(999999,999999,0));
+	vec_set(&vecMapMax, vector(-999999,-999999,0));
+//	vecMapMin.z = 0;
+//	vecMapMax.z = 0;
+//	vec_scale(&vecMapMin, -1);
 	
 	ent = ent_create(NULL,nullvector,NULL);
 	vMapNodes = path_next(ent);
@@ -63,14 +67,32 @@ void create_map()
 		for(i = 1; i <= vMapNodes; i++)
 		{
 			path_getnode(ent, i, &vecTemp, NULL);
-			vNodeX[i] = vecTemp.x + vecMapMin.x;
-			vNodeY[i] = -vecTemp.y + vecMapMin.y;
+			vNodeX[i] = vecTemp.x;
+			vNodeY[i] = -vecTemp.y;
+			if (vecMapMin.x > vNodeX[i]) vecMapMin.x = vNodeX[i];
+			if (vecMapMin.y > vNodeY[i]) vecMapMin.y = vNodeY[i];
+			if (vecMapMax.x < vNodeX[i]) vecMapMax.x = vNodeX[i];
+			if (vecMapMax.y < vNodeY[i]) vecMapMax.y = vNodeY[i];
+		}
+		
+		for(i = 1; i <= vMapNodes; i++)
+		{
+			vNodeX[i] += vecMapMin.x;
+			vNodeY[i] += vecMapMin.y;
+		}
+		vTemp = vecMapMin.x + vecMapMax.x;
+		vMap3DSize = vecMapMin.y + vecMapMax.y;
+		if (vTemp > vMap3DSize)
+		{
+			vMap3DSize = vTemp;
 		}
 	}
-	
-				
-	vec_add(&vecMapMax, &vecMapMin);
-	vec_scale(&vecMapMax, 0.9); /* looks better */
+	//else
+	//{
+	//	error("no path in level! Crashes coming up");
+	//}				
+	//vec_add(&vecMapMax, &vecMapMin);
+	//vec_scale(&vecMapMax, 0.9); /* looks better */
 	//vec_set(&vecMapMin, nullvector); //old value needed in update function
 
 	/* create panels */
@@ -124,8 +146,8 @@ void update_map()
 		/* draw race track */
 		for(i = 1; i <= vMapNodes; i++)
 		{
-			x = vMapPosX + (vNodeX[i] / vecMapMax.x) * vMapSize;
-			y = vMapPosY + (vNodeY[i] / vecMapMax.y) * vMapSize;
+			x = vMapPosX + (vNodeX[i] / vMap3DSize) * vMapSize;
+			y = vMapPosY + (vNodeY[i] / vMap3DSize) * vMapSize;
 			if (i > 1)
 			{
 				draw_line(vector(x,y,0),vector(255,255,255),100);
@@ -136,16 +158,16 @@ void update_map()
 			}
 			
 		}
-		x = vMapPosX + (vNodeX[1] / vecMapMax.x) * vMapSize;
-		y = vMapPosY + (vNodeY[1] / vecMapMax.x) * vMapSize;
+		x = vMapPosX + (vNodeX[1] / vMap3DSize) * vMapSize;
+		y = vMapPosY + (vNodeY[1] / vMap3DSize) * vMapSize;
 		draw_line(vector(x,y,0),vector(255,255,255),100);
 
 		/* draw player positions */
 		for (i = 0; i < 4; i++)
 		{
 			ent = get_kart_driver(i);
-			x = vMapPosX + ((ent->x + vecMapMin.x) / vecMapMax.x) * vMapSize;
-			y = vMapPosY + ((-ent->y  + vecMapMin.y) / vecMapMax.y) * vMapSize;
+			x = vMapPosX + ((ent->x + vecMapMin.x) / vMap3DSize) * vMapSize;
+			y = vMapPosY + ((-ent->y  + vecMapMin.y) / vMap3DSize) * vMapSize;
 			panMapMarker[i]->scale_x = vMapScale;
 			panMapMarker[i]->scale_y = vMapScale;
 			panMapMarker[i]->pos_x = x - (panMapMarker[i]->size_x * 0.5 * panMapMarker[i]->scale_x);
