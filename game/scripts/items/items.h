@@ -2,31 +2,33 @@
 #define items_h
 
 // Typen von Items
-#define ITEM_NONE						0
-#define ITEM_FLASH					1
-#define ITEM_AIM_ROCKET				2
-#define ITEM_ROCKET					3
-#define ITEM_GRAVE					4
-#define ITEM_MUSHROOM				5
-#define ITEM_BADASS_ROCKET			6
-#define ITEM_TURBO					7
+#define ITEM_NONE							0
+#define ITEM_FLASH						1
+#define ITEM_AIM_ROCKET					2
+#define ITEM_ROCKET						3
+#define ITEM_GRAVE						4
+#define ITEM_MUSHROOM					5
+#define ITEM_BADASS_ROCKET				6
+#define ITEM_TURBO						7
 
 // Modellnamen der Items
-#define ITEM_GRAVE_MODEL			"item_grave.mdl"
-#define ITEM_ROCKET_MODEL			"item_rocket_red.mdl"
-#define ITEM_AIMING_ROCKET_MODEL	"item_rocket_green.mdl"
-#define ITEM_TURBO_MODEL			"item_turbo.mdl"
-#define ITEM_BADASS_ROCKET_MODEL	"item_bomb.mdl"
-#define ITEM_MUSHROOM_MODEL		"item_mushroom.mdl"
-#define ITEM_FLASH_MODEL			"item_flash.mdl"
+#define ITEM_GRAVE_MODEL				"item_grave.mdl"
+#define ITEM_ROCKET_MODEL				"item_rocket_red.mdl"
+#define ITEM_AIMING_ROCKET_MODEL		"item_rocket_green.mdl"
+#define ITEM_TURBO_MODEL				"item_turbo.mdl"
+#define ITEM_BADASS_ROCKET_MODEL		"item_bomb.mdl"
+#define ITEM_MUSHROOM_MODEL			"item_mushroom.mdl"
+#define ITEM_FLASH_MODEL				"item_flash.mdl"
 
 // Flage für die Items
-#define IS_TRAP						FLAG3
-#define SPIKE_TIMER_UP				3
-#define SPIKE_TIMER_DOWN			1
-#define SPIKE_SPEED					20
-#define ROCKET_SPEED					20
-#define ROCKET_X_OFFSET				300
+#define IS_TRAP							FLAG3
+#define SPIKE_TIMER_UP					3
+#define SPIKE_TIMER_DOWN				1
+#define SPIKE_SPEED						20
+#define ROCKET_SPEED						20
+#define ROCKET_X_OFFSET					300
+#define ROCKET_LIFE_FRAMES				450
+#define BADASS_ROCKET_LIFE_FRAMES	1000
 
 // Sounds für Interaktion mit Items
 SOUND* sndCollectA4Cube					= "collect.wav";
