@@ -6,6 +6,8 @@ typedef struct {
 	 * Gets called on stopping or ending credits.
 	 */
 	void onCreditsEnd();
+	
+	var lottiSpeed;
 } Credits;
 
 Credits credits;
