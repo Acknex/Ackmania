@@ -40,6 +40,8 @@ var g_raceTrackWidth = 160;
 
 void synplayermodel (ENTITY* ent);
 
+#define fire_item_max skill56
+#define fire_item skill57
 #define has_finished skill58
 #define scale skill59
 #define kart_turbo_ent skill60

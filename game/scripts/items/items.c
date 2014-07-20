@@ -4,6 +4,8 @@
 #include "helper.h"
 #include <particles.c>
 
+STRING* str_items_helper = "";
+
 void patrol_path(ENTITY* ent, char* pathname, var _speed, var mode) {
 	var vLastPos[3],vDir[3];
 	vec_set(vLastPos,ent.x);
@@ -98,7 +100,7 @@ action a4_cube()
 	_item_setup();
 	//my->trigger_range = 200;
 	place_on_floor(me);
-	my->z -=40;
+	my->z = 48;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_a4_cube_evt;
 	var vZ = my->z;
@@ -170,7 +172,7 @@ action item()
 {
 	_item_setup();	
 	place_on_floor(me);
-	my->z -=40;
+	my->z = 48;
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _item_evt;
 	var vZ = my->z;
@@ -204,7 +206,7 @@ void _grave_evt()
 		snd_play(sndGraveCollision, 50, 0);
 		
 		// Drehe Spieler
-		trap_driver(you, 1);
+		trap_driver(you, 3.5);
 		
 		wait(1);
 		ent_remove(me);
@@ -214,7 +216,8 @@ void _grave_evt()
 // Aktion eines Grabsteins (Falle)
 action grave() {
 	_item_setup();
-	wait(-1);
+	reset(my,SHADOW);
+	wait(-0.5);
 	my->emask |=ENABLE_TRIGGER;
 	my->event = _grave_evt;
 }
@@ -223,7 +226,7 @@ action grave() {
 void plant_grave(ENTITY* driver) {
 	driver->item_id = ITEM_NONE;
 	ENTITY* entGrave = ent_create(ITEM_GRAVE_MODEL, vector(driver->x-20, driver->y, driver->z+10), grave);
-	vec_set(entGrave.scale_x, vector(0.2,0.2,0.2));
+	vec_fill(entGrave.scale_x, 0.35);
 	place_on_floor(entGrave);
 	driver->item_id = ITEM_NONE;
 }
@@ -309,7 +312,7 @@ action _rocket()
 		{
 			if (hit.entity._type == type_kart)
 			{
-				driver_hit(hit.entity, 2);
+				driver_hit(hit.entity, 3.5);
 			}
 			liveTime = 0;
 		}
@@ -338,7 +341,7 @@ void shoot_rocket(ENTITY* driver)
 // Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
 action _aiming_rocket()
 {
-	int liveTime = ROCKET_LIFE_FRAMES + integer(random(100));
+	var liveTime = 24; //ROCKET_LIFE_FRAMES + integer(random(100));
 	var flyHeight = 0;
 	int reachedTop = 0;
 	var initHeight = 0;
@@ -350,8 +353,11 @@ action _aiming_rocket()
 	snd_play(sndRocketFire, 50, 0);
 	VECTOR vertexPos;
 	
-	path_set(me, "path_001");
-	var dist = get_nearest_path_point(me, "path_001");
+	//path_set(me, "path_001");
+	path_next(my);
+	str_cpy(str_items_helper,"");
+	path_set(me, str_items_helper);
+	var dist = get_nearest_path_point(me, str_items_helper);
 	var vLastPos[3];
 	var vDir[3];
 	
@@ -387,7 +393,7 @@ action _aiming_rocket()
 			liveTime = 0;
 		}
 		
-		liveTime--;
+		liveTime -= time_step;
 		wait(1);
 	}
 	effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
@@ -480,8 +486,10 @@ action _badass_aiming_rocket()
 	var animPercentage = 0;
 	set(me, PASSABLE);
 	
-	path_set(me, "path_001");
-	var dist = get_nearest_path_point(me, "path_001");
+	path_next(my);
+	str_cpy(str_items_helper,"");
+	path_set(me, str_items_helper);
+	var dist = get_nearest_path_point(me, str_items_helper);
 	var vLastPos[3];
 	var vDir[3];
 	
@@ -535,7 +543,7 @@ void start_mushroom(ENTITY* driver)
 	// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
 	snd_play(sndMushroomStart, 50, 0);
 	driver->item_id = ITEM_NONE;
-	enlarge_driver(driver, 5);
+	enlarge_driver(driver, 5.25);
 }
 
 // Macht alle Spieler klein und langsamer (5 Sekunden)
@@ -544,25 +552,32 @@ void start_flash(ENTITY* driver)
 {
 	snd_play(sndFlashStart, 50, 0);
 	driver->item_id = ITEM_NONE;
+	ENTITY* pl = get_kart_driver(0);
 	ENTITY* ki1 = get_kart_driver(1);
 	ENTITY* ki2 = get_kart_driver(2);
 	ENTITY* ki3 = get_kart_driver(3);
-	if (ki1 != NULL)
+	if (pl != NULL && pl != driver)
 	{
 		if (ki1.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(1), 4);
+			minimize_driver(get_kart_driver(0), 5);
 		}
 	}
-	if (ki2 != NULL)
+	if (ki1 != NULL && ki1 != driver)
+	{
+		if (ki1.scale_x <= 1.0) {
+			minimize_driver(get_kart_driver(1), 5);
+		}
+	}
+	if (ki2 != NULL && ki2 != driver)
 	{
 		if (ki2.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(2), 4);
+			minimize_driver(get_kart_driver(2), 5);
 		}
 	}
-	if (ki3 != NULL)
+	if (ki3 != NULL && ki3 != driver)
 	{
 		if (ki3.scale_x <= 1.0) {
-			minimize_driver(get_kart_driver(3), 4);
+			minimize_driver(get_kart_driver(3), 5);
 		}
 	}
 }
