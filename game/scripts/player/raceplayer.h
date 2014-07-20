@@ -99,8 +99,6 @@ var is_kart_turning(ENTITY* ent); // left = 1, right = -1
 var is_kart_accelerating(ENTITY* ent);
 var get_kart_accel(ENTITY* ent);
 var get_kart_speed(ENTITY* ent, VECTOR* vdir);
-//var get_kart_rank(ENTITY* ent);
-//var get_kart_lap(ENTITY* ent);
 var get_kart_lap_player();
 var get_kart_rank_player();
 var get_max_laps();
