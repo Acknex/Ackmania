@@ -567,18 +567,21 @@
 		}
 		else
 		{
+
+			if (!(up || down) || ent->kart_trapped) {
+				ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
+			}
+			else
+			{
 			if (up && !down) {
 				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small+0.2*!ent->kart_turbo*!!ent->kart_big)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
-			}
-			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
-
-			if (!(up || down)) {
-				ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
 			}
 
 			if (!up && down) {
 				ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
 			}
+		}
+			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 		}
 
 		ent->pan = ent->drive_pan;
