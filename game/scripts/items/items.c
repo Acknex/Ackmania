@@ -4,6 +4,24 @@
 #include "helper.h"
 #include <particles.c>
 
+void patrol_path(ENTITY* ent, char* pathname, var _speed, var mode) {
+	var vLastPos[3],vDir[3];
+	vec_set(vLastPos,ent.x);
+	var dist = 0;
+	if (pathname) path_set(ent,pathname);
+	while(_speed) 
+	{
+		path_spline(ent,ent.x,dist);
+		dist += _speed*time_step;
+		place_on_floor(ent);
+		vec_diff(vDir,ent.x,vLastPos);
+		vec_to_angle(ent.pan,vDir);
+		vec_set(vLastPos,ent.x);
+		wait(1);
+	}
+}
+
+
 // Gib das aktuelle Item des Spielers zurück
 var get_current_item_id()
 {
@@ -112,7 +130,8 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			driver.item_id = 1 + integer(random(7));
+			//driver.item_id = 1 + integer(random(7));
+			driver.item_id = 2;
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
@@ -296,7 +315,6 @@ action _rocket()
 			liveTime = 0;
 		}
 		
-		snd_play(sndRocketFly, 50, 0);
 		liveTime--;
 		wait(1);
 		
@@ -326,37 +344,26 @@ action _aiming_rocket()
 	int reachedTop = 0;
 	var initHeight = 0;
 	var zSpeed = 0;
-	var xSpeed = 0;
 	var animPercentage = 0;
 	set(me, PASSABLE);
 	vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 	c_setminmax(me);
 	snd_play(sndRocketFire, 50, 0);
 	VECTOR vertexPos;
+	
+	path_set(me, "path_001");
+	var dist = get_nearest_path_point(me, "path_001");
+	var vLastPos[3];
+	var vDir[3];
+	
+	
 	while(me && (liveTime > 0))
 	{
-		// Lass die Rakete nach Abschuss hüpfen
-		if (reachedTop == 0) {
-			flyHeight +=20 * time_step;
-			zSpeed = 20 * time_step;
-			xSpeed = 20 * time_step;
-			if (flyHeight >= 60) reachedTop = 1;
-		} else {
-			if (flyHeight >= initHeight+3) {
-				flyHeight -=20 * time_step;
-				zSpeed = -20 * time_step;
-				xSpeed +=ROCKET_SPEED * time_step;
-			} else {
-				zSpeed = 0;
-			}
-		}
-		
 		if (animPercentage + 20 * time_step < 80) {
 			animPercentage +=20 * time_step;
 		} else {
 			animPercentage = 80;
 			reset(me, PASSABLE);
-			xSpeed = ROCKET_SPEED * 5 * time_step;
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
 		
@@ -364,7 +371,13 @@ action _aiming_rocket()
 		vec_for_vertex(vertexPos, me, 634);
 		effect(p_rocket_smoke, maxv(2,time_step), vertexPos, nullvector);
 		
-		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
+		path_spline(me,my->x,dist);
+		my->z -=35;
+		dist += ROCKET_SPEED * 5 * time_step;
+		vec_diff(vDir,my.x,vLastPos);
+		vec_to_angle(my.pan,vDir);
+		vec_set(vLastPos,my.x);
+		
 		
 		if (HIT_TARGET != NULL)
 		{
@@ -375,7 +388,6 @@ action _aiming_rocket()
 			liveTime = 0;
 		}
 		
-		snd_play(sndRocketFly, 50, 0);
 		liveTime--;
 		wait(1);
 	}
@@ -483,7 +495,6 @@ action _badass_aiming_rocket()
 			liveTime = 0;
 		}
 			
-		snd_play(sndRocketFly, 50, 0);	
 		liveTime--;
 		wait(1);
 	}
