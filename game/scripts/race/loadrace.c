@@ -32,6 +32,9 @@ void load_race(int index)
 
    g_preraceActive = true;
 
+   resetPpSwirl ();
+
+
    hide_hud();
 
    STRING* strMusicFilename = getCircuitMusicFilenameStr(index);
@@ -58,6 +61,8 @@ void load_race(int index)
    float hdrthreshold = g_circuit_hdrthresholds[index];
    float hdrexposure = g_circuit_hdrexposures[index];
 
+   setPpSwirl(0, 0, 0.5, 0.5, 0.25+sin(total_ticks*3)*0.25);
+
    setHdr(hdrstrength, hdrthreshold, hdrexposure);
    show_camera();
 
@@ -74,7 +79,6 @@ void load_race(int index)
       wait(1);
    }
 
-
    raceintro_trigger(raceintroNumber3, g_sndStartRace3, null);
    wait_for(raceintro_trigger);
 
@@ -83,6 +87,8 @@ void load_race(int index)
 
    raceintro_trigger(raceintroNumber1, g_sndStartRace1, null);
    wait_for(raceintro_trigger);
+
+   resetPpSwirl();
 
    invoke_game_state(GAME_STATE_RACE, index);
    on_esc = quit_race;

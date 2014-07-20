@@ -37,7 +37,7 @@ void updateKartSnd(ENTITY* ent)
 
    VECTOR vs;
    vec_set(&vs, ent->x);
-   VECTOR* vscreen = vec_to_screen (&vs, cam);
+   VECTOR* vscreen = vec_to_screen(&vs, cam);
    bool inScreen = vscreen != null;
 
    if (inScreen) {
@@ -54,10 +54,10 @@ void updateKartSnd(ENTITY* ent)
          snd_tune(ent->kartsnd_badground_loop_hndl, 5, 0, 0);
       }
 
-      if (s > g_breakdownthreshold+5) {
+      if (s > g_breakdownthreshold + 5) {
          ent->kartsnd_over = true;
       } else {
-         if (s < g_breakdownthreshold-5 && ent->kartsnd_over) {
+         if (s < g_breakdownthreshold - 5 && ent->kartsnd_over) {
             ent->kartsnd_over = false;
 
             if (inScreen) {
@@ -101,17 +101,23 @@ void ac_race_kart_ent()
 
    while (1) {
 
-      int id = my->sk_kart_id;
-
-      switch (id)
+      if (!g_raceIsEnded)
       {
-         case 1:
-            loadPlayerHumanControlParams(my);
-            break;
+         int id = my->sk_kart_id;
 
-         default:
-            loadPlayerCpuControlParams(my);
-            break;
+         switch (id)
+         {
+            case 1:
+               loadPlayerHumanControlParams(my);
+               break;
+
+            default:
+               loadPlayerCpuControlParams(my);
+               break;
+         }
+      }
+      else {
+         loadPlayerCpuControlParams(my);
       }
 
       updatePlayer(my);
