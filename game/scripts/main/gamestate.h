@@ -12,6 +12,8 @@
 #define GAME_STATE_WIN 8 // Gewonnen
 #define GAME_STATE_CREDITS 9 // Credits
 
+void escdummy();
+
 bool g_creditsStopEnforced = false;
 
 int g_gameState = GAME_STATE_VIRGIN;

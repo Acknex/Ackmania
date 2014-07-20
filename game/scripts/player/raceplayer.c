@@ -1,11 +1,12 @@
 #ifndef raceplayer_c
-	#define raceplayer_c
+#define raceplayer_c
 
-	#include "engine.h"
-	#include "raceplayer.h"
-	#include "items.h"
-	#include "camera.h"
-	#include "taunts.h"
+#include "engine.h"
+#include "raceplayer.h"
+#include "items.h"
+#include "camera.h"
+#include "taunts.h"
+#include "playrace.h"
 
 	void p_drift_smoke_fade(PARTICLE* p)
 	{
@@ -754,9 +755,9 @@
 				if(!ent->kart_lap) ent->kart_lap = 1;
 				if(ent->kart_checkpoint > 0)
 				{
-					if(ent->kart_checkpoint >= get_max_laps())
+					if(ent->kart_lap >= get_max_laps())
 					{
-						// race end here
+						do_race_end(ent);
 					}
 					else
 					{
