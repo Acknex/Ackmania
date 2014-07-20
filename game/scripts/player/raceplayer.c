@@ -42,6 +42,11 @@
 		p.event = NULL;
 	}
 
+	MATERIAL* mat_water1 =
+	{
+		effect = "water_asd.fx";
+		//flags = AUTORELOAD;
+	}
 
 	action ac_racetrack()
 	{
@@ -310,6 +315,7 @@
 
 		if (you != null) {
 			if (your._type == type_kart) {
+				if(my->kart_big) return;
 				factor = 0.5;
 			}
 		}
@@ -339,35 +345,35 @@
 
 	}
 
-void trap_driver(ENTITY* ent, var blackOutTime)
-{
-	ent->kart_trapped = 16*blackOutTime;
-	ent->kart_hit = 0;
-	ent->kart_turbo = 0;
-}
+	void trap_driver(ENTITY* ent, var blackOutTime)
+	{
+		ent->kart_trapped = 16*blackOutTime;
+		ent->kart_hit = 0;
+		ent->kart_turbo = 0;
+	}
 
-void driver_hit(ENTITY* ent, var blackOutTime)
-{
-	ent->kart_hit = 16*blackOutTime;
-	ent->kart_turbo = 0;
-}
+	void driver_hit(ENTITY* ent, var blackOutTime)
+	{
+		ent->kart_hit = 16*blackOutTime;
+		ent->kart_turbo = 0;
+	}
 
-void start_turbo(ENTITY* ent, var time)
-{
-	ent->kart_turbo = 16*time;
-}
+	void start_turbo(ENTITY* ent, var time)
+	{
+		ent->kart_turbo = 16*time;
+	}
 
-void enlarge_driver(ENTITY* ent, var time)
-{
-	ent->kart_big = 16*time;
-	ent->kart_small = 0;	
-}
+	void enlarge_driver(ENTITY* ent, var time)
+	{
+		ent->kart_big = 16*time;
+		ent->kart_small = 0;	
+	}
 
-void minimize_driver(ENTITY* ent, var time)
-{
-	ent->kart_small = 16*time;
-	ent->kart_big = 0;
-}
+	void minimize_driver(ENTITY* ent, var time)
+	{
+		ent->kart_small = 16*time;
+		ent->kart_big = 0;
+	}
 
 	void postConstructPlayer(ENTITY* ent)
 	{
@@ -524,9 +530,9 @@ void minimize_driver(ENTITY* ent, var time)
 		else
 		{
 			if (up && !down) {
-				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
+				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
 			}
-			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
+			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 
 			if (!(up || down)) {
 				ent->speed += clamp(-ent->speed * 0.125, -g_raceplayerAccelSpeed*0.25, g_raceplayerAccelSpeed*0.25) * time_step;
@@ -598,7 +604,7 @@ void minimize_driver(ENTITY* ent, var time)
 				ent->ground_contact = 0;
 			}
 		}
-if(ent->kart_turbo) underground = 1;
+		if(ent->kart_turbo) underground = 1;
 		ent->underground += (underground - ent->underground) * 0.5 * time_step;
 
 		if (!ent->drifting) {
@@ -729,7 +735,7 @@ if(ent->kart_turbo) underground = 1;
 					ent->kart_checkpoint = 0;
 				}
 			}
-				d = (ent->kart_lap-1)*length;
+			d = (ent->kart_lap-1)*length;
 			if(ent->kart_lap > 0 && progress > length*0.5 && progress+d > ent->kart_progress)
 			{
 				ent->kart_checkpoint = 1;
@@ -776,18 +782,39 @@ if(ent->kart_turbo) underground = 1;
 		ent->kart_big = maxv(ent->kart_big-time_step,0);
 		ent->kart_small = maxv(ent->kart_small-time_step,0);
 
-ent->parent->scale_x += (1.0+0.5*!!ent->kart_big-0.35*!!ent->kart_small-ent->parent->scale_x)*0.9*time_step;
-vec_fill(ent->parent->scale_x,ent->parent->scale_x);
+		ent->parent->scale_x += (1.0+0.5*!!ent->kart_big-0.35*!!ent->kart_small-ent->parent->scale_x)*0.9*time_step;
+		vec_fill(ent->parent->scale_x,ent->parent->scale_x);
+
+		if(ent->kart_turbo)
+		{
+			if(!ent->kart_turbo_ent)
+			{
+				you = ent_create("gocart_flame01.mdl",ent->x,NULL);
+				set(you,PASSABLE);
+				ent->kart_turbo_ent = you;
+			}
+			you = ent->kart_turbo_ent;
+			reset(you,INVISIBLE);
+			vec_fill(your->scale_x,ent->parent->scale_x);
+			vec_set(your->x,ent->parent->x);
+			vec_set(your->pan,ent->parent->pan);
+			ent_bonereset_all(you);
+			ent_bonescale(you,"flame_node_tr0",vector(1+0.1*sinv(total_ticks*300),1+0.1*sinv(total_ticks*263),1+0.1*sinv(total_ticks*287)));
+		}
+		else
+		{
+			if(you = ent->kart_turbo_ent) set(you,INVISIBLE);
+		}
 
 		synplayermodel(ent);
 	}
 
 	void synplayermodel(ENTITY* ent)
 	{
-	   if ((ent->parent != null) && (ent->playermodel != 0)) {
+		if ((ent->parent != null) && (ent->playermodel != 0)) {
 
-	      ENTITY* epa = ent->parent;
-	      ENTITY* epl = (ENTITY*) ent->playermodel;
+			ENTITY* epa = ent->parent;
+			ENTITY* epl = (ENTITY*) ent->playermodel;
 
 	      if (epa != null && epl != null) {
 
