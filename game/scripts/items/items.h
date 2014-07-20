@@ -42,7 +42,6 @@ SOUND* sndRocketFire						= "rocketShoot1.ogg";
 SOUND* sndAimingRocketFire				= "rocketShoot2.ogg";
 SOUND* sndAimingBadassRocketFire		= "spikes01.wav";
 SOUND* sndRocketHit						= "rocketExplode.ogg";
-SOUND* sndRocketFly						= "spikes01.wav";
 SOUND* sndTurboStart						= "jetpackloop.wav";
 SOUND* sndMushroomStart					= "mushroom.wav";
 SOUND* sndFlashStart						= "flash.ogg";
