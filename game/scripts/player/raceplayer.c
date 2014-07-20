@@ -508,7 +508,11 @@
 				ent->speed = 0;
 				ent->falling = 0;
 				ent->drifting = 0;
-
+				ent->kart_trapped = 0;
+				ent->kart_hit = 0;
+				ent->kart_turbo = 0;
+				ent->kart_big = 0;
+				ent->kart_small = 0;
 				ent->isfallingsndplayed = false;
 			}
 
@@ -538,11 +542,11 @@
 		//ent->turn_speed += (turn * (ent->speed / ent->kart_maxspeed) - ent->turn_speed) * 0.55 * time_step;
 		ent->turn_speed += (turn * pow((1.25*abs(ent->speed) / ent->kart_maxspeed),0.75)*sign(ent->speed) - ent->turn_speed) * 0.55 * time_step;
 		ent->turn_speed2 += clamp((ent->turn_speed - ent->turn_speed2), -0.5, 0.5) * time_step;
-		ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed*2)*time_step;
+		ent->drive_pan += (ent->bump_ang*0.35+ent->ground_contact*ent->turn_speed*2*!ent->kart_trapped)*time_step;
 		ent->drive_pan = ang(ent->drive_pan);
 		ent->bump_ang += -ent->bump_ang*0.35*time_step;
 
-		if(ent->kart_trapped)
+		if(ent->kart_hit)
 		{
 			ent->speed += clamp(-ent->speed * 0.5, -g_raceplayerAccelSpeed*3, g_raceplayerAccelSpeed*3) * time_step;
 		}
@@ -639,10 +643,9 @@
 			ent->drift_pan += clamp((ent->drift_dir * (3 + 15 * abs(left - right) * (sign(left - right) == ent->drift_dir)) - ent->drift_pan)*0.4, -3.5, 3.5)
 			* time_step;
 		}
-
 		vec_set(ent->parent->x, ent->x);
 		vec_set(ent->parent->pan, ent->pan);
-		ent->parent->pan = ent->pan + ent->drift_pan*3;
+		ent->parent->pan = ent->pan + ent->drift_pan*3.25 + ent->kart_trapped/16.0*720;
 		ent->parent->skill1 += ent->speed_z * time_step;
 		ent->parent->skill1 = maxv(ent->parent->skill1, ent->kart_height);
 		ent->parent->z = ent->parent->skill1;
