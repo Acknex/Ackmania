@@ -384,7 +384,7 @@ void credits_start()
 	you.pan = 270;
 	you.material = _credits_mtlAlphaTest;
 	
-	_credits_music = media_play("media\\lotti_credits.ogg", NULL, 100);
+	_credits_music = media_play("media\\lotti_credits.wav", NULL, 100);
 }
 
 /**
