@@ -44,14 +44,19 @@
 
 	MATERIAL* mat_water1 =
 	{
-		effect = "water_asd.fx";
-		//flags = AUTORELOAD;
+		effect = "water1.fx";
+		flags = AUTORELOAD;
 	}
 
 	action ac_racetrack()
 	{
 		c_setminmax(my);
 		set(my,POLYGON);
+	}
+
+	var get_max_laps()
+	{
+		return 5;
 	}
 
 	double dvec_dot(VECTOR* vec1, VECTOR* vec2)
@@ -819,15 +824,15 @@
 			ENTITY* epa = ent->parent;
 			ENTITY* epl = (ENTITY*) ent->playermodel;
 
-	      if (epa != null && epl != null) {
+			if (epa != null && epl != null) {
 
-	         vec_set(epl->x, epa->x);
-	         vec_set(epl->pan, epa->pan);
-	         vec_set(epl->scale_x, epa->scale_x);
+				vec_set(epl->x, epa->x);
+				vec_set(epl->pan, epa->pan);
+				vec_set(epl->scale_x, epa->scale_x);
 
-	         ent_animate(epl, "", (ent->skill1 * 42 + total_ticks * 5) % 100, ANM_CYCLE);
-	      }
-	   }
+				ent_animate(epl, "", (ent->skill1 * 42 + total_ticks * 5) % 100, ANM_CYCLE);
+			}
+		}
 	}
 
 #endif /* raceplayer_c */
