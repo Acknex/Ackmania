@@ -7,11 +7,11 @@
 #include "gamestate.h"
 
 bool g_raceIsEnded = false;
-int finalRank = 1;
+int finalRank = 4;
 
 void do_race_end(ENTITY* ent)
 {
-   playTaunt(ent->skill1-1);
+   playTaunt(ent->skill1 - 1);
    g_raceIsEnded = true;
    finalRank = get_kart_rank_player();
 }
@@ -30,6 +30,12 @@ void play_race(int index)
       update_camera();
       update_hud();
       wait(1);
+   }
+
+   if (finalRank <= 3) {
+      snd_play(swin[finalRank - 1], 100, 0);
+   } else {
+      snd_play(splacelost[(int) random(5)], 100, 0);
    }
 
    hide_hud();
@@ -52,13 +58,13 @@ void play_race(int index)
 
    while (!key_space && !key_enter && !key_esc) {
       update_camera();
-      setPpSwirl(0.5, sin(total_ticks)*0.1, 0.5, 0.5, 0.25+sin(total_ticks*3)*0.25);
+      setPpSwirl(0.5, sin(total_ticks) * 0.1, 0.5, 0.5, 0.25 + sin(total_ticks * 3) * 0.25);
       wait(1);
    }
 
    while (key_space || key_enter || key_esc) {
       update_camera();
-      setPpSwirl(0.5, sin(total_ticks)*0.1, 0.5, 0.5, 0.25+sin(total_ticks*3)*0.25);
+      setPpSwirl(0.5, sin(total_ticks) * 0.1, 0.5, 0.5, 0.25 + sin(total_ticks * 3) * 0.25);
       wait(1);
    }
 
@@ -75,6 +81,5 @@ void play_race(int index)
 
    invoke_game_state(GAME_STATE_MENU, index);
 }
-
 
 #endif /* playrace_c */

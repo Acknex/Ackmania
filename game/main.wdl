@@ -209,3 +209,9 @@ bind "drums.mdl";
 bind "ski.mdl";
 bind "zorroLotti.mdl";
 bind "kart_drift.wav";
+
+bind "place_lost1.ogg";
+bind "place_lost2.ogg";
+bind "place_lost3.ogg";
+bind "place_lost4.ogg";
+bind "place_lost5.ogg";
