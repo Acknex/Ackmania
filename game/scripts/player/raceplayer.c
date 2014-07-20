@@ -337,7 +337,7 @@
 		var new_angle, factor;
 		VECTOR temp;
 
-		if(event_type == EVENT_TRIGGER) return;
+		if(event_type == EVENT_TRIGGER || abs(my->speed) < 10) return;
 		
 		factor = 0.3+clamp(my->speed/my->kart_maxspeed,0,0.7);
 
