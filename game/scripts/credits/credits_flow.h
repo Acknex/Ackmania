@@ -45,6 +45,71 @@ void credits_initstages() {
 
 TEXT *creditsContent = {
 	string(
+		"The forum users always seem to say",
+		"that Acknex is dead, please just stay away",
+		"Yet every year they make  more crazy games",
+		"and they care, so they always stay here anyway",
+
+		"Because I’m Lotti",
+		"kill my clone; I’ve enough so I always stay aloof",
+		"Because I’m Lotti",
+		"kill my clone; if it makes you feel better, what a goof",
+		"Because I’m Lotti",
+		"kill my clone; if you think you can do it without proof",
+		"Because I’m Lotti",
+		"kill my clone; if you feel like that’s what you wanna do",
+
+		"Trolling the noobs when they are like brats, (yeah)",
+		"I give them all I have got and don’t hold back (yeah)",
+		"The clone wars look like child’s play compared to mine",
+		"you cannot win, just waste your time",
+		"Here’s why",
+		
+		"Because I’m Lotti",
+		"kill my clone; I’ve enough so I always stay aloof",
+		"Because I’m Lotti",
+		"kill my clone; if it makes you feel better, what a goof",
+		"Because I’m Lotti",
+		"kill my clone; if you think you can do it without proof",
+		"Because I’m Lotti",
+		"kill my clone; if you feel like that’s what you wanna do",
+
+		"Kill me now, you can’t do",
+		"Kill me now, I’m a russian Spy",
+		"Kill me now, you dare?"
+		"Kill me now, I ask (You should bow now)"
+		"Kill me now, you can’t do"
+		"Kill me now, I’m always high"
+		"Kill me now, you can’t do",
+		"Kill me now, I ask",
+		
+		"Because I’m Lotti",
+		"kill my clone; I’ve enough so I always stay aloof",
+		"Because I’m Lotti",
+		"kill my clone; if it makes you feel better, what a goof",
+		"Because I’m Lotti",
+		"kill my clone; if you think you can do it without proof",
+		"Because I’m Lotti",
+		"kill my clone; if you feel like that’s what you wanna do",
+		
+		"Lotti, Lotti, Lotti, Lotti",
+		"Lotti, Lotti, Lotti, Lotti",
+		"Lotti, Lotti, Lotti, Lotti",
+		"Lotti, Lotti, Lotti, Lotti",
+		
+		"Because I’m Lotti",
+		"kill my clone; I’ve enough so I always stay aloof",
+		"Because I’m Lotti",
+		"kill my clone; if it makes you feel better, what a goof",
+		"Because I’m Lotti",
+		"kill my clone; if you think you can do it without proof",
+		"Because I’m Lotti",
+		"kill my clone; if you feel like that’s what you wanna do",
+);
+}
+
+TEXT *creditsContent = {
+	string(
 		"Jonas Freiknecht", "Armory Supervisor", "Item Supervisor", "Pyrotechnician"
 		"Felix Queissner", "Ingame Selection Maker", "Credit Writer", "",
 		"Andreas Schmidt", "Credit Designer", "", "",
