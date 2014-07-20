@@ -6,6 +6,7 @@ path "scripts\\shaders";
 path "levels";
 path "levels\\test2";
 path "levels\\desert-road";
+path "levels\\kingsbridge";
 path "levels\\textures";
 path "panels\\menu";
 path "panels\\items";
