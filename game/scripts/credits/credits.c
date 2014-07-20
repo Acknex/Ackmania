@@ -183,7 +183,7 @@ void credits_start()
 	}
 	level_load("creditsTerrain.hmp");
 	level_ent.ambient = -100;
-	_credits_sky = ent_createlayer("cosmo_f02+6.jpg", SKY | CUBE, 10);
+	_credits_sky = ent_createlayer("cosmo_f02+6.tga", SKY | CUBE, 10);
 	
 	ENTITY *stage = ent_create("stage_buehne.mdl", vector(0, 500, 20), NULL);
 	stage.pan = 180;
@@ -213,9 +213,9 @@ void credits_start()
 	
 	
 #ifdef TEST_DEBUG
-	_credits_music = media_play("../../media/outro-demo.ogg", NULL, 100);
+	_credits_music = media_play("../../media/outro-demo.wav", NULL, 100);
 #else
-	_credits_music = media_play("media\\outro-demo.ogg", NULL, 100);
+	_credits_music = media_play("media\\outro-demo.wav", NULL, 100);
 #endif
 }
 
