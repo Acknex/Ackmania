@@ -46,13 +46,13 @@
 
 	MATERIAL* mat_water1 =
 	{
-		effect = "shaders\\water1.fx";
+		effect = "water1.fx";
 		flags = AUTORELOAD;
 	}
 	
 	MATERIAL* mat_kart1 =
 	{
-		effect = "shaders\\kart.fx";
+		effect = "kart.fx";
 		flags = AUTORELOAD;
 	}
 
@@ -64,7 +64,11 @@
 
 	var get_max_laps()
 	{
-		return 5;
+		var laps = 5;
+		
+		if(str_cmpni("droad.wmb",level_name)) laps = 4;
+		
+		return laps;
 	}
 	
 	double dvec_dot(VECTOR* vec1, VECTOR* vec2)
@@ -344,6 +348,10 @@
 					trap_driver(you,1.5);
 					return;
 				}
+				else
+				{
+					if((!my->kart_big && your->kart_big) || (my->kart_small && !your->kart_small)) trap_driver(me,1.5);
+				}
 				factor *= 0.5;
 			}
 		}
@@ -420,6 +428,7 @@
 		ent->bot_path_offset = random(2)-1;
 		ent->_type = type_kart;
 		ent->has_finished = 0;
+		ent->fire_item_max = 7+random(17);
 
 		ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
 		set(ent->parent, PASSABLE);
@@ -738,17 +747,24 @@
 		}
 		
 		// Item-Verwendung
-		if (item) {
-			switch(ent->item_id) {
-				case ITEM_GRAVE: plant_grave(ent); break;
-				case ITEM_ROCKET: shoot_rocket(ent); break;
-				case ITEM_AIM_ROCKET: shoot_aiming_rocket(ent); break;
-				case ITEM_TURBO: use_turbo(ent); break;
-				case ITEM_BADASS_ROCKET: shoot_badass_aiming_rocket(ent); break;
-				case ITEM_MUSHROOM: start_mushroom(ent); break;
-				case ITEM_FLASH: start_flash(ent); break;
+		
+		if(ent->item_id) { //item)
+			if(ent->sk_kart_id > 1) ent->fire_item += time_step;
+			if(item && ent->sk_kart_id == 1) ent->fire_item = 99999;
+			if(ent->fire_item > ent->fire_item_max)
+			{
+				switch(ent->item_id) {
+					case ITEM_GRAVE: plant_grave(ent); break;
+					case ITEM_ROCKET: shoot_rocket(ent); break;
+					case ITEM_AIM_ROCKET: shoot_aiming_rocket(ent); break;
+					case ITEM_TURBO: use_turbo(ent); break;
+					case ITEM_BADASS_ROCKET: shoot_badass_aiming_rocket(ent); break;
+					case ITEM_MUSHROOM: start_mushroom(ent); break;
+					case ITEM_FLASH: start_flash(ent); break;
+				}
 			}
 		}
+		else ent->fire_item = 0;
 		
 		ent->kart_progress_update += time_step;
 		if(ent->kart_progress_update > 2)
