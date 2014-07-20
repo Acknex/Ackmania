@@ -22,6 +22,7 @@ void _item_setup()
 	my->trigger_range = 90;
 	set (me, PASSABLE);
 	c_setminmax(me);
+	set(me, FLAG2);
 }
 
 // Effekte für Items
@@ -110,7 +111,8 @@ void _give_random_item(ENTITY* driver)
 	if (driver != NULL)
 	{
 		if (driver.item_id == ITEM_NONE) {
-			driver.item_id = 1 + integer(random(7));
+			//driver.item_id = 1 + integer(random(7));
+			driver.item_id = 3;
 			
 			// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
 			// Rotation an.
@@ -260,10 +262,10 @@ action _rocket()
 			xSpeed = 20 * time_step;
 			if (flyHeight >= 60) reachedTop = 1;
 		} else {
-			if (flyHeight >= initHeight) {
+			if (flyHeight >= initHeight+3) {
 				flyHeight -=20 * time_step;
 				zSpeed = -20 * time_step;
-				xSpeed +=8 * time_step;
+				xSpeed +=ROCKET_SPEED * time_step;
 			} else {
 				zSpeed = 0;
 			}
@@ -274,21 +276,21 @@ action _rocket()
 		} else {
 			animPercentage = 80;
 			reset(me, PASSABLE);
+			xSpeed = ROCKET_SPEED * 5 * time_step;
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
 		
 		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
-		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
 		
-		c_scan(my->x, my->pan, vector(360, 0, 100), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
-		if (you != NULL)
+		if (HIT_TARGET != NULL)
 		{
-			if (you._type == type_kart)
+			if (hit.entity._type == type_kart)
 			{
-				liveTime = 0;
-				driver_hit(you, 1);
+				driver_hit(hit.entity, 2);
 			}
+			liveTime = 0;
 		}
 		
 		snd_play(sndRocketFly, 50, 0);
@@ -305,7 +307,7 @@ action _rocket()
 void shoot_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	VECTOR* rocketStart = vector(200,0,0);
+	VECTOR* rocketStart = vector(ROCKET_X_OFFSET,0,0);
 	vec_rotate(rocketStart, driver->pan);
 	vec_add(rocketStart, driver->x);
 	ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, rocketStart->x, _rocket);
@@ -336,10 +338,10 @@ action _aiming_rocket()
 			xSpeed = 20 * time_step;
 			if (flyHeight >= 60) reachedTop = 1;
 		} else {
-			if (flyHeight >= initHeight) {
+			if (flyHeight >= initHeight+3) {
 				flyHeight -=20 * time_step;
 				zSpeed = -20 * time_step;
-				xSpeed +=8 * time_step;
+				xSpeed +=ROCKET_SPEED * time_step;
 			} else {
 				zSpeed = 0;
 			}
@@ -350,21 +352,21 @@ action _aiming_rocket()
 		} else {
 			animPercentage = 80;
 			reset(me, PASSABLE);
+			xSpeed = ROCKET_SPEED * 5 * time_step;
 		}
 		ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
 		
 		effect(p_rocket_smoke, maxv(2,time_step), vector(my->x-60, my->y, my->z), nullvector);
 		
-		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
 		
-		c_scan(my->x, my->pan, vector(360, 0, 100), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
-		if (you != NULL)
+		if (HIT_TARGET != NULL)
 		{
-			if (you._type == type_kart)
+			if (hit.entity._type == type_kart)
 			{
-				liveTime = 0;
-				driver_hit(you, 2);
+				driver_hit(hit.entity, 3);
 			}
+			liveTime = 0;
 		}
 		
 		snd_play(sndRocketFly, 50, 0);
@@ -380,7 +382,7 @@ action _aiming_rocket()
 void shoot_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	VECTOR* rocketStart = vector(200,0,0);
+	VECTOR* rocketStart = vector(ROCKET_X_OFFSET,0,0);
 	vec_rotate(rocketStart, driver->pan);
 	vec_add(rocketStart, driver->x);
 	ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, rocketStart->x, _aiming_rocket);
@@ -464,16 +466,15 @@ action _badass_aiming_rocket()
 	{
 		effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 		
-		c_move(me, vector(50 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT);
+		c_move(me, vector(ROCKET_SPEED * 5 * time_step, 0, 0), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
 		
-		c_scan(my->x, my->pan, vector(360, 0, 200), IGNORE_ME | IGNORE_PASSABLE | SCAN_ENTS);
-		if (you != NULL)
+		if (HIT_TARGET != NULL)
 		{
-			if (you._type == type_kart)
+			if (hit.entity._type == type_kart)
 			{
-				liveTime = 0;
-				driver_hit(you, 4);
+				driver_hit(hit.entity, 5);
 			}
+			liveTime = 0;
 		}
 			
 		snd_play(sndRocketFly, 50, 0);	
@@ -491,7 +492,7 @@ action _badass_aiming_rocket()
 void shoot_badass_aiming_rocket(ENTITY* driver)
 {
 	// Erzeuge Rakete
-	VECTOR* rocketStart = vector(200,0,0);
+	VECTOR* rocketStart = vector(ROCKET_X_OFFSET,0,0);
 	vec_rotate(rocketStart, driver->pan);
 	vec_add(rocketStart, driver->x);
 	driver->item_id = ITEM_NONE;
