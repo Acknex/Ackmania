@@ -88,12 +88,20 @@ void create_map()
 		for (i = 0; i < 4; i++)
 		{
 			panMapMarker[i] = pan_create(NULL, MAP_LAYER_MARKER);
-			panMapMarker[i]->flags |= SHOW|LIGHT;
+			panMapMarker[i]->flags |= SHOW;//|LIGHT;
+			panMapMarker[i]->size_x = MAP_MARKERSIZEX;
+			panMapMarker[i]->size_y = MAP_MARKERSIZEY;
+			panMapMarker[i]->center_x = panMapMarker[i]->size_x * 0.5;
+			panMapMarker[i]->center_y = panMapMarker[i]->size_y * 0.5;
 		}
-		vec_set(panMapMarker[0]->blue, vector(255,0,0));
-		vec_set(panMapMarker[1]->blue, vector(0,0,255));
-		vec_set(panMapMarker[2]->blue, vector(0,255,255));
-		vec_set(panMapMarker[3]->blue, vector(0,255,0));
+		panMapMarker[0]->bmap = bmap_create("kartpanel1.tga");
+		panMapMarker[1]->bmap = bmap_create("kartpanel2.tga");
+		panMapMarker[2]->bmap = bmap_create("kartpanel3.tga");
+		panMapMarker[3]->bmap = bmap_create("kartpanel4.tga");
+		//vec_set(panMapMarker[0]->blue, vector(255,0,0));
+		//vec_set(panMapMarker[1]->blue, vector(0,0,255));
+		//vec_set(panMapMarker[2]->blue, vector(0,255,255));
+		//vec_set(panMapMarker[3]->blue, vector(0,255,0));
 	
 		/* create track segments */
 		panMapSegments = sys_malloc(sizeof(PANEL*) * vMapNodes);
@@ -182,8 +190,7 @@ void update_map()
 			panMapMarker[i]->scale_y = vMapScale;
 			panMapMarker[i]->pos_x = x - (panMapMarker[i]->size_x * 0.5 * panMapMarker[i]->scale_x);
 			panMapMarker[i]->pos_y = y - (panMapMarker[i]->size_y * 0.5 * panMapMarker[i]->scale_y);
-			panMapMarker[i]->size_x = MAP_MARKERSIZE;
-			panMapMarker[i]->size_y = MAP_MARKERSIZE;
+			panMapMarker[i]->angle = ent->pan;
 		}
 
 		/* this only needs to run once on resolution change */

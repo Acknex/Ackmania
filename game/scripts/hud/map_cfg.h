@@ -24,7 +24,8 @@
 #ifndef MAP_CFG_H
 #define MAP_CFG_H
  
-#define MAP_MARKERSIZE 		12
+#define MAP_MARKERSIZEX		48
+#define MAP_MARKERSIZEY		32
 #define MAP_LAYER 			6
 #define MAP_LAYER_MARKER 	(MAP_LAYER + 1)
 
