@@ -88,7 +88,8 @@ void create_map()
 		for (i = 0; i < 4; i++)
 		{
 			panMapMarker[i] = pan_create(NULL, MAP_LAYER_MARKER);
-			panMapMarker[i]->flags |= SHOW;//|LIGHT;
+			//panMapMarker[i]->flags |= SHOW|FILTER|LIGHT;
+			panMapMarker[i]->flags |= SHOW|FILTER;
 			panMapMarker[i]->size_x = MAP_MARKERSIZEX;
 			panMapMarker[i]->size_y = MAP_MARKERSIZEY;
 			panMapMarker[i]->center_x = panMapMarker[i]->size_x * 0.5;
