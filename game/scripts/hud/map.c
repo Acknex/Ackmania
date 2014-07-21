@@ -126,10 +126,11 @@ void remove_map()
 	if (vMapActive == 1)
 	{
 		vMapActive = 0;
-		ptr_remove(panMapMarker[0]);
-		ptr_remove(panMapMarker[1]);
-		ptr_remove(panMapMarker[2]);
-		ptr_remove(panMapMarker[3]);
+		for (i = 0; i < 4; i++)
+		{
+			ptr_remove(panMapMarker[i]->bmap);
+			ptr_remove(panMapMarker[i]);
+		}
 		sys_free(vNodeX);
 		sys_free(vNodeY);
 		for (i = 0; i < vMapNodes; i++)
