@@ -482,7 +482,7 @@
 		vec_set(my.scale_x, vector(0.2, 0.2, 0.2));
 		c_setminmax(me);
 		snd_play(sndRocketFire, 50, 0);
-		var liveTime = 9; //BADASS_ROCKET_LIFE_FRAMES + integer(random(500));
+		var liveTime = 8; //BADASS_ROCKET_LIFE_FRAMES + integer(random(500));
 		var animPercentage = 0;
 		set(me, PASSABLE);
 		
@@ -534,7 +534,7 @@
 					ENTITY* ent = get_kart_driver(i);
 					if(ent)
 					{
-						if(vec_dist(ent.x,my.x) < 256) driver_hit(ent, 3.5);
+						if(vec_dist(ent.x,my.x) < 256) trap_driver(ent,2.5); //driver_hit(ent, 3.5);
 					}
 				}
 		effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);

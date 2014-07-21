@@ -66,7 +66,13 @@
 	{
 		var laps = 5;
 		
-		if(str_cmpni("droad.wmb",level_name)) laps = 4;
+		g_raceTrackWidth = 160; // hackfix
+		if(str_cmpni("droad.wmb",level_name))
+		{
+			g_raceTrackWidth = 90;
+			laps = 4;
+		}
+		if(str_cmpni("kbridge.wmb",level_name)) g_raceTrackWidth = 90;
 		
 		return laps;
 	}
@@ -770,7 +776,7 @@
 		else ent->fire_item = 0;
 		
 		ent->kart_progress_update += time_step;
-		if(ent->kart_progress_update > 2)
+		if(ent->kart_progress_update > 2 && !ent->has_finished)
 		{
 			ent->kart_progress_update -= 2;
 			progress = ent_path_get_progress(ent,&length);
@@ -798,6 +804,7 @@
 			if(!ent->has_finished)
 			{
 				d = (ent->kart_lap-1)*length;
+				if(progress+d > ent->kart_progress+length*0.25) progress = -999999;
 				if(ent->kart_lap > 0 && progress > length*0.5 && progress+d > ent->kart_progress)
 				{
 					ent->kart_checkpoint = 1;
