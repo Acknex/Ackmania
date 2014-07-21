@@ -364,12 +364,12 @@ void credits_start()
 	you.pan = 300;
 	you.material = _credits_mtlAlphaTest;
 	
-	you = ent_create("stage_mikro.mdl", stage.x, credits_lottiPlay);
+	you = ent_create("stage_mikro.mdl", stage.x, NULL);
 	vec_add(you.x, vector(0, 0, -1));
 	you.pan = 180;
 	you.material = _credits_mtlAlphaTest;
 	
-	you = ent_create("stage_mikro2.mdl", stage.x, credits_lottiPlay);
+	you = ent_create("stage_mikro2.mdl", stage.x, NULL);
 	vec_add(you.x, vector(0, 0, -1));
 	you.pan = 180;
 	you.material = _credits_mtlAlphaTest;
