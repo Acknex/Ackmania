@@ -33,6 +33,7 @@ PANEL* panLaps;
 PANEL* panTime;
 PANEL* panRank;
 PANEL* panItem;
+PANEL* panCube;
 FONT* fntTime;
 FONT* fntRank;
 
@@ -48,6 +49,7 @@ var vHudCreated = 0;
 var vItemX;
 var vItemY;
 var vItemId;
+var vCubes;
 STRING** strRank[5];
 BMAP* bmapItem = "item_strip.tga";
 
@@ -94,8 +96,14 @@ void create_hud()
 	panItem = pan_create(NULL, HUD_LAYER);
 	panItem->bmap = bmap_create("item_border.tga");
 	pan_setwindow (panItem, 0, HUD_PANITEM_BORDERWIDTH, HUD_PANITEM_BORDERWIDTH, HUD_PANITEM_SIZE, HUD_PANITEM_SIZE, bmapItem, &vItemX, &vItemY);
-	panItem->flags |= TRANSLUCENT;
+	panItem->flags |= TRANSLUCENT | FILTER;
 	
+	/* cube panel */
+	panCube = pan_create(NULL, HUD_LAYER);
+	panCube->bmap = bmap_create("a4cube.tga");
+	pan_setdigits(panCube, 0, 0, 0, "%2.0f", "*", 1, &vCubes);
+	panCube->alpha = 85;	
+	panCube->flags |= TRANSLUCENT | FILTER;
 	
 	wait(1);
 	//update_hud();
@@ -112,8 +120,10 @@ void remove_hud()
 	ptr_remove(panLaps);
 	ptr_remove(panTime);
 	ptr_remove(panRank);
-	ptr_remove(panItem);
 	ptr_remove(panItem->bmap);
+	ptr_remove(panItem);
+	ptr_remove(panCube);
+	ptr_remove(panCube->bmap);
 	for (i = 0; i < 5; i++)
 	{
 		ptr_remove(strRank[i]);
@@ -157,6 +167,9 @@ void update_hud()
 	vItemX = clamp(vItemId, 0, 7) * HUD_PANITEM_SIZE;
 	vItemY = 0;
 	
+	/* update cubes */
+	vCubes = get_nr_cubes();
+	
 	update_map();
 }
 
@@ -168,6 +181,7 @@ void show_hud()
 		panTime->flags |= SHOW;
 		panRank->flags |= SHOW;
 		panItem->flags |= SHOW;
+		panCube->flags |= SHOW;
 		create_map();
 	}
 }
@@ -180,6 +194,7 @@ void hide_hud()
 		panTime->flags &= ~SHOW;
 		panRank->flags &= ~SHOW;
 		panItem->flags &= ~SHOW;
+		panCube->flags &= ~SHOW;
 		remove_map();
 	}
 }
@@ -229,6 +244,13 @@ void scale_hud()
 	panItem->scale_y = HUD_PANITEM_SCALE * vHudScale;
 	panItem->pos_x = (screen_size.x - HUD_PANITEM_BORDERSIZE * panItem->scale_x) * 0.5;
 	panItem->pos_y = HUD_PANLAPS_POSY * vHudScale;
+	
+	/* cube panel */
+	panCube->scale_x = HUD_PANCUBE_SCALE * vHudScale;
+	panCube->scale_y = HUD_PANCUBE_SCALE * vHudScale;
+	panCube->pos_x = (screen_size.x - HUD_PANCUBE_SIZE * panItem->scale_x) * 0.5;
+	panCube->pos_y = screen_size.y - (HUD_PANCUBE_POSY * vHudScale);
+	pan_setdigits(panCube, 1, 128, 24, "%02.0f", fntTime, 1, &vCubes);
 }
 
 void update_hudrank()

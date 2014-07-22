@@ -54,6 +54,9 @@ BMAP* bmapStar								= "star.tga";
 // Gib das aktuelle Item des Spielers zurück
 var get_current_item_id();
 
+// Gib die Anzahl A4 Würfel des Spielers zurück
+var get_nr_cubes();
+
 // Rotiert, kann eingesammelt werden.
 // Bringt Punkte. Bei 10 Punkten -> Sofortiger Speedboost.
 void a4_cube();
