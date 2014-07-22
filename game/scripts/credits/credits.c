@@ -323,6 +323,97 @@ void credits_init()
 	}
 }
 
+
+/**
+ * Spotlights moved by randomness.                            /¯¯/
+ * "Tonight the Super Trouper beams are gonna blind me ..." o/ o/
+ *
+ * Skill1-3 are min Values of destination angle, Skill4-6 are maximum
+ * skill7 is Pointer to parent object to keep pan
+ */
+ void credits_spotlight(void)
+ {
+	ANGLE currAngle;
+	ANGLE targetAngle;
+	ENTITY* myParent = NULL;
+	var lerpfactor = 0;
+	while (1)
+	{
+		if (vec_length(vec_diff(NULL, currAngle, targetAngle)) == 0)
+		{
+			vec_set(targetAngle,
+					_vec( random(my.skill4 - my.skill1) + my.skill1,
+						  random(my.skill5 - my.skill2) + my.skill2,
+						  random(my.skill6 - my.skill3) + my.skill3)
+					);
+			lerpfactor = 0;
+		}
+		else
+		{
+			lerpfactor += minv(time_step*0.01, 1);
+			vec_lerp(currAngle, currAngle, targetAngle, lerpfactor);
+		}
+		
+		if (my.skill7)
+		{
+			myParent = my.skill7;
+			vec_set(my.x, myParent.x);
+			vec_set(my.pan, myParent.pan);
+		}
+		else
+		{
+			vec_set(my.pan, nullvector);
+		}
+		
+		vec_add(my.pan, currAngle);
+		wait(1);
+	}
+ }
+ 
+ /**
+  * See the Flash when looking into a spotlight
+  * skill1-3 is the offset to the parent object
+  * Skill7 is the Pointer to the parent object
+  */
+ void credits_flash(void)
+ {
+	VECTOR offsetPos;
+	
+	VECTOR camDir;
+	VECTOR parentDir;
+	
+	var diffVar = 0;
+	
+	ENTITY* myParent = NULL;
+	var scaling = 0;
+	while (1)
+	{
+		if (my.skill7)
+		{
+			myParent = my.skill7;
+			offsetPos.x = my.skill1;
+			offsetPos.y = my.skill2;
+			offsetPos.z = my.skill3;
+			vec_rotate(offsetPos, myParent.pan);
+			vec_set(my.x, myParent.x);
+			vec_add(my.x, offsetPos);
+			
+			// Weil der Scheinwerfer in Grundstellung nicht nach X sonder nach Z
+			// zeigt, muss die Achse gedreht werden.
+			vec_for_angle(parentDir, _vec(myParent.pan, myParent.tilt+90, myParent.roll));
+			vec_for_angle(camDir, camera.pan);
+			
+			diffVar = acos(vec_dot(parentDir,camDir)/(vec_length(parentDir)*vec_length(camDir))); 
+			
+			scaling = maxv(diffVar-90, 0)/90.0;
+			
+			vec_fill(my.scale_x, scaling);
+			
+		}
+		wait(1);
+	}
+ }
+
 /**
  * Starts the credits.
  */
@@ -383,6 +474,56 @@ void credits_start()
 	vec_add(you.x, vector(0, 76, 112));
 	you.pan = 270;
 	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_fluter_basis.mdl", stage.x, NULL);
+	vec_add(you.x, vector(150, -40, 275));
+	you.material = _credits_mtlAlphaTest;
+	
+	you = ent_create("stage_fluter_basis.mdl", stage.x, NULL);
+	vec_add(you.x, vector(-150, -40, 275));
+	you.material = _credits_mtlAlphaTest;
+	
+	ENTITY* gelenkr = ent_create("stage_fluter_gelenk.mdl", stage.x, credits_spotlight);
+	vec_add(gelenkr.x, vector(150, -40, 275));
+	gelenkr.material = _credits_mtlAlphaTest;
+	gelenkr.skill1 = -150;
+	gelenkr.skill4 = 30;
+	
+	ENTITY* gelenkl = ent_create("stage_fluter_gelenk.mdl", stage.x, credits_spotlight);
+	vec_add(gelenkl.x, vector(-150, -40, 275));
+	gelenkl.material = _credits_mtlAlphaTest;
+	gelenkl.skill1 = -30;
+	gelenkl.skill4 = -210;
+	
+	ENTITY* werferr = ent_create("stage_fluter_scheinwerfer.mdl", stage.x, credits_spotlight);
+	werferr.material = _credits_mtlAlphaTest;
+	werferr.skill2 = -110;
+	werferr.skill5 = 0;
+	werferr.skill7 = gelenkr;
+	
+	ENTITY* werferl = ent_create("stage_fluter_scheinwerfer.mdl", stage.x, credits_spotlight);
+	werferl.material = _credits_mtlAlphaTest;
+	werferl.skill2 = -110;
+	werferl.skill5 = 0;
+	werferl.skill7 = gelenkl;
+	
+	you = ent_create("stage_fluter_licht.mdl", stage.x, credits_spotlight);
+	you.material = _credits_mtlAlphaAdd;
+	you.skill7 = werferr;
+	
+	you = ent_create("stage_fluter_licht.mdl", stage.x, credits_spotlight);
+	you.material = _credits_mtlAlphaAdd;
+	you.skill7 = werferl;
+	
+	you = ent_create("flash3.tga", stage.x, credits_flash);
+	you.material = _credits_mtlAlphaAdd;
+	you.skill3 = 40;
+	you.skill7 = werferr;
+	
+	you = ent_create("flash3.tga", stage.x, credits_flash);
+	you.material = _credits_mtlAlphaAdd;
+	you.skill3 = 40;
+	you.skill7 = werferl;
 	
 	_credits_music = media_play("media\\lotti_credits.wav", NULL, 100);
 }
