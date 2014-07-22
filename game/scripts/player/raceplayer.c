@@ -850,7 +850,7 @@
 		
 		if(ent->item_id) { //item)
 			if(ent->sk_kart_id > 1) ent->fire_item += time_step;
-			if(item && ent->sk_kart_id == 1) ent->fire_item = 99999;
+			if(item && ent->sk_kart_id == 1 && ent->fire_item != -1) ent->fire_item = 99999;
 			if(ent->fire_item > ent->fire_item_max)
 			{
 				switch(ent->item_id) {

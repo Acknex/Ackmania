@@ -6,6 +6,7 @@
 #include "loadrace.h"
 #include "playrace.h"
 #include "menu.h"
+#include "credits.h"
 
 void onCreditsEnd_ev() {
    if (g_creditsStopEnforced == false) {
