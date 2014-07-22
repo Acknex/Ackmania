@@ -44,6 +44,56 @@
 		p.event = NULL;
 	}
 
+	void p_blumenkasten_fade(PARTICLE* p)
+	{
+		p.size = p.skill_a*minv(p.lifespan/3.0,1);
+	}
+
+	void p_blumenkasten1(PARTICLE* p)
+	{
+		vec_add(p.x,vector((1-random(2))*8,(1-random(2))*8,random(8)));
+		p.skill_a = 90+random(30);
+		vec_set(p.blue,vector(p.skill_a,160,p.skill_a+15));
+		vec_set(p.vel_x,vector((1-random(2))*7,(1-random(2))*7,9+random(15)));
+		vec_scale(p.blue,0.65+random(0.25));
+		set(p,MOVE);
+		p.bmap = bmp_quad;
+		p.gravity = 3;
+		p.lifespan = 12;
+		p.skill_a = p.size = 2+random(2);
+		p.event = p_blumenkasten_fade;
+	}
+
+	void p_blumenkasten2(PARTICLE* p)
+	{
+		vec_add(p.x,vector((1-random(2))*8,(1-random(2))*8,random(8)));
+		vec_set(p.blue,vector(10,44,100));
+		vec_lerp(p.blue,p.blue,COLOR_WHITE,random(0.1));
+		vec_scale(p.blue,0.35+random(0.15));
+		vec_set(p.vel_x,vector((1-random(2))*7,(1-random(2))*7,9+random(15)));
+		set(p,MOVE);
+		p.bmap = bmp_quad;
+		p.gravity = 3;
+		p.lifespan = 12;
+		p.skill_a = p.size = 2+random(2);
+		p.event = p_blumenkasten_fade;
+	}
+	
+	void p_grave(PARTICLE* p)
+	{
+		vec_add(p.x,vector((1-random(2))*8,(1-random(2))*8,random(8)));
+		vec_set(p.blue,vector(20,74,100));
+		vec_lerp(p.blue,p.blue,COLOR_WHITE,random(0.1));
+		vec_scale(p.blue,0.35+random(0.15));
+		vec_set(p.vel_x,vector((1-random(2))*7,(1-random(2))*7,9+random(15)));
+		set(p,MOVE);
+		p.bmap = bmp_quad;
+		p.gravity = 3;
+		p.lifespan = 12;
+		p.skill_a = p.size = 2+random(2);
+		p.event = p_blumenkasten_fade;
+	}
+
 	MATERIAL* mat_water1 =
 	{
 		effect = "water1.fx";
@@ -60,6 +110,25 @@
 	{
 		c_setminmax(my);
 		set(my,POLYGON);
+	}
+	
+	void blumenkasten_event()
+	{
+		if(your._type == type_kart)
+		{
+			trap_driver(you,2);
+			set(my,PASSABLE | INVISIBLE);
+			effect(p_blumenkasten1,32,my.x,nullvector);
+			effect(p_blumenkasten2,32,my.x,nullvector);
+		}
+	}
+	
+	action ac_blumenkasten()
+	{
+		c_setminmax(my);
+		set(my,POLYGON);
+		my.event = blumenkasten_event;
+		my.emask |= ENABLE_IMPACT;
 	}
 
 	var get_max_laps()
@@ -325,7 +394,7 @@
 		for(i = 1; i < 4; i++)
 		{
 			ENTITY* ent_enemy = get_kart_driver(i);
-			if(ent_enemy->kart_progress > ent->kart_progress) rank++;
+			if(ent_enemy->kart_progress > ent->kart_progress || (!ent->has_finished && ent_enemy->has_finished) || (ent->has_finished > ent_enemy->has_finished && ent_enemy->has_finished)) rank++;
 		}
 		ent->kart_rank = rank;
 		return rank;
@@ -482,6 +551,24 @@
 			if(angle_diff < 0) ent->kart_input |= INPUT_RIGHT;
 		}
 	}
+	
+	void resetPlayerOnPath(ENTITY* ent)
+	{
+	VECTOR temp,temp2;
+				path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
+				vec_set(ent->x,temp);
+				path_get_offset_position(temp2,64,temp);
+				vec_diff(temp2,temp,ent->x);
+				vec_to_angle(temp,temp2);
+				ent->pan = ent->drive_pan = temp.x;
+				vec_set(ent->parent->x, ent->x);
+				ent->parent->z += ent->parent->skill1;
+				vec_set(ent->parent->pan, ent->pan);
+				vec_set(ent->speed_x,nullvector);
+				vec_set(ent->bounce_x,nullvector);
+				ent->speed = 0;
+				ent->drifting = 0;		
+	}
 
 	void updatePlayer(ENTITY* ent)
 	{
@@ -514,20 +601,8 @@
 			
 			if(ent->z < -512)
 			{
-				path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
-				vec_set(ent->x,temp);
-				path_get_offset_position(temp2,64,temp);
-				vec_diff(temp2,temp,ent->x);
-				vec_to_angle(temp,temp2);
-				ent->pan = ent->drive_pan = temp.x;
-				vec_set(ent->parent->x, ent->x);
-				ent->parent->z += ent->parent->skill1;
-				vec_set(ent->parent->pan, ent->pan);
-				vec_set(ent->speed_x,nullvector);
-				vec_set(ent->bounce_x,nullvector);
-				ent->speed = 0;
+				resetPlayerOnPath(ent);
 				ent->falling = 0;
-				ent->drifting = 0;
 				ent->kart_trapped = 0;
 				ent->kart_hit = 0;
 				ent->kart_turbo = 0;
@@ -551,6 +626,22 @@
 		right = !!(ent->kart_input & INPUT_RIGHT);
 		hop = !!(ent->kart_input & INPUT_HOP);
 		item = !!(ent->kart_input & INPUT_ITEM);
+		
+		if(up || down)
+		{
+			ent->stuck_counter += time_step;
+			if(vec_dist(vector(ent->x,ent->y,0),vector(ent->stuck_x,ent->stuck_y,0)) > 8)
+			{
+				ent->stuck_x = ent->x;
+				ent->stuck_y = ent->y;
+				ent->stuck_counter = 0;
+			}
+			if(ent->stuck_counter >= 32)
+			{
+				resetPlayerOnPath(ent);
+				ent->stuck_counter = 0;
+			}
+		}
 
 		if (!ent->drifting) {
 			ent->kart_drift_buffer += (0-ent->kart_drift_buffer)*0.1*time_step;
@@ -787,7 +878,7 @@
 				{
 					if(ent->kart_lap >= get_max_laps())
 					{
-						ent->has_finished = 1;
+						ent->has_finished = total_ticks;
 						if(ent->sk_kart_id == 1)
 						{
 							do_race_end(ent);
