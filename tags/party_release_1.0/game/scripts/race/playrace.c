@@ -1,0 +1,85 @@
+#ifndef playrace_c
+#define playrace_c
+
+#include "playrace.h"
+#include "timer.h"
+#include "hud.h"
+#include "gamestate.h"
+
+bool g_raceIsEnded = false;
+int finalRank = 4;
+
+void do_race_end(ENTITY* ent)
+{
+   playTaunt(ent->skill1 - 1);
+   g_raceIsEnded = true;
+   finalRank = get_kart_rank_player();
+}
+
+void play_race(int index)
+{
+   g_doNotDrive = false;
+   g_raceIsEnded = false;
+
+   reset_timer();
+   unpause_timer();
+
+   show_hud();
+
+   while (!g_raceIsEnded) {
+      update_camera();
+      update_hud();
+      wait(1);
+   }
+
+   if (finalRank <= 3) {
+      snd_play(swin[finalRank - 1], 100, 0);
+   } else {
+      snd_play(splacelost[(int) random(5)], 100, 0);
+   }
+
+   hide_hud();
+
+   bFinishPan->pos_x = screen_size.x / 2 - bFinishPan->bmap->width / 2;
+   bFinishPan->pos_y = screen_size.y * 0.25 - bFinishPan->bmap->height / 2;
+
+   bbWinnerPan->bmap = barr[finalRank - 1];
+   bbWinnerPan->size_x = bbWinnerPan->bmap->width;
+   bbWinnerPan->size_y = bbWinnerPan->bmap->height;
+   bbWinnerPan->pos_x = screen_size.x / 2 - bbWinnerPan->bmap->width / 2;
+   bbWinnerPan->pos_y = screen_size.y * 0.5 - bbWinnerPan->bmap->height / 2;
+
+   bPressSpacePan->pos_x = screen_size.x / 2 - bPressSpacePan->bmap->width / 2;
+   bPressSpacePan->pos_y = screen_size.y * 0.75 - bFinishPan->bmap->height / 2;
+
+   set(bFinishPan, SHOW);
+   set(bbWinnerPan, SHOW);
+   set(bPressSpacePan, SHOW);
+
+   while (!key_space && !key_enter && !key_esc) {
+      update_camera();
+      setPpSwirl(0.5, sin(total_ticks) * 0.1, 0.5, 0.5, 0.25 + sin(total_ticks * 3) * 0.25);
+      wait(1);
+   }
+
+   while (key_space || key_enter || key_esc) {
+      update_camera();
+      setPpSwirl(0.5, sin(total_ticks) * 0.1, 0.5, 0.5, 0.25 + sin(total_ticks * 3) * 0.25);
+      wait(1);
+   }
+
+   reset(bFinishPan, SHOW);
+   reset(bbWinnerPan, SHOW);
+   reset(bPressSpacePan, SHOW);
+
+   resetPpSwirl();
+
+   media_stop(g_raceMusicHandle);
+   g_raceMusicHandle = 0;
+
+   wait(1);
+
+   invoke_game_state(GAME_STATE_MENU, index);
+}
+
+#endif /* playrace_c */
