@@ -21,6 +21,8 @@ ENTITY* get_kart_driver (int index);
 // gibt HUMAN-Spieler zurück
 ENTITY* get_kart_player ();
 
+ENTITY** create_kart_drivers();
+
 
 #include "startgrid.c"
 

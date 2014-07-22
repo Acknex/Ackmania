@@ -45,6 +45,7 @@ SOUND* sndRocketHit						= "rocketExplode.ogg";
 SOUND* sndTurboStart						= "jetpackloop.wav";
 SOUND* sndMushroomStart					= "mushroom.wav";
 SOUND* sndFlashStart						= "flash.ogg";
+SOUND* sndItemShuffle					= "shuffle.wav";
 
 // Bitmaps für Effekte
 BMAP* bmapRocketSmoke					= "smoke.tga";

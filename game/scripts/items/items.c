@@ -2,6 +2,8 @@
 	#define items_c
 
 	#include "helper.h"
+	#include "startgrid.h"
+	#include "camera.h"
 	#include <particles.c>
 
 	STRING* str_items_helper = "";
@@ -60,14 +62,15 @@
 	void _item_particle (PARTICLE *p) 
 	{
 		VECTOR vecTemp;
-		vec_randomize(&vecTemp, 10);
+		vec_randomize(&vecTemp, 8);
 		vec_normalize(&vecTemp, 4);
 		vec_add (&p->vel_x, &vecTemp);
 		p->vel_y = 0;
 		vec_set(&p->blue, vector(0, 255, 255));
 		set(p, MOVE | TRANSLUCENT | BRIGHT);
 		p->lifespan = 80;
-		p->size  = 30 + random(5);
+		p->size  = 15 + random(3);
+		p->alpha = 60;
 		p->event = _item_particleFader;
 	}
 
@@ -100,23 +103,24 @@
 		_item_setup();
 		//my->trigger_range = 200;
 		place_on_floor(me);
-		my->z = 48;
-		my->emask |=ENABLE_TRIGGER;
+		my->z = 32;
+		my->trigger_range = 50;
 		my->event = _item_a4_cube_evt;
 		var vZ = my->z;
 		var vOffset = random(500);
 		var vParticles = 0;
 		my->material = mtl_specBump;
 		my->pan = random(360);
+		vec_set(my->scale_x, vector(0.5,0.5,0.5));
 		
 		while(me)
 		{
 			vParticles += time_step;
-			if (vParticles > 10)
+			if (vParticles > 5)
 			{
 				if (!is(me,INVISIBLE)) {
-					effect(_item_particle, 10, &my->x, nullvector);
-					vParticles -= 10;
+					effect(_item_particle, 5, &my->x, nullvector);
+					vParticles -= 5;
 				}
 			}
 			my->z = vZ + 10 * sinv(total_ticks * 20 + vOffset);
@@ -129,13 +133,28 @@
 	// Gebe dem Spieler ein zufälliges Item
 	void _give_random_item(ENTITY* driver)
 	{
+		var item_lastid;
+		var item_shuffle = 8;
 		if (driver != NULL)
 		{
 			if (driver.item_id == ITEM_NONE) {
-				driver.item_id = 1 + integer(random(7));
 				
-				// Todo: Zeige im Item-Panel wahllos ein paar Items in schneller
-				// Rotation an.
+				if(driver.sk_kart_id == 1)
+				{
+					driver->fire_item = -1; /* lock fire button */
+					for (item_shuffle = 0; item_shuffle < 8; item_shuffle++)
+					{
+						item_lastid = driver.item_id;
+						do
+						{
+							driver.item_id = 1 + integer(random(7));
+						} while (driver.item_id == item_lastid);
+						snd_play(sndItemShuffle, 50, 0);
+						wait(-0.1);
+					}
+					driver->fire_item = 0; /* enable fire */
+				}
+				driver.item_id = 1 + integer(random(7));
 				
 				snd_play(sndGotNewItem, 50, 0);
 			}
@@ -172,27 +191,30 @@
 	{
 		_item_setup();	
 		place_on_floor(me);
-		my->z = 48;
+		my->z = -8 -my->min_z;
 		my->emask |=ENABLE_TRIGGER;
 		my->event = _item_evt;
 		var vZ = my->z;
+		my->trigger_range = 50;
 		var vOffset = random(500);
 		var vParticles = 0;
 		my->pan = random(360);
+		my->tilt = -90;
+		vec_set(my->scale_x, vector(0.5,0.5,0.5));
 		
 		while(me)
 		{
 			vParticles += time_step;
-			if (vParticles > 10)
+			if (vParticles > 5)
 			{
 				if (!is(me,INVISIBLE)) {
-					effect(_item_particle, 10, &my->x, nullvector);
-					vParticles -= 10;
+					effect(_item_particle, 5, &my->x, nullvector);
+					vParticles -= 5;
 				}
 			}
-			my->z = vZ + 10 * sinv(total_ticks * 20 + vOffset);
-			my->pan -= 5 * time_step;
-			my->tilt = 30 * sinv(total_ticks * 10 + vOffset);
+			//my->z = vZ + 10 * sinv(total_ticks * 20 + vOffset);
+			//my->pan -= 5 * time_step;
+			//my->tilt = 30 * sinv(total_ticks * 10 + vOffset);
 			wait(1);
 		}
 	}
@@ -223,6 +245,7 @@ void p_grave(PARTICLE*);
 	action grave() {
 		_item_setup();
 		reset(my,SHADOW);
+		my->pan = random(360);
 		wait(-0.5);
 		my->emask |=ENABLE_TRIGGER;
 		my->event = _grave_evt;
@@ -567,7 +590,7 @@ void p_grave(PARTICLE*);
 	void start_mushroom(ENTITY* driver)
 	{
 		// OPTIONAL: Tue verrückte Dinge mit den Farben, falls nicht schon aktiv
-		snd_play(sndMushroomStart, 50, 0);
+		snd_play(sndMushroomStart, 100, 0);
 		driver->item_id = ITEM_NONE;
 		enlarge_driver(driver, 5.25);
 	}
@@ -578,6 +601,16 @@ void p_grave(PARTICLE*);
 	{
 		snd_play(sndFlashStart, 50, 0);
 		driver->item_id = ITEM_NONE;
+	
+		var i;
+		VIEW* pV = get_camera();
+		for (i = 0; i < 6; i++)
+		{
+			pV->ambient = 30 + abs(random(70));
+			wait (-0.1);
+		}
+		pV->ambient = 0;
+		
 		ENTITY* pl = get_kart_driver(0);
 		ENTITY* ki1 = get_kart_driver(1);
 		ENTITY* ki2 = get_kart_driver(2);
