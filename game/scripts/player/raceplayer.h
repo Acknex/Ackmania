@@ -40,6 +40,9 @@ var g_raceTrackWidth = 160;
 
 void synplayermodel (ENTITY* ent);
 
+#define stuck_x skill53
+#define stuck_y skill54
+#define stuck_counter skill55
 #define fire_item_max skill56
 #define fire_item skill57
 #define has_finished skill58

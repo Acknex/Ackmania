@@ -197,6 +197,9 @@
 		}
 	}
 
+void p_blumenkasten2(PARTICLE*);
+void p_grave(PARTICLE*);
+
 	// Event, der die Kollision mit einem Grabstein regelt
 	void _grave_evt()
 	{
@@ -204,9 +207,12 @@
 		{
 			my->event = NULL;
 			snd_play(sndGraveCollision, 50, 0);
+			set(my,PASSABLE);
+			effect(p_blumenkasten2,32,my.x,nullvector);
+			effect(p_grave,32,my.x,nullvector);
 			
 			// Drehe Spieler
-			trap_driver(you, 3.5);
+			trap_driver(you, 3);
 			
 			wait(1);
 			ent_remove(me);
