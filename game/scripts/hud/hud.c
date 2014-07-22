@@ -169,6 +169,7 @@ void update_hud()
 	
 	/* update cubes */
 	vCubes = get_nr_cubes();
+	vCubes = clamp(vCubes, 0, 99);
 	
 	update_map();
 }
