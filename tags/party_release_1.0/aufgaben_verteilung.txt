@@ -1,0 +1,22 @@
+Spielermodelle	- Simon
+Modelle			- Simon/Max
+Strecke			- Michael/Max
+movement		- Felix Pohl
+Items-Code/FX	- Jonas
+Items-Modelle	- Patrick
+Pfade setzen	- Michael
+Framework 		- Christian
+Credits			- Felix Queißner
+Credits			- Andreas
+HUD				- Robert
+Gegner-Code		- Christian
+Kamera			- Robert
+sfx				- Michael
+music			- Marius
+menu			- Felix Q.
+achie. whore	- Marius
+
+Projektleiter		   : Marius
+Projektleiter Code     : Christian
+Projektleiter 3D Art   : Simon
+Projektleiter Music/Sfx: Marius

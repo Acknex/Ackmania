@@ -1,0 +1,5 @@
+Für den Geist platziert man im Level einfach das Modell
+	bottle.mdl
+mit der action
+	bottle_action
+. Die Action erstellt und rotiert den Geist dann an die Stelle, wo er sein muss.
