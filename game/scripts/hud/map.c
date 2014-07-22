@@ -54,7 +54,7 @@ void create_map()
 	ent = ent_create(NULL,nullvector,NULL);
 	vMapNodes = path_next(ent);
 	
-	/* get path nodes with 0/0 offset */
+	/* get path nodes */
 	if(vMapNodes > 0)
 	{
 		vNodeX = sys_malloc(sizeof(var) * (vMapNodes+1));
@@ -64,17 +64,22 @@ void create_map()
 			path_getnode(ent, i, &vecTemp, NULL);
 			vNodeX[i] = vecTemp.x;
 			vNodeY[i] = -vecTemp.y;
+			
+			/* track min/max path (race track) dimensions */
 			if (vecMapMin.x > vNodeX[i]) vecMapMin.x = vNodeX[i];
 			if (vecMapMin.y > vNodeY[i]) vecMapMin.y = vNodeY[i];
 			if (vecMapMax.x < vNodeX[i]) vecMapMax.x = vNodeX[i];
 			if (vecMapMax.y < vNodeY[i]) vecMapMax.y = vNodeY[i];
 		}
 		
+		/* remove any offset, set relative to level origin */
 		for(i = 1; i <= vMapNodes; i++)
 		{
 			vNodeX[i] -= vecMapMin.x;
 			vNodeY[i] -= vecMapMin.y;
 		}
+		
+		/* determine race track dimension (3D) */
 		vTemp =  vecMapMax.x - vecMapMin.x;
 		vMap3DSize = vecMapMax.y - vecMapMin.y;
 		if (vTemp > vMap3DSize)
@@ -83,6 +88,13 @@ void create_map()
 		}
 		vMap3DSize *= 1.1; /* pretend on slightly bigger map for better look */
 		//printf("%d %d %d %d %d", (int)vecMapMin.x, (int)vecMapMin.y, (int)vecMapMax.x, (int)vecMapMax.y, (int)vMap3DSize);
+
+		/* normalize positions */
+		for(i = 1; i <= vMapNodes; i++)
+		{
+			vNodeX[i] /= vMap3DSize;
+			vNodeY[i] /= vMap3DSize;
+		}
 	
 		/* create driver markers */
 		for (i = 0; i < 4; i++)
@@ -165,8 +177,8 @@ void update_map()
 		/* draw race track */
 		for(i = 1; i <= vMapNodes; i++)
 		{
-			x = vMapPosX + (vNodeX[i] / vMap3DSize) * vMapSize;
-			y = vMapPosY + (vNodeY[i] / vMap3DSize) * vMapSize;
+			x = vMapPosX + (vNodeX[i] * vMapSize);
+			y = vMapPosY + (vNodeY[i] * vMapSize);
 			if (i > 1)
 			{
 				draw_line(vector(x,y,0),vector(255,255,255),100);
@@ -177,8 +189,8 @@ void update_map()
 			}
 			
 		}
-		x = vMapPosX + (vNodeX[1] / vMap3DSize) * vMapSize;
-		y = vMapPosY + (vNodeY[1] / vMap3DSize) * vMapSize;
+		x = vMapPosX + (vNodeX[1] * vMapSize);
+		y = vMapPosY + (vNodeY[1] * vMapSize);
 		draw_line(vector(x,y,0),vector(255,255,255),100);
 #endif
 
@@ -186,6 +198,7 @@ void update_map()
 		for (i = 0; i < 4; i++)
 		{
 			ent = get_kart_driver(i);
+			/* player positions are not offset corrected and normalized - so do it here */
 			x = vMapPosX + ((ent->x - vecMapMin.x) / vMap3DSize) * vMapSize;
 			y = vMapPosY + ((-ent->y - vecMapMin.y) / vMap3DSize) * vMapSize;
 			panMapMarker[i]->scale_x = vMapScale;
@@ -211,8 +224,8 @@ void update_map()
 				panMapSegments[i]->size_y = MAP_TRACK_WIDTH * vMapScale;
 				panMapSegments[i]->center_y = panMapSegments[i]->size_y * 0.5;
 				/* get node position add offset, scale it to screen */
-				panMapSegments[i]->pos_x = vMapPosX + (vNodeX[i+1] / vMap3DSize) * vMapSize;
-				panMapSegments[i]->pos_y = vMapPosY + (vNodeY[i+1] / vMap3DSize) * vMapSize;
+				panMapSegments[i]->pos_x = vMapPosX + (vNodeX[i+1] * vMapSize);
+				panMapSegments[i]->pos_y = vMapPosY + (vNodeY[i+1] * vMapSize);
 				/* track segments must be center aligned, offset can be used from center parameters */
 				panMapSegments[i]->pos_x -= panMapSegments[i]->center_x;
 				panMapSegments[i]->pos_y -= panMapSegments[i]->center_y;
