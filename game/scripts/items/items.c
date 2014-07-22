@@ -34,9 +34,18 @@
 		{
 			return driver.item_id;
 		}
-		return NULL;
+		return 0;
 	}
 
+	var get_nr_cubes()
+	{
+		ENTITY* driver = get_kart_player();
+		if (driver != NULL)
+		{
+			return driver->PL_A4_COUNT;
+		}
+		return 0;
+	}
 	// Initialisiert jedes Item, mit dem der Spieler interagieren kann.
 	void _item_setup()
 	{
