@@ -1,4 +1,0 @@
-beach (Sand)
-grass
-desert
-ice
