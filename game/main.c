@@ -51,7 +51,7 @@ int main() {
    bind_keys();
 #endif
 
-   initPostprocessing(cam);
+   initPostprocessing(get_camera());
 
    invoke_game_state(TARGET_GAME_STATE, 0);
 	
