@@ -146,7 +146,7 @@
 			if (vParticles > 5)
 			{
 				if (!is(me,INVISIBLE)) {
-					effect(_item_particle2, 5, &my->x, nullvector);
+					if(!(my.eflags&CLIPPED)) effect(_item_particle2, 5, &my->x, nullvector);
 					vParticles -= 5;
 				}
 			}
@@ -235,7 +235,7 @@
 			if (vParticles > 5)
 			{
 				if (!is(me,INVISIBLE)) {
-					effect(_item_particle, 5, &my->x, nullvector);
+					if(!(my.eflags&CLIPPED)) effect(_item_particle, 5, &my->x, nullvector);
 					vParticles -= 5;
 				}
 			}
@@ -261,7 +261,7 @@
 			effect(p_grave,32,my.x,nullvector);
 			
 			// Drehe Spieler
-			trap_driver(you, 3);
+			trap_driver(you, 2.5);
 			
 			wait(1);
 			ent_remove(me);
@@ -273,7 +273,7 @@
 		_item_setup();
 		reset(my,SHADOW);
 		my->pan = random(360);
-		wait(-0.5);
+		wait(-0.4);
 		my->emask |=ENABLE_TRIGGER;
 		my->event = _grave_evt;
 	}
@@ -327,7 +327,7 @@
 		var zSpeed = 0;
 		var xSpeed = 0;
 		var animPercentage = 0;
-		//set(me, PASSABLE);
+		set(me, PASSABLE);
 		vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 		snd_play(sndRocketFire, 50, 0);
 		while(me && (liveTime > 0))
@@ -341,6 +341,7 @@
 			
 			if(animPercentage >= 50)
 			{
+				reset(me, PASSABLE);
 				int i;
 				for(i = 0; i < 4; i++)
 				{
@@ -364,6 +365,7 @@
 				ent = get_kart_driver(my.sk_kart_id-1);
 				if(ent) set(ent,PASSABLE);
 			}
+		my.tilt = 0;
 			vec_set(temp2,vector(ROCKET_SPEED * 6 * time_step,0,0));
 			c_move(me,temp2,nullvector,IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_FLAG2);
 			if(ent) reset(ent,PASSABLE);
@@ -385,7 +387,7 @@
 	void shoot_rocket(ENTITY* driver)
 	{
 		// Erzeuge Rakete
-		VECTOR* rocketStart = vector(ROCKET_X_OFFSET,0,0);
+		VECTOR* rocketStart = vector(ROCKET_X_OFFSET*2,0,0);
 		vec_rotate(rocketStart, driver->pan);
 		vec_add(rocketStart, driver->x);
 		ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, rocketStart->x, _rocket);
@@ -596,7 +598,7 @@
 		
 		while(me && (liveTime > 0))
 		{
-			effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
+			if(!(my.eflags&CLIPPED)) effect(p_bomb, maxv(2,time_step), vector(my->x, my->y, my->z+10), nullvector);
 			
 			path_spline(me,my->x,dist);
 			my->z -=35;
