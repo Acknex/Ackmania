@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 
 #define PRAGMA_PATH "levels";
 #define PRAGMA_PATH "scripts";
@@ -18,9 +18,9 @@
 
 #include "engine.h"
 
-#ifdef DEBUG
-#include <default.c>
-#endif
+//#ifdef DEBUG
+//#include <default.c>
+//#endif
 
 #include "sysinit.h"
 #include "skilldefines.h"

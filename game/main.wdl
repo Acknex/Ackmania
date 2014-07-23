@@ -14,6 +14,10 @@ path "shaders\\menu";
 path "sprites";
 path "sounds";
 
+level "droad.wmp";
+level "kbridge.wmp";
+level "test2.wmp";
+
 bind "a4Cube.mdl";
 bind "a4Cube.pcx";
 bind "a4Cube_nm.tga";
