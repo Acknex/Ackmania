@@ -501,6 +501,8 @@
 		ent->_type = type_kart;
 		ent->has_finished = 0;
 		ent->fire_item_max = 7+random(17);
+		ent->kart_progress_update = random(2);
+		ent->kart_bot_separate = random(4);
 
 		ent->parent = ent_create(str_for_entfile(NULL, ent), ent->x, NULL);
 		set(ent->parent, PASSABLE);
@@ -798,7 +800,7 @@
 		vec_set(temp,vector(20,0,0));
 		vec_rotate(temp,ent->pan);
 		vec_add(temp,ent->x);
-		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
+		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 		if(!trace_hit)
 		{
 			ent->falling = ent->speed;
@@ -810,7 +812,7 @@
 			vec_set(temp,vector(-20,0,0));
 			vec_rotate(temp,ent->pan);
 			vec_add(temp,ent->x);
-			c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
+			c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 			if(!trace_hit)
 			{
 				ent->falling = ent->speed;
@@ -822,7 +824,7 @@
 				vec_set(temp,vector(0,20,0));
 				vec_rotate(temp,ent->pan);
 				vec_add(temp,ent->x);
-				c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
+				c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 				if(!trace_hit)
 				{
 					ent->falling = ent->speed;
@@ -834,7 +836,7 @@
 					vec_set(temp,vector(0,-20,0));
 					vec_rotate(temp,ent->pan);
 					vec_add(temp,ent->x);
-					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
+					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 					if(!trace_hit)
 					{
 						ent->falling = ent->speed;
