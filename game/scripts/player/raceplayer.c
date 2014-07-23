@@ -690,6 +690,7 @@
 		ent->speed_y = temp.y;
 		vec_scale(temp, time_step);
 
+	c_ignore(group_rocket,0);
 		c_move(ent, nullvector, temp, IGNORE_PASSABLE | GLIDE | USE_POLYGON | IGNORE_SPRITES | ACTIVATE_TRIGGER); //IGNORE_PUSH | 
 
 		vec_scale(ent->bounce_x,1-0.4*time_step);
@@ -706,7 +707,7 @@
 			ent->drifting = 0;
 		}
 
-		c_ignore(group_kart, 0);
+		c_ignore(group_kart, group_rocket, 0);
 		c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 		
 		PARTICLE* p = ent_decal(you,bmp_shadow,70*ent->parent->scale,ent->parent->pan);
@@ -781,7 +782,7 @@
 				if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
 				else
 				{
-					c_ignore(group_kart, 0);
+					c_ignore(group_kart, group_rocket, 0);
 					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 					if(hit.green > 100) effect(p_kart_grass,1,temp,hit.blue); //temp2);
 				}
@@ -791,7 +792,7 @@
 				if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
 				else
 				{
-					c_ignore(group_kart, 0);
+					c_ignore(group_kart, group_rocket, 0);
 					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 					if(hit.green > 100) effect(p_kart_grass,1,temp,hit.blue); //temp2
 				}
@@ -800,6 +801,7 @@
 		vec_set(temp,vector(20,0,0));
 		vec_rotate(temp,ent->pan);
 		vec_add(temp,ent->x);
+					c_ignore(group_kart, group_rocket, 0);
 		c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 		if(!trace_hit)
 		{
@@ -812,6 +814,7 @@
 			vec_set(temp,vector(-20,0,0));
 			vec_rotate(temp,ent->pan);
 			vec_add(temp,ent->x);
+					c_ignore(group_kart, group_rocket, 0);
 			c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 			if(!trace_hit)
 			{
@@ -824,6 +827,7 @@
 				vec_set(temp,vector(0,20,0));
 				vec_rotate(temp,ent->pan);
 				vec_add(temp,ent->x);
+					c_ignore(group_kart, group_rocket, 0);
 				c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 				if(!trace_hit)
 				{
@@ -836,6 +840,7 @@
 					vec_set(temp,vector(0,-20,0));
 					vec_rotate(temp,ent->pan);
 					vec_add(temp,ent->x);
+					c_ignore(group_kart, group_rocket, 0);
 					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | IGNORE_SPRITES);
 					if(!trace_hit)
 					{
