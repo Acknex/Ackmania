@@ -18,9 +18,11 @@
 
 #include "engine.h"
 
-//#ifdef DEBUG
-//#include <default.c>
-//#endif
+#ifdef DEBUG
+#include <default.c>
+#else
+#include "keys.h"
+#endif
 
 #include "sysinit.h"
 #include "skilldefines.h"
@@ -36,6 +38,7 @@
 #define TARGET_GAME_STATE GAME_STATE_MENU
 //#define TARGET_GAME_STATE GAME_STATE_PRERACE
 
+
 int main() {
 
    doSysInit();
@@ -44,8 +47,13 @@ int main() {
 
    create_camera();
    create_hud();
+#ifdef KEYS_H
+   bind_keys();
+#endif
 
    initPostprocessing(cam);
 
    invoke_game_state(TARGET_GAME_STATE, 0);
+	
 }
+
