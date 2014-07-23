@@ -84,6 +84,7 @@
 #define group_item 2
 #define group_obstacle 3
 #define group_track 4
+#define group_rocket 5
 
 var g_music = 75;
 

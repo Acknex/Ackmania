@@ -275,6 +275,7 @@
 		my->pan = random(360);
 		wait(-0.4);
 		my->emask |=ENABLE_TRIGGER;
+		my.trigger_range = 30;
 		my->event = _grave_evt;
 	}
 
@@ -327,7 +328,7 @@
 		var zSpeed = 0;
 		var xSpeed = 0;
 		var animPercentage = 0;
-		set(me, PASSABLE);
+		my.group = group_rocket;
 		vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 		snd_play(sndRocketFire, 50, 0);
 		while(me && (liveTime > 0))
@@ -339,9 +340,9 @@
 			vec_for_vertex(temp, me, 634);
 			effect(p_rocket_smoke, 2, temp, nullvector);
 			
-			if(animPercentage >= 50)
+			if(animPercentage >= 50 && my.sk_kart_id > 0)
 			{
-				reset(me, PASSABLE);
+				//reset(me, PASSABLE);
 				int i;
 				for(i = 0; i < 4; i++)
 				{
@@ -365,12 +366,14 @@
 				ent = get_kart_driver(my.sk_kart_id-1);
 				if(ent) set(ent,PASSABLE);
 			}
+			else set(my,PASSABLE);
 		my.tilt = 0;
 			vec_set(temp2,vector(ROCKET_SPEED * 6 * time_step,0,0));
 			c_move(me,temp2,nullvector,IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_FLAG2);
 			if(ent) reset(ent,PASSABLE);
 			if(HIT_TARGET) liveTime = 0;
-			my.z = 48;
+			reset(my,PASSABLE);
+			my.z = 32;
 			//vec_rotate(temp2,my.pan);
 			//vec_add(my.x,temp2);
 			
@@ -400,7 +403,7 @@
 	action _aiming_rocket()
 	{
 		VECTOR temp,temp2,temp3;
-		var liveTime = 32;
+		var liveTime = 40;
 		var flyHeight = 0;
 		int reachedTop = 0;
 		var initHeight = 0;
@@ -470,7 +473,7 @@
 					liveTime = 0;
 				}
 			}
-			vec_set(temp2,vector(ROCKET_SPEED * 4.75 * time_step,0,0));
+			vec_set(temp2,vector(ROCKET_SPEED * 5.5 * time_step,0,0));
 			vec_rotate(temp2,my.pan);
 			vec_add(my.x,temp2);
 			
