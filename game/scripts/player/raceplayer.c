@@ -94,18 +94,6 @@
 		p.event = p_blumenkasten_fade;
 	}
 
-	MATERIAL* mat_water1 =
-	{
-		effect = "water1.fx";
-		flags = AUTORELOAD;
-	}
-	
-	MATERIAL* mat_kart1 =
-	{
-		effect = "kart.fx";
-		flags = AUTORELOAD;
-	}
-
 	action ac_racetrack()
 	{
 		c_setminmax(my);
@@ -212,7 +200,7 @@
 			{
 				max_dist = dist;
 				vec_set(vresult,temp3);
-				vec_set(vdata,vector(i,j,t));
+				if(vdata) vec_set(vdata,vector(i,j,t));
 			}
 		}
 		
@@ -230,8 +218,6 @@
 		max_nodes = path_next(ent);
 		path_getnode(ent,vdata.x,temp,NULL);
 		path_getnode(ent,vdata.y,temp2,NULL);
-		//draw_point3d(temp,COLOR_BLUE,50,4);
-		//draw_point3d(temp2,COLOR_BLUE,50,4);
 		length = vec_dist(temp,temp2);
 		if(length < 0.1) return;
 		t = offset/length;
@@ -456,11 +442,21 @@
 
 	}
 
+	void reduce_coins(ENTITY* ent)
+	{
+		if(ent->PL_A4_COUNT > 0)
+		{
+			ent->PL_A4_COUNT = maxv(ent->PL_A4_COUNT-2,0);
+			effect(_item_particle2, 25, &my->x, nullvector);
+		}
+	}
+	
 	void trap_driver(ENTITY* ent, var blackOutTime)
 	{
 		ent->kart_trapped = 16*blackOutTime;
 		ent->kart_hit = 0;
 		ent->kart_turbo = 0;
+		reduce_coins(ent);
 	}
 
 	void driver_hit(ENTITY* ent, var blackOutTime)
@@ -484,6 +480,7 @@
 	{
 		ent->kart_small = 16*time;
 		ent->kart_big = 0;
+		reduce_coins(ent);
 	}
 
 	void postConstructPlayer(ENTITY* ent)
@@ -499,7 +496,7 @@
 		vec_for_min(&vecMin, ent);
 		ent->kart_height = -vecMin.z;
 		ent->group = group_kart;
-		ent->kart_maxspeed = g_raceplayerMaxSpeed*(0.95+random(0.1));
+		ent->kart_maxspeed2 = g_raceplayerMaxSpeed*(0.95+random(0.1));
 		ent->bot_path_offset = random(2)-1;
 		ent->_type = type_kart;
 		ent->has_finished = 0;
@@ -554,20 +551,20 @@
 	
 	void resetPlayerOnPath(ENTITY* ent)
 	{
-	VECTOR temp,temp2;
-				path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
-				vec_set(ent->x,temp);
-				path_get_offset_position(temp2,64,temp);
-				vec_diff(temp2,temp,ent->x);
-				vec_to_angle(temp,temp2);
-				ent->pan = ent->drive_pan = temp.x;
-				vec_set(ent->parent->x, ent->x);
-				ent->parent->z += ent->parent->skill1;
-				vec_set(ent->parent->pan, ent->pan);
-				vec_set(ent->speed_x,nullvector);
-				vec_set(ent->bounce_x,nullvector);
-				ent->speed = 0;
-				ent->drifting = 0;		
+		VECTOR temp,temp2;
+		path_get_closest_position(vector(ent->x,ent->y,0),temp,temp2);
+		vec_set(ent->x,temp);
+		path_get_offset_position(temp2,64,temp);
+		vec_diff(temp2,temp,ent->x);
+		vec_to_angle(temp,temp2);
+		ent->pan = ent->drive_pan = temp.x;
+		vec_set(ent->parent->x, ent->x);
+		ent->parent->z += ent->parent->skill1;
+		vec_set(ent->parent->pan, ent->pan);
+		vec_set(ent->speed_x,nullvector);
+		vec_set(ent->bounce_x,nullvector);
+		ent->speed = 0;
+		ent->drifting = 0;		
 	}
 
 	void updatePlayer(ENTITY* ent)
@@ -576,6 +573,7 @@
 		var up, down, left, right, hop, item, underground, old_contact, turn, progress, length, d;
 		VECTOR temp,temp2;
 		
+		ent->kart_maxspeed = ent->kart_maxspeed2*(1+ent.PL_A4_COUNT*0.01);
 		if(ent->falling)
 		{
 			set(ent,PASSABLE);
@@ -583,6 +581,7 @@
 			if (!ent->isfallingsndplayed) {
 				snd_play(g_sndAiaiaiai, g_kartsnd_aiaiai, 0);
 				ent->isfallingsndplayed = true;
+				reduce_coins(ent);
 			}
 			if(you = ent->kart_turbo_ent) set(you,INVISIBLE);
 			
@@ -630,7 +629,7 @@
 		if(up || down)
 		{
 			ent->stuck_counter += time_step;
-			if(vec_dist(vector(ent->x,ent->y,0),vector(ent->stuck_x,ent->stuck_y,0)) > 8)
+			if(vec_dist(vector(ent->x,ent->y,0),vector(ent->stuck_x,ent->stuck_y,0)) > 8 || ent->kart_trapped)
 			{
 				ent->stuck_x = ent->x;
 				ent->stuck_y = ent->y;
@@ -670,14 +669,14 @@
 			}
 			else
 			{
-			if (up && !down) {
-				ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small+0.2*!ent->kart_turbo*!!ent->kart_big)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
-			}
+				if (up && !down) {
+					ent->speed += minv((ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small+0.2*!ent->kart_turbo*!!ent->kart_big)-ent->speed)*0.1,g_raceplayerAccelSpeed*(1+0.5*!!ent->kart_turbo)) * time_step;
+				}
 
-			if (!up && down) {
-				ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
+				if (!up && down) {
+					ent->speed = maxv(ent->speed - (0.5+0.5*(ent->speed > 0))*g_raceplayerAccelSpeed*2 * time_step, -g_raceplayerBreakForce*!ent.drifting);
+				}
 			}
-		}
 			ent->speed = minv(ent->speed,(ent->kart_maxspeed*(1+0.4*!!ent->kart_turbo-0.3*!!ent->kart_small) - (1-ent->kart_drift_buffer)*ent->kart_maxspeed*0.5*abs(ent->turn_speed2)/g_raceplayerTurnSpeed * !ent->drifting) * ent->underground);
 		}
 
@@ -772,7 +771,7 @@
 			if(ent->particle_emit > 0.5)
 			{
 				ent->particle_emit -= 0.5;
-				vec_set(temp,vector(-22,22,-ent->kart_height*0.5));
+				vec_set(temp,vector(-22,22*ent->parent->scale,-ent->kart_height*0.5));
 				vec_rotate(temp,ent->parent->pan);
 				vec_add(temp,ent->parent->x);
 				vec_set(temp2,vector(-4,0,4));
@@ -784,7 +783,7 @@
 					c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 					if(hit.green > 100) effect(p_kart_grass,1,temp,hit.blue); //temp2);
 				}
-				vec_set(temp,vector(-22,-22,-ent->kart_height*0.5));
+				vec_set(temp,vector(-22,-22*ent->parent->scale,-ent->kart_height*0.5));
 				vec_rotate(temp,ent->parent->pan);
 				vec_add(temp,ent->parent->x);
 				if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
@@ -917,22 +916,19 @@
 			if(ent->kart_bot_separate > 4)
 			{
 				ent->kart_bot_separate -= 4;
-				for(i = 2; i <= 4; i++)
+				for(i = 1; i <= 4; i++)
 				{
-					if(i != ent->sk_kart_id)
+					ENTITY* ent2 = get_kart_driver(i-1);
+					vec_diff(temp,ent2->x,ent->x);
+					temp.z = 0;
+					length = vec_length(temp);
+					if(length < 1) vec_randomize(temp,128);
+					if(length < 32)
 					{
-						ENTITY* ent2 = get_kart_driver(i-1);
-						vec_diff(temp,ent2->x,ent->x);
-						temp.z = 0;
-						length = vec_length(temp);
-						if(length < 1) vec_randomize(temp,128);
-						if(length < 32)
-						{
-							vec_normalize(temp,48);
-							vec_add(ent->x,temp);
-							vec_inverse(temp);
-							vec_add(ent2->x,temp);
-						}
+						vec_normalize(temp,48);
+						vec_add(ent->x,temp);
+						vec_inverse(temp);
+						if(i != 1) vec_add(ent2->x,temp);
 					}
 				}
 			}

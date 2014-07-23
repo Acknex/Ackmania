@@ -26,9 +26,9 @@
 #define SPIKE_TIMER_DOWN				1
 #define SPIKE_SPEED						20
 #define ROCKET_SPEED						20
-#define ROCKET_X_OFFSET					300
-#define ROCKET_LIFE_FRAMES				450
-#define BADASS_ROCKET_LIFE_FRAMES	1000
+#define ROCKET_X_OFFSET					16
+//#define ROCKET_LIFE_FRAMES				450 // unused
+//#define BADASS_ROCKET_LIFE_FRAMES	1000 // unused
 
 // Sounds für Interaktion mit Items
 SOUND* sndCollectA4Cube					= "collect.wav";
