@@ -4,6 +4,7 @@
 	#include "helper.h"
 	#include "startgrid.h"
 	#include "camera.h"
+	#include "raceplayer.h"
 	#include <particles.c>
 
 	STRING* str_items_helper = "";
@@ -76,6 +77,23 @@
 		vec_add (&p->vel_x, &vecTemp);
 		p->vel_y = 0;
 		vec_set(&p->blue, vector(0, 255, 255));
+		vec_scale(p->blue,0.8+random(0.2));
+		set(p, MOVE | TRANSLUCENT | BRIGHT);
+		p->lifespan = 80;
+		p->size  = 15 + random(3);
+		p->alpha = 60;
+		p->event = _item_particleFader;
+	}
+	
+	void _item_particle2 (PARTICLE *p) 
+	{
+		VECTOR vecTemp;
+		vec_randomize(&vecTemp, 8);
+		vec_normalize(&vecTemp, 4);
+		vec_add (&p->vel_x, &vecTemp);
+		p->vel_y = 0;
+		vec_set(&p->blue, vector(255, 0, 255));
+		vec_scale(p->blue,0.8+random(0.2));
 		set(p, MOVE | TRANSLUCENT | BRIGHT);
 		p->lifespan = 80;
 		p->size  = 15 + random(3);
@@ -90,7 +108,7 @@
 		{
 			my->event = NULL;
 			snd_play(sndCollectA4Cube, 50, 0);
-			if (you != NULL) you.PL_A4_COUNT +=1;
+			if (you != NULL) you.PL_A4_COUNT = minv(you.PL_A4_COUNT+1,10);
 			//achievement("firsta4cube");
 			set(me,INVISIBLE);
 			wait(-3);
@@ -128,7 +146,7 @@
 			if (vParticles > 5)
 			{
 				if (!is(me,INVISIBLE)) {
-					effect(_item_particle, 5, &my->x, nullvector);
+					effect(_item_particle2, 5, &my->x, nullvector);
 					vParticles -= 5;
 				}
 			}
@@ -228,8 +246,8 @@
 		}
 	}
 
-void p_blumenkasten2(PARTICLE*);
-void p_grave(PARTICLE*);
+	void p_blumenkasten2(PARTICLE*);
+	void p_grave(PARTICLE*);
 
 	// Event, der die Kollision mit einem Grabstein regelt
 	void _grave_evt()
@@ -301,61 +319,60 @@ void p_grave(PARTICLE*);
 	// Rakete, die geradeaus fliegt
 	action _rocket()
 	{
-		int liveTime = ROCKET_LIFE_FRAMES + integer(random(100));
+		VECTOR temp,temp2,temp3;
+		var liveTime = 32;
 		var flyHeight = 0;
 		int reachedTop = 0;
 		var initHeight = 0;
 		var zSpeed = 0;
 		var xSpeed = 0;
 		var animPercentage = 0;
-		set(me, PASSABLE);
+		//set(me, PASSABLE);
 		vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
-		c_setminmax(me);
 		snd_play(sndRocketFire, 50, 0);
-		VECTOR vertexPos;
 		while(me && (liveTime > 0))
 		{
-			// Lass die Rakete nach Abschuss hüpfen
-			if (reachedTop == 0) {
-				flyHeight +=20 * time_step;
-				zSpeed = 20 * time_step;
-				xSpeed = 20 * time_step;
-				if (flyHeight >= 60) reachedTop = 1;
-				} else {
-				if (flyHeight >= initHeight+3) {
-					flyHeight -=20 * time_step;
-					zSpeed = -20 * time_step;
-					xSpeed +=ROCKET_SPEED * time_step;
-					} else {
-					zSpeed = 0;
-				}
-			}
-			
-			if (animPercentage + 20 * time_step < 80) {
-				animPercentage +=20 * time_step;
-				} else {
-				animPercentage = 80;
-				reset(me, PASSABLE);
-				xSpeed = ROCKET_SPEED * 5 * time_step;
-			}
-			ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+			animPercentage = minv(animPercentage+20*time_step,100);
+			ent_animate(me, "Transform ",animPercentage, 0);
 			
 			// Vertex 634
-			vec_for_vertex(vertexPos, me, 634);
-			effect(p_rocket_smoke, maxv(2,time_step), vertexPos, nullvector);
+			vec_for_vertex(temp, me, 634);
+			effect(p_rocket_smoke, 2, temp, nullvector);
 			
-			c_move(me, vector(xSpeed, 0, zSpeed), nullvector, IGNORE_PASSABLE | IGNORE_PASSENTS | ACTIVATE_SHOOT | IGNORE_FLAG2 | GLIDE);
-			
-			if (HIT_TARGET != NULL)
+			if(animPercentage >= 50)
 			{
-				if (hit.entity._type == type_kart)
+				int i;
+				for(i = 0; i < 4; i++)
 				{
-					driver_hit(hit.entity, 3.5);
+					if(i+1 != my.sk_kart_id)
+					{
+						ENTITY* ent = get_kart_driver(i);
+						if(ent)
+						{
+							if(vec_dist(vector(ent.x,ent.y,0),vector(my.x,my.y,0)) < 48)
+							{
+								trap_driver(ent,2.25);
+								liveTime = 0;
+							}
+						}
+					}
 				}
-				liveTime = 0;
 			}
+			ENTITY* ent = NULL;		
+			if(my.sk_kart_id > 0)
+			{
+				ent = get_kart_driver(my.sk_kart_id-1);
+				if(ent) set(ent,PASSABLE);
+			}
+			vec_set(temp2,vector(ROCKET_SPEED * 6 * time_step,0,0));
+			c_move(me,temp2,nullvector,IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_FLAG2);
+			if(ent) reset(ent,PASSABLE);
+			if(HIT_TARGET) liveTime = 0;
+			my.z = 48;
+			//vec_rotate(temp2,my.pan);
+			//vec_add(my.x,temp2);
 			
-			liveTime--;
+			liveTime -= time_step;
 			wait(1);
 			
 		}
@@ -373,63 +390,87 @@ void p_grave(PARTICLE*);
 		vec_add(rocketStart, driver->x);
 		ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, rocketStart->x, _rocket);
 		rocket->pan = driver->pan;
+		rocket->sk_kart_id = driver->sk_kart_id;
 		driver->item_id = ITEM_NONE;
 	}
 
 	// Rakete, die zielgelenkt in Richtung des nächsten Spielers fliegt
 	action _aiming_rocket()
 	{
-		var liveTime = 24; //ROCKET_LIFE_FRAMES + integer(random(100));
+		VECTOR temp,temp2,temp3;
+		var liveTime = 32;
 		var flyHeight = 0;
 		int reachedTop = 0;
 		var initHeight = 0;
 		var zSpeed = 0;
 		var animPercentage = 0;
+		
 		set(me, PASSABLE);
 		vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
-		c_setminmax(me);
 		snd_play(sndRocketFire, 50, 0);
-		VECTOR vertexPos;
 		
-		//path_set(me, "path_001");
-		path_next(my);
-		str_cpy(str_items_helper,"");
-		path_set(me, str_items_helper);
-		var dist = get_nearest_path_point(me, str_items_helper);
-		var vLastPos[3];
-		var vDir[3];
-		
+		//determine position near path and side of position in relation to path direction
+		path_get_closest_position(my.x,temp,NULL);
+		temp.z = my.z;
+		my.skill21 = vec_dist(my.x,temp);
+		my.skill22 = my.skill2/g_raceTrackWidth;
+		path_get_normal_position(my.x,0,my.skill22,temp2);
+		temp2.z = my.z;
+		if(vec_dist(temp2,my.x) > my.skill21) my.skill22 *= -1;
+		my.skill22 *= -1;
 		
 		while(me && (liveTime > 0))
 		{
-			if (animPercentage + 20 * time_step < 80) {
-				animPercentage +=20 * time_step;
-				} else {
-				animPercentage = 80;
-				reset(me, PASSABLE);
-			}
-			ent_animate(me, "Transform ",animPercentage, ANM_CYCLE);
+			animPercentage = minv(animPercentage+20*time_step,100);
+			ent_animate(me, "Transform ",animPercentage, 0);
 			
 			// Vertex 634
-			vec_for_vertex(vertexPos, me, 634);
-			effect(p_rocket_smoke, maxv(2,time_step), vertexPos, nullvector);
+			vec_for_vertex(temp, me, 634);
+			effect(p_rocket_smoke, 2, temp, nullvector);
 			
-			path_spline(me,my->x,dist);
-			my->z -=35;
-			dist += ROCKET_SPEED * 5 * time_step;
-			vec_diff(vDir,my.x,vLastPos);
-			vec_to_angle(my.pan,vDir);
-			vec_set(vLastPos,my.x);
-			
-			
-			if (HIT_TARGET != NULL)
+			if(!my.skill20)
 			{
-				if (hit.entity._type == type_kart)
+				my.skill22 += -my.skill22*0.025*time_step;
+				path_get_normal_position(my.x,64,my.skill22,temp2);
+				vec_diff(temp,temp2,my.x);
+				vec_to_angle(my.pan,temp);
+				my.tilt = 0;
+				if(animPercentage >= 50)
 				{
-					driver_hit(hit.entity, 3);
-				}
-				liveTime = 0;
+					int i;
+					for(i = 0; i < 4; i++)
+					{
+						if(i+1 != my.sk_kart_id)
+						{
+							ENTITY* ent = get_kart_driver(i);
+							if(ent)
+							{
+								vec_diff(temp,ent.x,my.x);
+								vec_set(temp2,temp);
+								vec_normalize(temp2,1);
+								vec_for_angle(temp3,my.pan);
+								if(vec_length(temp) < 256 && vec_dot(temp3,temp2) > 0.1) my.skill20 = i+1;
+							}
+						}
+					}
+				}		
 			}
+			else
+			{
+				ENTITY* ent = get_kart_driver(my.skill20-1);
+				vec_diff(temp,ent.x,my.x);
+				temp.z = 0;
+				vec_to_angle(temp2,temp);
+				my.pan += ang(temp2.x-my.pan)*time_step;	
+				if(vec_length(temp) < 48)
+				{
+					trap_driver(ent,2.25);
+					liveTime = 0;
+				}
+			}
+			vec_set(temp2,vector(ROCKET_SPEED * 4.75 * time_step,0,0));
+			vec_rotate(temp2,my.pan);
+			vec_add(my.x,temp2);
 			
 			liveTime -= time_step;
 			wait(1);
@@ -448,6 +489,7 @@ void p_grave(PARTICLE*);
 		vec_add(rocketStart, driver->x);
 		ENTITY* rocket = ent_create(ITEM_AIMING_ROCKET_MODEL, rocketStart->x, _aiming_rocket);
 		rocket->pan = driver->pan;
+		rocket->sk_kart_id = driver->sk_kart_id;
 		driver->item_id = ITEM_NONE;
 	}
 
@@ -513,6 +555,27 @@ void p_grave(PARTICLE*);
 		p.bmap = bmapStar;
 		p.event = p_fade;
 	}
+	
+	MATERIAL* mat_bomb_explo = 
+	{
+		effect = "explo.fx";
+		flags = AUTORELOAD;
+	}
+	
+	void bomb_explo()
+	{
+		my.z = 0;
+		set(my,UNLIT | PASSABLE | TRANSLUCENT); // | BRIGHT);
+		my.material = mat_bomb_explo;
+		my.skill20 = 6;
+		while(my.skill20 > 0)
+		{
+			my.skill41 = floatv(pow(my.skill20/6.0,0.65));
+			my.skill20 -= time_step;
+			wait(1);
+		}
+		ptr_remove(me);
+	}
 
 	// Rakete, die direkt zum ersten bzw. nächsten Spieler fliegt
 	action _badass_aiming_rocket()
@@ -566,15 +629,16 @@ void p_grave(PARTICLE*);
 			liveTime -= time_step;
 			wait(1);
 		}
-				int i;
-				for(i = 0; i < 4; i++)
-				{
-					ENTITY* ent = get_kart_driver(i);
-					if(ent)
-					{
-						if(vec_dist(ent.x,my.x) < 256) trap_driver(ent,2.5); //driver_hit(ent, 3.5);
-					}
-				}
+		int i;
+		for(i = 0; i < 4; i++)
+		{
+			ENTITY* ent = get_kart_driver(i);
+			if(ent)
+			{
+				if(vec_dist(vector(ent.x,ent.y,0),vector(my.x,my.y,0)) < 256) trap_driver(ent,2.5); //driver_hit(ent, 3.5);
+			}
+		}
+		ent_create("bomb_explo.mdl",my.x,bomb_explo);
 		effect(p_rocket_explode, maxv(40, 80*time_step), my->x, nullvector);
 		// Play sound boom
 		ent_remove(me);
@@ -610,7 +674,7 @@ void p_grave(PARTICLE*);
 	{
 		snd_play(sndFlashStart, 50, 0);
 		driver->item_id = ITEM_NONE;
-	
+		
 		var i;
 		VIEW* pV = get_camera();
 		for (i = 0; i < 6; i++)
@@ -626,25 +690,25 @@ void p_grave(PARTICLE*);
 		ENTITY* ki3 = get_kart_driver(3);
 		if (pl != NULL && pl != driver)
 		{
-			if (ki1.scale_x <= 1.0) {
+			if (!pl->kart_big) {
 				minimize_driver(get_kart_driver(0), 5);
 			}
 		}
 		if (ki1 != NULL && ki1 != driver)
 		{
-			if (ki1.scale_x <= 1.0) {
+			if (!ki1->kart_big) {
 				minimize_driver(get_kart_driver(1), 5);
 			}
 		}
 		if (ki2 != NULL && ki2 != driver)
 		{
-			if (ki2.scale_x <= 1.0) {
+			if (!ki2->kart_big) {
 				minimize_driver(get_kart_driver(2), 5);
 			}
 		}
 		if (ki3 != NULL && ki3 != driver)
 		{
-			if (ki3.scale_x <= 1.0) {
+			if (!ki3->kart_big) {
 				minimize_driver(get_kart_driver(3), 5);
 			}
 		}
