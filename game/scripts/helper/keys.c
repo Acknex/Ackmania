@@ -27,7 +27,7 @@ void def_screen();
 void def_shot();
 
 
-void bind_keys()
+void bind_keys_startup()
 {
 	/* default keys */
 	if (!on_f5) on_f5 = def_video;

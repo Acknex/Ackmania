@@ -24,7 +24,6 @@
 #ifndef KEYS_H
 #define KEYS_H
 
-void bind_keys();
 
 #include "keys.c"
 

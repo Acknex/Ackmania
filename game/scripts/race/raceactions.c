@@ -128,4 +128,17 @@ void ac_race_kart_ent()
    }
 }
 
+void ac_race_cleanup()
+{
+	var i;
+	ENTITY* ent;
+	for (i = 0; i < 4; i++)
+	{
+		ent = get_kart_driver(i);
+		/* empty sound buffer */
+		snd_stop(ent->kartsnd_loop_hndl);
+		snd_stop(ent->kartsnd_badground_loop_hndl);		
+	}
+}
+
 #endif /* raceactions_c */
