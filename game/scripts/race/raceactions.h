@@ -3,6 +3,7 @@
 
 void ac_race_kart_pos();
 void ac_race_kart_ent();
+void ac_race_cleanup();
 
 var g_exployothreshold = 10;
 var g_breakdownthreshold = 40;

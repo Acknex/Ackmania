@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "hud.h"
 #include "gamestate.h"
+#include "raceactions.h"
 
 bool g_raceIsEnded = false;
 int finalRank = 4;
@@ -77,6 +78,7 @@ void play_race(int index)
    media_stop(g_raceMusicHandle);
    g_raceMusicHandle = 0;
 
+	ac_race_cleanup();
    wait(1);
 
    invoke_game_state(GAME_STATE_MENU, index);

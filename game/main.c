@@ -47,9 +47,6 @@ int main() {
 
    create_camera();
    create_hud();
-#ifdef KEYS_H
-   bind_keys();
-#endif
 
    initPostprocessing(get_camera());
 
