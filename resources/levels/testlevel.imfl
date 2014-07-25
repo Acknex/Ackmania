@@ -1,0 +1,49 @@
+obj {
+	name = "Fbx_Root"
+	importstate = 1
+	mesh = 0
+	group = 1
+	mgroup = 1
+	vertices = 0
+	faces = 0
+	vminpos = 0.000000,0.000000,0.000000
+	vmaxpos = 0.000000,0.000000,0.000000
+	vcenter = 0.000000,0.000000,0.000000
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 0
+}
+
+obj {
+	name = "Regular Pl"
+	importstate = 1
+	mesh = 1
+	group = 0
+	mgroup = 0
+	vertices = 3959
+	faces = 7918
+	vminpos = -5.202202,-5.133422,-1.265069
+	vmaxpos = 5.296969,5.197878,1.431745
+	vcenter = -0.222336,0.206695,-0.006417
+	entity = 0
+	mdl7group = 0
+	mdl7num = -1
+	lightmap = 1
+}
+
+
+scalefactor=1.000000;
+importpos=0.000000,0.000000,0.000000;
+addTexToWad=0;
+useCurrGroup=1;
+destFolderName="MeshTex";
+createGroup=0;
+addBlocksAuto=0;
+light_intensity_to_radius=1000;
+extern_skins=1;
+checkFacesLevel=5;
+importAtCameraPos=1;
+importAtNullPos=0;
+importAtCustomPos=0;
+autoCenter=0;
