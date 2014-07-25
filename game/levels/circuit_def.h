@@ -18,10 +18,11 @@ TEXT* g_circuits = {
                "test2.wmb",
                // Desert Road
                "Desert Road",
-               "game1_3db.wav",
+               //"game1_3db.wav",
+               "POL_game_looped.wav",
                "droad-icon.bmp",
                "droad.wmb",
-               // Desert Road
+               // King Lotti's Bridge
                "King Lotti's Bridge",
                "game1_3db.wav",
                "kbridge.bmp",
@@ -29,7 +30,7 @@ TEXT* g_circuits = {
                // Icenex
                "Icenex",
                "game1_3db.wav",
-               "kbridge.bmp",
+               "icenex.bmp",
                "icenex.wmb"
       );
 }

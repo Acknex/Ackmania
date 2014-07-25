@@ -390,7 +390,7 @@
 	void shoot_rocket(ENTITY* driver)
 	{
 		// Erzeuge Rakete
-		VECTOR* rocketStart = vector(ROCKET_X_OFFSET*2,0,0);
+		VECTOR* rocketStart = vector(ROCKET_X_OFFSET*3,0,0);
 		vec_rotate(rocketStart, driver->pan);
 		vec_add(rocketStart, driver->x);
 		ENTITY* rocket = ent_create(ITEM_ROCKET_MODEL, rocketStart->x, _rocket);
