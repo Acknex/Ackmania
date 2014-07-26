@@ -12,7 +12,8 @@ int finalRank = 4;
 
 void do_race_end(ENTITY* ent)
 {
-   playTaunt(ent->skill1 - 1);
+   // Weg mit dem scheiss, man kann die endansage nicht hören
+   //playTaunt(ent->skill1 - 1);
    g_raceIsEnded = true;
    finalRank = get_kart_rank_player();
 }
