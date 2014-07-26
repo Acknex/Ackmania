@@ -117,7 +117,7 @@ void menu_init(int baseLayer)
 		ent_animate(_menu_flag, "Wave", 0.8 * total_ticks, ANM_CYCLE);
 		
 		if(_menu_visible) {
-			if(!snd_playing(menuMusic)) {
+			if(!snd_playing(menuMusic) && g_menuOpenedFirst == false) {
 				snd_start(menuMusic);
 			}
 			_menu_background.flags |= SHOW;
@@ -283,11 +283,11 @@ void menu_open()
 	// play sound on entry
 	if (g_menuOpenedFirst) {
 	   snd_play(g_sndMenuOpen1st, 100, 0);
+       wait(-3);    
 	   g_menuOpenedFirst = false;
 	} else {
 	   snd_play(g_sndMenuOpenNext, 100, 0);
 	}
-
 }
 
 /**
