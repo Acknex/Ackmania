@@ -1,4 +1,4 @@
-// wmpio (1.30), 25.07.2014
+// wmpio (1.30), 26.07.2014
 
 version 711
 
@@ -61,7 +61,7 @@ version 711
 	lotter_dummy.mdl
 	lotter_dummy_011
 	ac_race_kart_pos
-	1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+	4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 	0000
 	0
 	50
@@ -76,7 +76,7 @@ version 711
 	lotter_dummy.mdl
 	lotter_dummy_013
 	ac_race_kart_pos
-	2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+	3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 	0000
 	0
 	50
@@ -91,7 +91,7 @@ version 711
 	lotter_dummy.mdl
 	lotter_dummy_014
 	ac_race_kart_pos
-	3 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+	2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 	0000
 	0
 	50
@@ -106,7 +106,7 @@ version 711
 	lotter_dummy.mdl
 	lotter_dummy_015
 	ac_race_kart_pos
-	4 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+	1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 	0000
 	0
 	50
