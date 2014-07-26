@@ -130,6 +130,7 @@
 			laps = 4;
 		}
 		if(str_cmpni("kbridge.wmb",level_name)) g_raceTrackWidth = 90;
+		if(str_cmpni("icenex.wmb",level_name)) g_raceTrackWidth = 95;
 		
 		return laps;
 	}
@@ -708,7 +709,7 @@
 		}
 
 		c_ignore(group_kart, group_rocket, 0);
-		c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -128), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
+		c_trace(vector(ent->x, ent->y, ent->z + 64), vector(ent->x, ent->y, -16), IGNORE_PASSABLE | IGNORE_PUSH | SCAN_TEXTURE | USE_POLYGON | IGNORE_SPRITES);
 		
 		PARTICLE* p = ent_decal(you,bmp_shadow,70*ent->parent->scale,ent->parent->pan);
 		set(p,TRANSLUCENT);

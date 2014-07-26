@@ -261,7 +261,7 @@
 			effect(p_grave,32,my.x,nullvector);
 			
 			// Drehe Spieler
-			trap_driver(you, 2.5);
+			trap_driver(you, 2);
 			
 			wait(1);
 			ent_remove(me);
@@ -329,8 +329,13 @@
 		var xSpeed = 0;
 		var animPercentage = 0;
 		my.group = group_rocket;
+		set(my,PASSABLE);
+		c_setminmax(my);
+		vec_fill(my.min_x,-4);
+		vec_fill(my.max_x,4);
 		vec_set(my.scale_x, vector(0.1, 0.1, 0.1));
 		snd_play(sndRocketFire, 50, 0);
+		my.z = 32;
 		while(me && (liveTime > 0))
 		{
 			animPercentage = minv(animPercentage+20*time_step,100);
@@ -342,7 +347,7 @@
 			
 			if(animPercentage >= 50 && my.sk_kart_id > 0)
 			{
-				//reset(me, PASSABLE);
+				reset(me, PASSABLE);
 				int i;
 				for(i = 0; i < 4; i++)
 				{
@@ -353,7 +358,7 @@
 						{
 							if(vec_dist(vector(ent.x,ent.y,0),vector(my.x,my.y,0)) < 48)
 							{
-								trap_driver(ent,2.25);
+								trap_driver(ent,2);
 								liveTime = 0;
 							}
 						}
@@ -367,12 +372,12 @@
 				if(ent) set(ent,PASSABLE);
 			}
 			else set(my,PASSABLE);
-		my.tilt = 0;
+			my.tilt = 0;
 			vec_set(temp2,vector(ROCKET_SPEED * 6 * time_step,0,0));
-			c_move(me,temp2,nullvector,IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_FLAG2);
+			c_move(me,temp2,nullvector,IGNORE_PASSABLE | IGNORE_SPRITES | IGNORE_FLAG2 | USE_POLYGON);
 			if(ent) reset(ent,PASSABLE);
 			if(HIT_TARGET) liveTime = 0;
-			reset(my,PASSABLE);
+			if(animPercentage >= 50 && my.sk_kart_id > 0) reset(my,PASSABLE);
 			my.z = 32;
 			//vec_rotate(temp2,my.pan);
 			//vec_add(my.x,temp2);
@@ -469,11 +474,11 @@
 				my.pan += ang(temp2.x-my.pan)*time_step;	
 				if(vec_length(temp) < 48)
 				{
-					trap_driver(ent,2.25);
+					trap_driver(ent,1.25);
 					liveTime = 0;
 				}
 			}
-			vec_set(temp2,vector(ROCKET_SPEED * 5.5 * time_step,0,0));
+			vec_set(temp2,vector(ROCKET_SPEED * 5.75 * time_step,0,0));
 			vec_rotate(temp2,my.pan);
 			vec_add(my.x,temp2);
 			
@@ -640,7 +645,7 @@
 			ENTITY* ent = get_kart_driver(i);
 			if(ent)
 			{
-				if(vec_dist(vector(ent.x,ent.y,0),vector(my.x,my.y,0)) < 256) trap_driver(ent,2.5); //driver_hit(ent, 3.5);
+				if(vec_dist(vector(ent.x,ent.y,0),vector(my.x,my.y,0)) < 256) trap_driver(ent,2.25); //driver_hit(ent, 3.5);
 			}
 		}
 		ent_create("bomb_explo.mdl",my.x,bomb_explo);
@@ -696,25 +701,25 @@
 		if (pl != NULL && pl != driver)
 		{
 			if (!pl->kart_big) {
-				minimize_driver(get_kart_driver(0), 5);
+				minimize_driver(get_kart_driver(0), 4);
 			}
 		}
 		if (ki1 != NULL && ki1 != driver)
 		{
 			if (!ki1->kart_big) {
-				minimize_driver(get_kart_driver(1), 5);
+				minimize_driver(get_kart_driver(1), 4);
 			}
 		}
 		if (ki2 != NULL && ki2 != driver)
 		{
 			if (!ki2->kart_big) {
-				minimize_driver(get_kart_driver(2), 5);
+				minimize_driver(get_kart_driver(2), 4);
 			}
 		}
 		if (ki3 != NULL && ki3 != driver)
 		{
 			if (!ki3->kart_big) {
-				minimize_driver(get_kart_driver(3), 5);
+				minimize_driver(get_kart_driver(3), 4);
 			}
 		}
 	}
