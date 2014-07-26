@@ -157,11 +157,22 @@
 		}
 	}
 
+	//item weighting initialization (never call manually anywhere)
+	var item_totalweight = 0;
+	void random_item_startup()
+	{
+		var i;
+		for (i = 1; i < ITEM_MAXNUMBER; i++)
+		{
+			item_totalweight += item_weighting[i];
+		}
+	}
+	
 	// Gebe dem Spieler ein zufälliges Item
 	void _give_random_item(ENTITY* driver)
 	{
 		var item_lastid;
-		var item_shuffle = 8;
+		var item_shuffle;
 		if (driver != NULL)
 		{
 			if (driver.item_id == ITEM_NONE) {
@@ -174,14 +185,29 @@
 						item_lastid = driver.item_id;
 						do
 						{
-							driver.item_id = 1 + integer(random(7));
+							driver.item_id = 1 + integer(random(ITEM_MAXNUMBER-1));
 						} while (driver.item_id == item_lastid);
 						snd_play(sndItemShuffle, 50, 0);
 						wait(-0.1);
 					}
 					driver->fire_item = 0; /* enable fire */
 				}
-				driver.item_id = 1 + integer(random(7));
+
+				//item weighting
+				var i;
+				var random_item = random(item_totalweight);
+				var cnt = 0;
+				for (i = 1; i < ITEM_MAXNUMBER; i++)
+				{
+					cnt += item_weighting[i];
+					if (random_item < cnt)
+					{
+						driver.item_id = i;
+						break;
+					}
+				}
+				
+				//driver.item_id = 1 + integer(random(7));
 				
 				snd_play(sndGotNewItem, 50, 0);
 			}
