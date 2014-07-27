@@ -45,7 +45,7 @@ var item_weighting[ITEM_MAXNUMBER] =
 // Flage für die Items
 #define IS_TRAP							FLAG3
 #define SPIKE_TIMER_UP					3
-#define SPIKE_TIMER_DOWN				1
+#define SPIKE_TIMER_DOWN				2
 #define SPIKE_SPEED						20
 #define ROCKET_SPEED						20
 #define ROCKET_X_OFFSET					16
