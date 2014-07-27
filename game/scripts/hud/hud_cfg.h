@@ -53,4 +53,5 @@
 #define HUD_PANCUBE_SCALE		1.0
 #define HUD_PANCUBE_POSY 		(HUD_FNTTIME_SIZE * 2)
 
+#define HUD_TXTMSG_FLAP_TIME	48
 #endif
