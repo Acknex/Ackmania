@@ -1,4 +1,4 @@
-// wmpio (1.30), 23.07.2014
+// wmpio (1.30), 27.07.2014
 
 version 711
 
@@ -9818,6 +9818,66 @@ version 711
 	a4Cube.mdl
 	a4Cube_mdl_1190
 	a4_cube
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-160 1744 0
+	0 0 0
+	1 1 1
+	spikes.mdl
+	spikes_mdl_1190
+	spikes
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-1496 1784 0
+	0 0 0
+	1 1 1
+	spikes.mdl
+	spikes_mdl_1190
+	spikes
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-1864 848 0
+	0 0 0
+	1 1 1
+	spikes.mdl
+	spikes_mdl_1190
+	spikes
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	-864 1272 0
+	0 0 0
+	1 1 1
+	spikes.mdl
+	spikes_mdl_1190
+	spikes
+	0 0 0 0 0 0 0 0
+	0000
+	0
+}
+{ //model
+	3
+	488 512 0
+	0 0 0
+	1 1 1
+	spikes.mdl
+	spikes_mdl_1190
+	spikes
 	0 0 0 0 0 0 0 0
 	0000
 	0

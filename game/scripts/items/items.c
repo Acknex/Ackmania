@@ -242,18 +242,19 @@
 	// keins im Slot ist. Verpufft, und wird 3 Sekunden später gerespawned.
 	action item()
 	{
-		_item_setup();	
-		place_on_floor(me);
-		my->z = -8 -my->min_z;
-		my->emask |=ENABLE_TRIGGER;
-		my->event = _item_evt;
-		var vZ = my->z;
-		my->trigger_range = 50;
-		var vOffset = random(500);
-		var vParticles = 0;
 		my->pan = random(360);
 		my->tilt = -90;
 		vec_set(my->scale_x, vector(0.5,0.5,0.5));
+		_item_setup();	
+		wait(1);
+		place_on_floor(me);
+		my->z -= 8;
+		my->emask |=ENABLE_TRIGGER;
+		my->event = _item_evt;
+		//var vZ = my->z;
+		my->trigger_range = 50;
+		//var vOffset = random(500);
+		var vParticles = 0;
 		
 		while(me)
 		{
@@ -537,6 +538,21 @@
 		start_turbo(driver, 4);
 	}
 
+	// Event, der die Kollision mit Spikes regelt
+	void spikes_evt()
+	{
+		if (event_type == EVENT_TRIGGER && you != NULL)
+		{
+			if (you->kart_trapped == 0)
+			{
+				snd_play(g_sndAiaiaiai, 50, 0);
+			
+				// Drehe Spieler
+				trap_driver(you, 3);
+			}
+		}
+	}
+
 	// Spikes, die aus dem Boden fahren und den Spieler
 	// ausbremsen. Werden bei Berührung für 5 Sekunden inaktiviert.
 	action spikes()
@@ -549,12 +565,18 @@
 		wait(1);
 		vPosDown = my->z - (my->max_z - my->min_z) * 0.8;
 		vPosUp   = my->z;
+		my->emask |=ENABLE_TRIGGER;
+		my->trigger_range = 30;
+		my->event = NULL;
+		my->pan = random(360);
 
 		while(1)
 		{
 			wait(-SPIKE_TIMER_UP);
 			reset(me, IS_TRAP);
-			snd_play(sndSpikesDown, 50, 0);
+			//if(!is(my, CLIPPED)) snd_play(sndSpikesDown, 50, 0);
+			ent_playsound(me, sndSpikesDown, 1000);
+			my->event = NULL;
 			while(my->z > vPosDown)
 			{
 				wait(1);
@@ -565,7 +587,9 @@
 			
 			wait(-SPIKE_TIMER_DOWN);	
 			set(me, IS_TRAP);
-			snd_play(sndSpikesUp, 50, 0);
+			//if(!is(my, CLIPPED)) snd_play(sndSpikesUp, 50, 0);
+			ent_playsound(me, sndSpikesUp, 1000);
+			my->event = spikes_evt;
 			while(my->z < vPosUp)
 			{
 				wait(1);
