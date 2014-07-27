@@ -34,6 +34,7 @@ PANEL* panTime;
 PANEL* panRank;
 PANEL* panItem;
 PANEL* panCube;
+TEXT* txtMsg;
 FONT* fntTime;
 FONT* fntRank;
 
@@ -50,6 +51,8 @@ var vItemX;
 var vItemY;
 var vItemId;
 var vCubes;
+var vFinalLap;
+var vFinalTimeLog;
 STRING** strRank[5];
 BMAP* bmapItem = "item_strip.tga";
 
@@ -105,6 +108,11 @@ void create_hud()
 	panCube->alpha = 85;	
 	panCube->flags |= TRANSLUCENT | FILTER;
 	
+	/* message text */
+	txtMsg = txt_create(1, HUD_LAYER);
+	txtMsg->alpha = 85;	
+	txtMsg->flags |= TRANSLUCENT | CENTER_X | CENTER_Y;
+	
 	wait(1);
 	//update_hud();
 	vHudCreated = 1;
@@ -124,6 +132,7 @@ void remove_hud()
 	ptr_remove(panItem);
 	ptr_remove(panCube);
 	ptr_remove(panCube->bmap);
+	ptr_remove(txtMsg);
 	for (i = 0; i < 5; i++)
 	{
 		ptr_remove(strRank[i]);
@@ -171,6 +180,39 @@ void update_hud()
 	vCubes = get_nr_cubes();
 	vCubes = clamp(vCubes, 0, 99);
 	
+	/* update text message */	
+	if (vCurrentLap < vTotalLaps) vFinalLap = 0;
+	if ((vFinalLap == 0) && (vCurrentLap == vTotalLaps))
+	{
+		//TODO final lap souns
+		str_cpy((txtMsg->pstring)[0], "Final Lap!");
+		txtMsg->flags |= SHOW;
+		vFinalTimeLog = 0;
+		vFinalLap = 1;
+	}
+	if (vFinalLap == 1)
+	{
+		vFinalTimeLog += time_step;
+		if (vFinalTimeLog > HUD_TXTMSG_FLAP_TIME)
+		{
+			vFinalLap = 2;
+			txtMsg->flags &= ~SHOW;
+		}
+	}
+	
+	/*
+	if (vFinalLap != 1) && (is_kart_player_wrong_way() > 0) && (vTimeHundreds < 50))
+	{
+		str_cpy((txtMsg->pstring)[0], "Wrong Way!");
+		txtMsg->flags |= SHOW;
+	}
+	else
+	{	
+		txtMsg->flags &= ~SHOW;
+	}
+	*/
+
+
 	update_map();
 }
 
@@ -196,6 +238,7 @@ void hide_hud()
 		panRank->flags &= ~SHOW;
 		panItem->flags &= ~SHOW;
 		panCube->flags &= ~SHOW;
+		txtMsg->flags &= ~SHOW;
 		remove_map();
 	}
 }
@@ -252,6 +295,11 @@ void scale_hud()
 	panCube->pos_x = (screen_size.x - HUD_PANCUBE_SIZE * panItem->scale_x) * 0.5;
 	panCube->pos_y = screen_size.y - (HUD_PANCUBE_POSY * vHudScale);
 	pan_setdigits(panCube, 1, 128, 24, "%02.0f", fntTime, 1, &vCubes);
+	
+	/* text message */
+	txtMsg->font = fntRank;
+	txtMsg->pos_x = screen_size.x * 0.5;
+	txtMsg->pos_y = screen_size.y * 0.5;
 }
 
 void update_hudrank()
