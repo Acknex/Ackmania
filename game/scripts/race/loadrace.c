@@ -30,8 +30,10 @@ void load_race(int index)
    on_space = null;
    on_enter = null;
 
-   g_preraceActive = true;
+   setPostprocessingChain(get_camera());
 
+   g_preraceActive = true;
+   camera.roll = 0;
    resetPpSwirl ();
 
 
