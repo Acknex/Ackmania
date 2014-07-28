@@ -29,6 +29,7 @@
 ENTITY* camera_focus_ent = NULL;
 VIEW* cam;
 var vDistanceFactor;
+var vViewWidth;
 
 void create_camera()
 {
@@ -41,7 +42,9 @@ void create_camera(int layer)
 	cam->pan = CAMERA_PAN;
 	cam->tilt = CAMERA_TILT; 
 	cam->flags |= ISOMETRIC;
-	//focus_camera();	
+
+	/* width = view.size_x * 2 * tan(view.arc/2); - from manual (view.arc) */
+	vViewWidth = CAMERA_REFSCRSIZEX * 2 * tanv(CAMERA_REFARC * 0.5);
 }
 
 void remove_camera()
@@ -55,8 +58,6 @@ void remove_camera()
 
 void update_camera()
 {
-	//var vDistanceFactorNew;
-	var vFac;
 	VECTOR vecPos;
 	
 	if (camera_focus_ent != NULL)
@@ -66,18 +67,12 @@ void update_camera()
 		vec_add(vecPos, vector(camera_focus_ent->x, camera_focus_ent->y, 0));
 		vec_set(cam->x, vecPos);
 
-		/* interpolate ARC based on y resolution
-		640x400 --> ARC 110
-		1920x1200 --> ARC 60
-		zoom via ARC based on kart speed
-		*/
-
 		vDistanceFactor += ((is_kart_accelerating(camera_focus_ent) > 0) * 0.05 - 0.02) * time_step;
 		vDistanceFactor = clamp(abs(vDistanceFactor), 0.28, 0.6);
-		vFac = (CAMERA_REFSCRSIZEY - screen_size.y) / CAMERA_REFSCRSIZEY;
-		cam->arc = (CAMERA_REFARCBIG * (1 - vFac) + CAMERA_REFARCSMALL * vFac) * vDistanceFactor;
 
-//		DEBUG_VAR(vDistanceFactor, 200);
+		/* view.arc = 2*atan(width/(view.size_x * 2)); - from manual (view.arc) */
+		/* change camera arc by manipulating view size - delivers resolution independent result */
+		cam->arc = 2 * atanv(vViewWidth * 0.5 / (screen_size.x / vDistanceFactor));
 	}
 	
 }
