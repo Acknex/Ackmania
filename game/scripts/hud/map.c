@@ -205,7 +205,7 @@ void update_map()
 			panMapMarker[i]->scale_y = vMapScale;
 			panMapMarker[i]->pos_x = x - (panMapMarker[i]->size_x * 0.5 * panMapMarker[i]->scale_x);
 			panMapMarker[i]->pos_y = y - (panMapMarker[i]->size_y * 0.5 * panMapMarker[i]->scale_y);
-			panMapMarker[i]->angle = ent->pan;
+			panMapMarker[i]->angle = ent->parent->pan;
 		}
 
 		/* this only needs to run once on resolution change */
