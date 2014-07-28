@@ -53,6 +53,8 @@ void playrace_h_startup () {
 
 }
 
+#define RACE_REF_SCREENSIZE 1020
+
 #include "playrace.c"
 
 #endif /* playrace_h */
