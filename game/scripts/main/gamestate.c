@@ -46,6 +46,9 @@ void invoke_game_state_credits(int oldGameState, int levelIndex)
 
    credits_start();
 
+   setHdr(20, 5, 0);
+   setPostprocessingChain(camera);
+
    while (key_esc || key_space || key_enter) {
       wait(1);
    }

@@ -313,6 +313,9 @@ void credits_init()
 			
 			nextLotti -= time_step;
 			
+			setPpSwirl(0.5, 0, 0.5, 0.5, 0.1 + sin(total_ticks * 3) * 0.1);
+			camera.roll = sin(total_ticks) * 5;
+
 			wait(1);	
 		}
 	

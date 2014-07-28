@@ -12,6 +12,8 @@
 	void setPpSwirlCenter (float fX, float fY);
 	void setPpSwirlBlend (float fBlend);
 
+	void setPostprocessingChain(VIEW* viewStart);
+
 // effects
 
 	// HDR

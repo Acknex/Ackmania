@@ -3,16 +3,20 @@
 
 #include "postprocessing.h"
 
+void setPostprocessingChain(VIEW* viewStart)
+{
+   resetPpSwirl();
+
+   viewStart->stage = pp_viewLuma;
+   pp_viewLuma->stage = pp_viewFxaa;
+
+   pp_viewFxaa->stage = pp_viewSwirl;
+   pp_set(pp_viewSwirl, mtl_hdr);
+}
+
 void initPostprocessing (VIEW* viewStart)
 {
-	resetPpSwirl();
-	
-	viewStart->stage = pp_viewLuma;
-	pp_viewLuma->stage = pp_viewFxaa;
-	
-	pp_viewFxaa->stage = pp_viewSwirl;
-	//pp_viewSwirl->stage = pp_viewRedness;
-	pp_set(pp_viewSwirl, mtl_hdr);
+   setPostprocessingChain(viewStart);
 
 	while (1)
 	{
