@@ -2,6 +2,7 @@
 #define _MENU_H_
 
 #define MENU_DEF_THRESHOLD 50
+#define MENU_REF_SCREENSIZE 1020
 
 /**
  * Left "click" check

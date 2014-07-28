@@ -52,13 +52,26 @@ void play_race(int index)
    bbWinnerPan->pos_y = screen_size.y * 0.5 - bbWinnerPan->bmap->height / 2;
 
    bPressSpacePan->pos_x = screen_size.x / 2 - bPressSpacePan->bmap->width / 2;
-   bPressSpacePan->pos_y = screen_size.y * 0.75 - bFinishPan->bmap->height / 2;
+   bPressSpacePan->pos_y = screen_size.y * 0.75 - bPressSpacePan->bmap->height / 2;
 
    set(bFinishPan, SHOW);
    set(bbWinnerPan, SHOW);
    set(bPressSpacePan, SHOW);
 
    while (!key_space && !key_enter && !key_esc) {
+		bFinishPan->scale_x = screen_size.y / RACE_REF_SCREENSIZE;
+		bFinishPan->scale_y = screen_size.y / RACE_REF_SCREENSIZE;
+		bbWinnerPan->scale_x = screen_size.y / RACE_REF_SCREENSIZE;
+		bbWinnerPan->scale_y = screen_size.y / RACE_REF_SCREENSIZE;
+		bPressSpacePan->scale_x = screen_size.y / RACE_REF_SCREENSIZE;
+		bPressSpacePan->scale_y = screen_size.y / RACE_REF_SCREENSIZE;
+		bFinishPan->pos_x = screen_size.x / 2 - (bFinishPan->bmap->width / 2) * bFinishPan->scale_x;
+		bFinishPan->pos_y = screen_size.y * 0.25 - (bFinishPan->bmap->height / 2) * bFinishPan->scale_y;
+		bbWinnerPan->pos_x = screen_size.x / 2 - (bbWinnerPan->bmap->width / 2) * bbWinnerPan->scale_x;
+		bbWinnerPan->pos_y = screen_size.y * 0.5 - (bbWinnerPan->bmap->height / 2) * bbWinnerPan->scale_y;
+		bPressSpacePan->pos_x = screen_size.x / 2 - (bPressSpacePan->bmap->width / 2) * bPressSpacePan->scale_x;
+		bPressSpacePan->pos_y = screen_size.y * 0.75 - (bPressSpacePan->bmap->height / 2) * bPressSpacePan->scale_y;
+
       update_camera();
       setPpSwirl(0.5, sin(total_ticks) * 0.1, 0.5, 0.5, 0.25 + sin(total_ticks * 3) * 0.25);
       wait(1);

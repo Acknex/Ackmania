@@ -125,8 +125,10 @@ void menu_init(int baseLayer)
 			_menu_background.scale_y = screen_size.y / bmap_height(_menu_background.bmap);
 		
 			_menu_bigheader.flags |= SHOW;
-			_menu_bigheader.pos_x = 0.5 * screen_size.x - 0.5 * bmap_width(_menu_bigheader.bmap);
-			_menu_bigheader.pos_y = 0.25 * screen_size.y - 0.5 * bmap_height(_menu_bigheader.bmap);
+			_menu_bigheader.scale_x = screen_size.y / MENU_REF_SCREENSIZE;
+			_menu_bigheader.scale_y = screen_size.y / MENU_REF_SCREENSIZE;
+			_menu_bigheader.pos_x = 0.5 * screen_size.x - (0.5 * bmap_width(_menu_bigheader.bmap) * _menu_bigheader.scale_x);
+			_menu_bigheader.pos_y = 0.25 * screen_size.y - (0.5 * bmap_height(_menu_bigheader.bmap) * _menu_bigheader.scale_y);
 			
 			_menu_flag.flags2 |= SHOW;
 			VECTOR pos;
@@ -158,15 +160,19 @@ void menu_init(int baseLayer)
 					_menu_selection = getNumCircuits() - 1;
 				}
 				
-				_menu_course.flags |= VISIBLE;
+				_menu_course.flags |= VISIBLE | FILTER;
 				_menu_course.bmap = _menu_trackIcons[_menu_selection];
-				_menu_course.pos_x = 0.7 * screen_size.x - _menu_course->bmap->width / 2;
-				_menu_course.pos_y = 0.62 * screen_size.y - _menu_course->bmap->height / 2;
+				_menu_course.scale_x = screen_size.y / MENU_REF_SCREENSIZE;
+				_menu_course.scale_y = screen_size.y / MENU_REF_SCREENSIZE;
+				_menu_course.pos_x = 0.7 * screen_size.x - (_menu_course->bmap->width / 2) * _menu_course.scale_x;
+				_menu_course.pos_y = 0.62 * screen_size.y - (_menu_course->bmap->height / 2) * _menu_course.scale_y;
 
 			
 				_menu_selection_txt.flags |= SHOW;
+				_menu_selection_txt.scale_x = screen_size.y / MENU_REF_SCREENSIZE;
+				_menu_selection_txt.scale_y = screen_size.y / MENU_REF_SCREENSIZE;
 				_menu_selection_txt.pos_x = 0.7 * screen_size.x;
-				_menu_selection_txt.pos_y = _menu_course.pos_y + _menu_course->bmap->height + 48;
+				_menu_selection_txt.pos_y = _menu_course.pos_y + ((_menu_course->bmap->height + 48) * _menu_selection_txt.scale_y);
 				
 				str_cpy(_menu_currentChoice, "< ");
 				str_cat(_menu_currentChoice, getCircuitTitleStr(_menu_selection));
@@ -205,6 +211,8 @@ void menu_init(int baseLayer)
 				}
 				
 				_menu_selection_txt.flags |= SHOW;
+				_menu_selection_txt.scale_x = screen_size.y / MENU_REF_SCREENSIZE;
+				_menu_selection_txt.scale_y = screen_size.y / MENU_REF_SCREENSIZE;
 				_menu_selection_txt.pos_x = 0.7 * screen_size.x;
 				_menu_selection_txt.pos_y = 0.65 * screen_size.y;
 				
