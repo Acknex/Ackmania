@@ -7,6 +7,8 @@
 	#include "camera.h"
 	#include "taunts.h"
 	#include "playrace.h"
+	
+	BMAP* drift_decal = "decal_skidmark.tga";
 
 	void p_drift_smoke_fade(PARTICLE* p)
 	{
@@ -523,12 +525,12 @@
 
 		if (!(key_item+key_hop+key_right+key_left+key_down+key_up))
 		{
-			key_up = !g_doNotDrive * (joy_rot.y > 128);
-			key_down = !g_doNotDrive * (joy_rot.z > 128);
+			key_up = !g_doNotDrive * ((joy_rot.y > 128) | (joy_raw.z < -128));
+			key_down = !g_doNotDrive * ((joy_rot.z > 128) | joy_3);
 			key_left = (joy_force.x < -1);
 			key_right = (joy_force.x > 1);
-			key_hop = joy_6;
-			key_item = joy_2;
+			key_hop = joy_6 | joy_5;
+			key_item = joy_2 | joy_1;
 		}
 
 		ent->kart_input = key_up * INPUT_UP | key_down * INPUT_DOWN | key_left * INPUT_LEFT | key_right * INPUT_RIGHT | key_hop * INPUT_HOP
@@ -780,7 +782,16 @@
 				vec_add(temp,ent->parent->x);
 				vec_set(temp2,vector(-4,0,4));
 				vec_rotate(temp2,ent->parent->pan);
-				if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
+				if(ent->drifting && (ent->kart_trapped == 0))
+				{
+					effect(p_drift_smoke,1,temp,temp2);
+					me = ent;
+					if (c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | SCAN_TEXTURE | IGNORE_SPRITES | IGNORE_ME)>0)// | IGNORE_MODELS) > 0)
+					{
+						PARTICLE* p = ent_decal (you, drift_decal, 30 * ent->parent->scale, ent->pan);
+						p->lifespan = 30 * 16;
+					}
+				}
 				else
 				{
 					c_ignore(group_kart, group_rocket, 0);
@@ -790,7 +801,16 @@
 				vec_set(temp,vector(-22,-22*ent->parent->scale,-ent->kart_height*0.5));
 				vec_rotate(temp,ent->parent->pan);
 				vec_add(temp,ent->parent->x);
-				if(ent->drifting) effect(p_drift_smoke,1,temp,temp2);
+				if(ent->drifting && (ent->kart_trapped == 0))
+				{ 
+					effect(p_drift_smoke,1,temp,temp2);
+					me = ent;
+					if (c_trace(vector(temp.x, temp.y, temp.z + 64), vector(temp.x, temp.y, -128), IGNORE_PASSABLE | IGNORE_PUSH | USE_POLYGON | SCAN_TEXTURE | IGNORE_SPRITES | IGNORE_ME)>0)// | IGNORE_MODELS) > 0)
+					{
+						PARTICLE* p = ent_decal (you, drift_decal, 30 * ent->parent->scale, ent->pan);
+						p->lifespan = 30 * 16;
+					}
+				}
 				else
 				{
 					c_ignore(group_kart, group_rocket, 0);
