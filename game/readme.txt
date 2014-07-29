@@ -14,6 +14,8 @@
 | \___/ | .__/ \___|_|  \__,_|\__|_|\___/|_| |_| /___,' \___|\__,_|\__,_|_| |_|\___/_/\_\| |
  \_\    |_|                                                                             /_/ 
 
+                                                                   v1.2 AUM contest version
+
 
  These are the racing adventures of Lotti in dimension JCL-Zeta-Oscar-Romeo-Romeo-Oscar-ACKMANIA.
 
