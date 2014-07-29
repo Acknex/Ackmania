@@ -14,7 +14,7 @@
 | \___/ | .__/ \___|_|  \__,_|\__|_|\___/|_| |_| /___,' \___|\__,_|\__,_|_| |_|\___/_/\_\| |
  \_\    |_|                                                                             /_/ 
 
-                                                                   v1.2 AUM contest version
+                                                                   v1.2 contest version
 
  These are the racing adventures of Lotti in dimension JCL-Zeta-Oscar-Romeo-Romeo-Oscar-ACKMANIA.
 
@@ -47,8 +47,8 @@
  CocaCola
 
 
- The game and all it's contents, including the source, are licensed under
- the MIT license, as follows:
+ The game and all it's contents, provided as it is, including the source,
+ are licensed under the MIT license, as follows:
 
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
