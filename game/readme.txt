@@ -45,8 +45,9 @@
  Robert Jäger (Firoball)
  Felix Queißner (MasterQ32)
  Andreas Schmidt (Lemming)
- Patrick (jenGS)
+ Patrick Jendral (jenGS)
  Simon Trümpler
+ CocaCola
 
 
  All characters appearing in this work are fictitious.
