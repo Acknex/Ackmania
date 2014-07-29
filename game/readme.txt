@@ -30,9 +30,7 @@
  F9             -  mute
  ALT + ENTER    -  fullscreen
 
-
  If you don't hear the sounds or some of them, install the OGG drivers (OggDS0995.exe)!
-
 
 
  Created by:
@@ -48,6 +46,21 @@
  Patrick Jendral (jenGS)
  Simon Trümpler
  CocaCola
+
+
+
+ Point of contact:
+
+ Christian Behrenberg
+ Neumarkt 2
+ 58239 Schwerte an der Ruhr
+ GERMANY
+
+ http://www.christian-behrenberg.de
+ christian@behrenberg.de
+
+ engine: Gamestudio A8.45 pro
+
 
 
  All characters appearing in this work are fictitious.
