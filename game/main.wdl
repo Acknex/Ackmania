@@ -18,6 +18,7 @@ path "sounds";
 level "droad.wmp";
 level "kbridge.wmp";
 level "test2.wmp";
+level "icenex.wmp";
 
 bind "a4Cube.mdl";
 bind "a4Cube.pcx";
