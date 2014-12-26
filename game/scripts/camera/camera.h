@@ -32,6 +32,7 @@ void update_camera();
 void show_camera();
 void hide_camera();
 void focus_camera();
+void change_camera();
 VIEW* get_camera();
  
  
