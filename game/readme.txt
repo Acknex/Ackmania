@@ -27,6 +27,7 @@
  ENTER / SPACE  -  action
  F5             -  resolution change
  F9             -  mute
+ F7             -  change camera
  ALT + ENTER    -  fullscreen
 
  If you don't hear the sounds or some of them, install the OGG drivers (OggDS0995.exe)!

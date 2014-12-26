@@ -25,6 +25,7 @@
 void def_video(); 
 void def_screen(); 
 void def_shot();
+void change_camera();
 
 
 void bind_keys_startup()
@@ -32,6 +33,7 @@ void bind_keys_startup()
 	/* default keys */
 	if (!on_f5) on_f5 = def_video;
 	if (!on_f6) on_f6 = def_shot;
+	if (!on_f7) on_f7 = change_camera;
 	while(1)
 	{
 		def_screen();
